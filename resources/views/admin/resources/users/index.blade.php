@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                    <a type="button"
+                    <a href="{{ route('admin.users.create') }}" type="button"
                             class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                             <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -163,7 +163,7 @@
                                 {{-- User Name --}}
                                 <th scope="row"
                                     class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <a href="#" class="flex items-center">
+                                    <a href="{{ route('admin.users.show', $user->id) }}" class="flex items-center">
                                         <img src="{{ $user->profile_photo_path ? asset('storage/'.$user->profile_photo_path) : $user->profile_photo_url }}" alt="{{ $user->name }}"
                                             class="w-auto h-8 mr-3 rounded-full">
                                         {{ $user->name }}
@@ -286,11 +286,11 @@
                                         <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
                                             aria-labelledby="dropdown-button-{{ $user->id }}">
                                             <li>
-                                                <a href="#"
+                                                <a href="{{ route('admin.users.show', $user->id) }}"
                                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show</a>
                                             </li>
                                             <li>
-                                                <a href="#"
+                                                <a href="{{ route('admin.users.edit', $user->id) }}"
                                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
                                             </li>
                                         </ul>

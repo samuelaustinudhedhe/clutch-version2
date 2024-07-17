@@ -14,15 +14,14 @@ return new class extends Migration
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description')->nullable();//content of the post (usually empty for attachments).
-            $table->string('status');//The status of the attachment (usually inherit from its parent).
-            $table->boolean('ping')->default(false)->nullable();//
+            $table->string('description')->nullable(); //content of the post (usually empty for attachments).
+            $table->string('status')->default('active'); //The status of the attachment (usually inherit from its parent).
+            $table->boolean('ping')->default(false)->nullable(); //
             //$table->json('parent')->nullable();//JSON field to store ID and type of the parent post (useful if the attachment is associated with a specific post)
-            $table->nullableMorphs('attachable'); // Polymorphic fields for parent models
-            $table->string('type');//document, image, video, audio
-            $table->string('mime');//image/jpeg, audio/mp3, video/mp4, plaintext/txt, document/pdf, word/docx 
+            $table->string('mime_type'); //image/jpeg, audio/mp3, video/mp4, plaintext/txt, document/pdf, word/docx 
             $table->json('metadata')->nullable(); // JSON field to store metadata of the attachment.
-            $table->string('file_path'); // The path to the file.
+            $table->string('file_path'); // The path to the file.            
+            $table->nullableMorphs('attachable'); // Polymorphic fields for parent models
             // $table->json('author')->nullable(false); // JSON field to store ID and type of the author.
             $table->morphs('authorable'); // Polymorphic fields for author (User or Admin)
             $table->timestamps();

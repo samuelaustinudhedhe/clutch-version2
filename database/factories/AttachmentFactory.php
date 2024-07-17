@@ -35,13 +35,11 @@ class AttachmentFactory extends Factory
             'description' => $faker->sentence,
             'status' => $faker->randomElement(['active', 'inactive', 'suspended']),
             'ping' => $faker->boolean(50), // 50% chance of being true
-            'type' => $faker->randomElement(['document', 'image', 'video', 'audio']),
-            'mime' => 'pdf',
+            'mime_type' => $faker->mimeType(),
             'metadata' => json_encode([
                 'key' => 'value',
                 // Add more metadata fields as needed
                 'dimensions' => json_encode([
-                    'length' => $faker->randomFloat(2, 1, 10),
                     'width' => $faker->randomFloat(2, 1, 5),
                     'height' => $faker->randomFloat(2, 0.1, 3),
                 ]),
