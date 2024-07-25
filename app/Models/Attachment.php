@@ -4,26 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Attachment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'size', 'status', 'mime_type', 'file_path', 'attachable_id', 'attachable_type', 'authorable_id', 'authorable_type',
-    ];
-
-    protected $appends = [
-        'author',
+        'name', 'size', 'status', 'metadata', 'mime_type', 'file_path', 'attachable_id', 'attachable_type', 'authorable_id', 'authorable_type',
     ];
 
     protected $casts = [
-        'meta' => 'array',
+        'metadata' => 'array',
         'dimensions' => 'array',
         // 'post' => 'object',
         // 'author' => 'object',
     ];
-    public $documentMimeTypes = [
+
+    // You can use the $documentMimeTypes array in your code
+    public static $documentMimeTypes = [
         'application/pdf',
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -43,7 +42,8 @@ class Attachment extends Model
         'application/json',
     ];
 
-    public $imageMimeTypes = [
+    // You can use the $imageMimeTypes array in your code
+    public static $imageMimeTypes = [
         'image/jpeg',
         'image/png',
         'image/gif',
@@ -52,8 +52,6 @@ class Attachment extends Model
         'image/webp',
     ];
 
-    // You can use the $imageMimeTypes array in your code
-    // You can use the $documentMimeTypes array in your code
     // public function author()
     // {
     //     $author = $this->author;
@@ -76,5 +74,22 @@ class Attachment extends Model
     public function authorable()
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Get the URL of the attachment file.
+     *
+     * This function checks if the file path is a valid URL. If it is, it returns the file path as is.
+     * Otherwise, it generates a URL using the public disk storage.
+     *
+     * @return string The URL of the attachment file.
+     */
+    public function getUrlAttribute()
+    {
+        $filePath = $this->file_path;
+        if (filter_var($filePath, FILTER_VALIDATE_URL)) {
+            return $filePath;
+        }
+        return Storage::disk('public')->url($filePath);
     }
 }

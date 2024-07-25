@@ -37,7 +37,6 @@ class AttachmentFactory extends Factory
             'ping' => $faker->boolean(50), // 50% chance of being true
             'mime_type' => $faker->mimeType(),
             'metadata' => json_encode([
-                'key' => 'value',
                 // Add more metadata fields as needed
                 'dimensions' => json_encode([
                     'width' => $faker->randomFloat(2, 1, 5),

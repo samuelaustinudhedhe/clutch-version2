@@ -119,3 +119,59 @@ if (!function_exists('app_logo')) {
         }
     }
 }
+
+
+if (!function_exists('app_currency')) {
+    /*
+     | Get the application currency from the settings table.
+     |
+     | @param bool $echo Whether to echo the result or return it.
+     | @return string The application currency.
+     |
+     */
+    function app_currency(bool $echo = true)
+    {
+        $setting = DB::table('settings')->where('key', 'app_currency')->first();
+        $data = $setting ? $setting->value : config('app.currency', 'NGN');
+
+        if ($echo) {
+            echo $data;
+        } else {
+            return $data;
+        }
+    }
+}
+
+
+if (!function_exists('app_currency_symbol')) {
+    /*
+     | Get the application currency symbol from a JSON file.
+     |
+     | @param bool $echo Whether to echo the result or return it.
+     | @return string The application currency symbol.
+     |
+     */
+    function app_currency_symbol(bool $echo = true)
+    {
+        $currency = app_currency(false); // Get the currency code
+
+        $countries = fetchCountries();
+
+        $symbol = $currency; // Default to currency code if symbol is not found
+
+        // Loop through the countries to find the currency symbol
+        foreach ($countries as $country) {
+            if (isset($country['currencies'][$currency])) {
+                $symbol = $country['currencies'][$currency]['symbol'] ?? $currency;
+                break;
+            }
+        }
+
+        if ($echo) {
+            echo $symbol;
+        } else {
+            return $symbol;
+        }
+    }
+}
+

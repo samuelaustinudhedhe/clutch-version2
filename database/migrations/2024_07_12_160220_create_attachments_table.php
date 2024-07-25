@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable(); //content of the post (usually empty for attachments).
             $table->string('status')->default('active'); //The status of the attachment (usually inherit from its parent).
-            $table->boolean('ping')->default(false)->nullable(); //
+            $table->boolean('is_featured')->default(false)->nullable(); //
             //$table->json('parent')->nullable();//JSON field to store ID and type of the parent post (useful if the attachment is associated with a specific post)
             $table->string('mime_type'); //image/jpeg, audio/mp3, video/mp4, plaintext/txt, document/pdf, word/docx 
             $table->json('metadata')->nullable(); // JSON field to store metadata of the attachment.

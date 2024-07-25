@@ -40,6 +40,12 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'phone' => json_encode([
+                'country_code' => fake()->countryCode(),
+                'phone' => fake()->unique()->numberBetween(19500000, 1090000000),
+                'verified_at' => now(), // Phone number is verified
+                
+            ]),// Phone verification timestamp
             'password' => static::$password ??= Hash::make('password'),
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,

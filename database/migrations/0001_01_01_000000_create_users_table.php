@@ -16,10 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->json('phone')->nullable();
             $table->string('password');
-            $table->string('status')->default('inactive');// user status (active or inactive or suspended)
+            $table->string('status')->default('inactive'); // user status (active or inactive or suspended)
             $table->float('rating')->default(0);
             $table->rememberToken();
+            $table->date('date_of_birth')->nullable(); // user status (active or inactive or suspended)
+            $table->string('gender')->nullable();
+            $table->json('address')->nullable();
+            $table->json('social')->nullable();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();

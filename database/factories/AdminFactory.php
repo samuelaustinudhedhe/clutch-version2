@@ -38,6 +38,12 @@ class AdminFactory extends Factory
             'name' => fake()->name(), // Generate a random name
             'email' => fake()->unique()->safeEmail(), // Generate a unique, random email
             'email_verified_at' => now(), // Email verification timestamp
+            'phone' => json_encode([
+                'country_code' => fake()->countryCode(),
+                'phone' => fake()->unique()->numberBetween(19500000, 1090000000),
+                'verified_at' => now(), // Phone number is verified
+                
+            ]),// Generate a unique, random phone number
             'password' => static::$password ?? Hash::make('password'), // Password (use static password or hash a default one)
             'status' => Arr::random(['active', 'inactive', 'suspended']), // Random status
             'role' => Arr::random($role), // Assign a random role from the available roles

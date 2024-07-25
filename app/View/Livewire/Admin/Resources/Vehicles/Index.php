@@ -19,19 +19,20 @@ class Index extends Component
     public $location;
     public $trips;
 
+    public $selected = [];
+
     public function mount()
     {
         
     }
 
-    public function updatingSearch(){
 
-    }
 
     public function render()
     {
-        $vehicle = Vehicle::search('name', $this->search)->paginate($this->perPage);
-        return view('admin.resources.vehicle.index', compact('vehicle',))
+        $vehicles = Vehicle::search('name', $this->search)->paginate($this->perPage);
+        $vehiclesCount = Vehicle::all()->count();
+        return view('admin.resources.vehicle.index', compact('vehicles','vehiclesCount'))
             ->layout('layouts.admin');
     }
 }

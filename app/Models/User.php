@@ -31,8 +31,16 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'role',
+        'status',
+        'rating',
+        'gender',
+        'date_of_birth',
+        'address',
+        'social'
+
     ];
 
     /**
@@ -66,6 +74,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'social' => 'object',
+            'address' => 'object',
+            'date_of_birth' => 'date'
             // 'roles' => 'array',
         ];
     }
@@ -84,6 +95,7 @@ class User extends Authenticatable
         return [
             'owner' => 'blue',
             'driver' => 'indigo',
+            'host' => 'sky',
         ][$this->role] ?? 'zinc'; // Default to 'zinc' if role doesn't match
     }
     /**
@@ -103,4 +115,17 @@ class User extends Authenticatable
         ][$this->status] ?? 'gray'; // Default to 'gray' if status doesn't match
     }
 
+    public function getSocialLogoAttribute()
+    {
+        $socialLogos = [];
+        $socialLinks = json_decode($this->social, true);
+
+        if ($socialLinks) {
+            foreach ($socialLinks as $platform => $link) {
+                $socialLogos[$platform] = resource_path("/images/logos/{$platform}.svg");
+            }
+        }
+
+        return $socialLogos;
+    }
 }

@@ -164,10 +164,10 @@
                                         </a>
                                     @endforeach
                                     @if ($permissions_count !== 0)
-                                            <a href="{{ route('admin.permissions.show', $role->id) }}" class="text-sm pl-2 hover:text-blue-100 ">
-                                                {{ '+' . $permissions_count }} Others
-                                            </a>
-                                        @endif
+                                        <a href="{{ route('admin.permissions.show', $role->id) }}" class="text-sm pl-2 hover:text-blue-100 ">
+                                            {{ '+' . $permissions_count }} Others
+                                        </a>
+                                    @endif
                                 </td>
                                 <td class="px-4 py-3 max-w-sm">{{ $role->description }}</td>
                                 <td class="px-4 py-2 whitespace-nowrap">
