@@ -34,7 +34,7 @@ class AttachmentFactory extends Factory
             'name' => $faker->word,
             'description' => $faker->sentence,
             'status' => $faker->randomElement(['active', 'inactive', 'suspended']),
-            'ping' => $faker->boolean(50), // 50% chance of being true
+            'is_featured' => $faker->boolean(20), // 50% chance of being true
             'mime_type' => $faker->mimeType(),
             'metadata' => json_encode([
                 // Add more metadata fields as needed

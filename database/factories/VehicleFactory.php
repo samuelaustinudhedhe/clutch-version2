@@ -26,7 +26,10 @@ class VehicleFactory extends Factory
                 'amount' => $faker->numberBetween(1000, 100000),
                 'on_sale' => $faker->randomElement([true, false,]),
             ]),
-            //i want to an even where for every post atta
+
+            'type' => $faker->randomElement([
+                'car', 'truck', 'motorcycle', 'bicycle', 'bus', 'airplane', 'boat',
+            ]),
             
             'location' => json_encode([
                 'pickup' => $faker->address,
