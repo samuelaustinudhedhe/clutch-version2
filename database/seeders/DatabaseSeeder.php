@@ -34,7 +34,10 @@ class DatabaseSeeder extends Seeder
         # Call the VehiclesSeeder to seed the vehicles table
         $this->call(VehicleSeeder::class);
         
-        # Call the AuthorSeeder to seed the authors table
+        # Call the AttachmentSeeder to seed the authors table
         $this->call(AttachmentSeeder::class);
+        
+        # Call the NotificationSeeder to seed the authors table
+        $this->call(NotificationSeeder::class);
     }
 }

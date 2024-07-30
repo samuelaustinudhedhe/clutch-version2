@@ -66,31 +66,18 @@ if (!function_exists('error')) {
      * Handles error codes by invoking the appropriate method from the ErrorPageController.
      *
      * @param int $code The HTTP status code to handle.
-     * @return \Illuminate\Http\Response The response from the ErrorPageController method.
+     * @return never This function does not return a value. It either returns a response or aborts the request.
      */
-    function error($code)
+    function error($code = ''): never
     {
         // Get an instance of the ErrorPageController
         $error = app('App\Http\Controllers\Pages\ErrorPageController');
 
-        // Handle the error code by calling the corresponding method on the controller
-        switch ($code) {
-            case 404:
-                return $error->notFound();
-            case 503:
-                return $error->serviceUnavailable();
-            case 419:
-                return $error->pageExpired();
-            case 500:
-                return $error->serverError();
-            case 403:
-                return $error->forbidden();
-            case 401:
-                return $error->unauthorized();
-            default:
-                // If the code does not match any case, abort with the given code
-                abort($code);
-        }
+        // Handle the error code by calling the dynamic method on the controller
+        echo $error->showErrorPage($code);
+
+        // Ensure the function never returns
+        exit;
     }
 }
 

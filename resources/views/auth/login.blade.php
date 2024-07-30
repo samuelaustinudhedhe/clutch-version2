@@ -26,6 +26,11 @@
 
                     <div>
                         <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                            {{-- @php 
+                            if (!@csrf ){
+                                abort();
+                            }
+                            @endphp --}}
                             @csrf
 
                             <div>

@@ -8,6 +8,6 @@ class Sidebar extends Component
 {
     public function render()
     {
-        return view('user.dashboard.sidebar');
+        return view('user.partials.sidebar');
     }
 }

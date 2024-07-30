@@ -4,8 +4,11 @@ namespace App\Models;
 
 use App\Traits\Attachments;
 use Attribute;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
+use function Pest\Laravel\json;
 
 class Vehicle extends Model
 {
@@ -31,6 +34,7 @@ class Vehicle extends Model
 
     protected $casts = [
         'price' => 'object',
+        'owner' => 'object',
         'details' => 'array',
         'location' => 'array',
         'service' => 'array',
@@ -180,7 +184,7 @@ class Vehicle extends Model
      */
     public function getHumanPriceAttribute()
     {
-        return app_currency_symbol() . ' ' . number_format($this->get_price->amount, 2);
+        return app_currency_symbol() . ' ' . number_format($this->get_price->amount);
     }
 
     /**
@@ -193,7 +197,7 @@ class Vehicle extends Model
      */
     public function getHumanSalePriceAttribute()
     {
-        return app_currency_symbol() . ' ' . number_format($this->get_price->sale, 2);
+        return app_currency_symbol() . ' ' . number_format($this->get_price->sale);
     }
 
     /**
@@ -225,7 +229,7 @@ class Vehicle extends Model
         $on_sale = $price->on_sale ?? false;
         $amount = $price->amount ?? 0;
         $discount = '';
-        if ($symbol){
+        if ($symbol) {
             $symbol = '%';
         }
 
@@ -235,6 +239,19 @@ class Vehicle extends Model
         return $discount >= 0 ? $discount . $symbol : 0 . $symbol;
     }
 
+    /**
+     * Determine if the vehicle is on sale and return the corresponding color.
+     *
+     * This accessor method returns a color string based on whether the vehicle is on sale.
+     * The color is used for visual representation of the sale status.
+     *
+     * @return string The color associated with the sale status.
+     *                'green' if on sale, otherwise 'red'.
+     */
+    public function getOnSaleStatusColorAttribute()
+    {
+        return $this->discount(false) > 0 ? 'green-400' : 'white';
+    }
     /**
      * Determine if the vehicle is on sale.
      *
@@ -301,10 +318,45 @@ class Vehicle extends Model
      * This method sets up a belongs-to relationship with the User model,
      * indicating that each vehicle is owned by a user.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null The related User or Admin model instance, or null if the owner is not set or invalid.
+     * @throws Exception If the owner type is invalid.
      */
     public function owner()
     {
-        return $this->belongsTo(User::class, 'owner');
+        // Get the owner attribute
+        $owner = $this->owner;
+
+        // Check if the owner attribute is set and has type and id properties
+        if ($owner && isset($owner->type, $owner->id)) {
+            $modelClass = $owner->type;
+
+            // Determine the model class based on the owner type
+            if ($modelClass === 'user') {
+                $modelClass = 'App\Models\User';
+            } elseif ($modelClass === 'admin') {
+                $modelClass = 'App\Models\Admin';
+            } elseif (strpos($modelClass, 'App\Models') == false) {
+                $modelClass = 'App\Models\\' . ucwords($modelClass);
+            } else {
+                throw new Exception('Invalid owner type: ' . $owner->type);
+            }
+
+            // Find and return the owner model instance by id
+            return $modelClass::find($owner->id);
+        }
+
+        // Return null if the owner is not set or invalid
+        return null;
     }
+
+    public function getOwnerTypeAttribute(){
+        $owner = $this->owner;
+        return $owner->type;
+    }
+
+    public function getOwnerIdAttribute(){
+        $owner = $this->owner;
+        return $owner->id;
+    }
+    
 }

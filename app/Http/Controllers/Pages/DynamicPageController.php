@@ -8,25 +8,56 @@ use Illuminate\Support\Facades\View;
 
 class DynamicPageController extends PageController
 {
- /**
-     * Display the specified page.
+    /**
+     * Dynamically show blade files in a given path.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     * This method dynamically constructs and returns a Blade view based on the provided slug
+     * and an optional base path. The slug is converted into a view name by replacing slashes
+     * with dots, which supports nested directories within the views.
+     *
+     * @param  \Illuminate\Http\Request  $request  The current HTTP request instance.
+     * @param  string  $slug  The slug representing the requested page. This can be a nested path.
+     * @param  string  $basePath  The base path to prepend to the view name. Defaults to 'user.pages'.
+     * @return \Illuminate\View\View|\Illuminate\Http\Response  The rendered view or a 404 error response if the view does not exist.
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException  If the view does not exist.
+     *
+     * @example
+     * Given a URL pattern '/{slug}' and the route '/user/test', calling:
+     * DynamicPageController::show($request, 'test', 'admin.user')
+     * will attempt to render the view 'resources/views/admin/user/test.blade.php'.
+     *
+     * @example
+     * Given a URL pattern '/{slug}' and the route '/user/nested/page', calling:
+     * DynamicPageController::show($request, 'nested/page', 'admin.user')
+     * will attempt to render the view 'resources/views/admin/user/nested/page.blade.php'.
+     *
+     * @usecase
+     * This method is useful for applications where pages are dynamically generated
+     * based on URL slugs, allowing for flexible and scalable view management without
+     * the need for explicit route definitions for each page.
      */
-    public function show(Request $request, $slug)
+    public static function show(Request $request, $slug, $basePath = null)
     {
-        // Replace slashes with dots for nested Blade view support
-        $viewName = str_replace('/', '.', $slug);
-
-        // Check if the Blade view exists
-        if (View::exists($viewName)) {
-            // Return the Blade view with request data
-            return view($viewName, ['request' => $request]);
+        // Ensure the base path ends with a dot for proper namespacing
+        if (substr($basePath, -1) !== '.') {
+            $basePath .= '.';
         }
 
-        // If the view does not exist, return a 404 response
-        error(404);
+        // Convert the slug to a view name by replacing slashes with dots
+        // This supports nested directories within the views
+        $viewName = str_replace('/', '.', $slug);
+
+        // Combine the base path with the view name
+        $fullViewName = $basePath . $viewName;
+
+        // Check if the Blade view exists
+        if (View::exists($fullViewName)) {
+            // Return the Blade view with the request data
+            return view($fullViewName, ['request' => $request]);
+        }
+
+        // If the view does not exist, return a 404 error response
+        return error(404);
     }
 }

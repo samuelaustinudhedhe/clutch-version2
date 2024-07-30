@@ -214,15 +214,7 @@
                                         @endif
                                     </div>
                                 </td>
-                                {{-- Promote --}}
-                                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer" name="promote">
-                                        <div
-                                            class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                        </div>
-                                    </label>
-                                </td>
+
                                 {{-- Rating --}}
                                 <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     <div class="flex items-center">
@@ -248,6 +240,7 @@
                                         {{ $user->rating }}
                                     </div>
                                 </td>
+                                
                                 {{-- Created at --}}
                                 <td class="px-4 py-2">{{ $user->created_at->format('d M Y') }}</td>
                                 <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -282,6 +275,14 @@
                             </tr>
                         @endforeach
 
+                        {{-- If no User is found --}}
+                        @if ($users->isEmpty())
+                            <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <td class="px-4 py-6 text-center text-md font-medium text-gray-900 whitespace-nowrap dark:text-white" colspan="10">
+                                    {{ __('There are no Users found at this time') }}
+                                </td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>

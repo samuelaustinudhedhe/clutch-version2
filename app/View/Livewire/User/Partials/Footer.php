@@ -8,6 +8,6 @@ class Footer extends Component
 {
     public function render()
     {
-        return view('user.dashboard.footer');
+        return view('user.partials.footer');
     }
 }

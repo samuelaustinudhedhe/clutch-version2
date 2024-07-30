@@ -27,6 +27,12 @@ return new class extends Migration
             $table->json('social')->nullable();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->json('boarding')->default(json_encode([
+                'status' => 'start',
+                'step' => 0,
+                'restart_at' => '',
+                'completed_at' => '',
+            ])); // user onboarding true or false
             $table->timestamps();
         });
 

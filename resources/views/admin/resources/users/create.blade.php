@@ -1,9 +1,4 @@
 <section class="bg-white py-8 antialiased dark:bg-gray-900">
-    @if (session()->has('message'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ session('message') }}</span>
-        </div>
-    @endif
 
     <form action="#" class="mx-auto max-w-screen-xl px-4 2xl:px-0" wire:submit.prevent="createUser">
 

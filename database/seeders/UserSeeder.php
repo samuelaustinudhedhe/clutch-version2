@@ -34,6 +34,6 @@ class UserSeeder extends Seeder
             ]);
         }
         // Create 1432 users
-        User::factory(1432)->create();
+        User::factory(30)->create();
     }
 }

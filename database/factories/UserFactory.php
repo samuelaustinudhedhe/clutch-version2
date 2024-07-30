@@ -28,24 +28,11 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        // Define the roles that should be excluded from the user creation process
-        $excludeRoles = [''];
-        // Fetch roles from the Role model, which has 'guard' set to 'web' and exclude the roles listed in $excludeRoles
-        $roles = Role::where('guard', 'web')->whereNotIn('name', $excludeRoles)->get();
-        // Extract the slugs of the roles for random selection later
-        $role = $roles->pluck('slug')->toArray();
-
-        // Default user attributes
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'phone' => json_encode([
-                'country_code' => fake()->countryCode(),
-                'phone' => fake()->unique()->numberBetween(19500000, 1090000000),
-                'verified_at' => now(), // Phone number is verified
-                
-            ]),// Phone verification timestamp
+            'phone' => $this->generatePhone(),
             'password' => static::$password ??= Hash::make('password'),
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
@@ -54,8 +41,34 @@ class UserFactory extends Factory
             'current_team_id' => null,
             'status' => Arr::random(['active', 'inactive', 'suspended']),
             'rating' => Arr::random(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.2', '4.5', '4.6', '4.7', '4.8', '5.0']),
-            'role' => Arr::random($role), // Assign a random role from the $role array
+            'role' => $this->getRandomRole(),
         ];
+    }
+
+    /**
+     * Generate a random phone number.
+     *
+     * @return string
+     */
+    protected function generatePhone(): string
+    {
+        return json_encode([
+            'country_code' => fake()->countryCode(),
+            'phone' => fake()->unique()->numberBetween(19500000, 1090000000),
+            'verified_at' => now(),
+        ]);
+    }
+
+    /**
+     * Get a random role excluding specific roles.
+     *
+     * @return string
+     */
+    protected function getRandomRole(): string
+    {
+        $excludeRoles = [''];
+        $roles = Role::where('guard', 'web')->whereNotIn('name', $excludeRoles)->pluck('slug')->toArray();
+        return Arr::random($roles);
     }
 
     /**

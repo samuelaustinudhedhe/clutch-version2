@@ -9,7 +9,7 @@
                             <span class="text-gray-500">All Vehicles:</span>
                             <span class="dark:text-white">{{ $vehiclesCount }}</span>
                         </h5>
-                        <h5 class="text-gray-500 dark:text-gray-400 ml-1">1-100 (436)</h5>
+                        <h5 class="text-gray-500 dark:text-gray-400 ml-1">{{ $vehicles->firstItem() }}-{{ $vehicles->lastItem() }} ({{ $vehicles->total() }})</h5>
                         <button type="button" class="group" data-tooltip-target="results-tooltip">
                             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" viewbox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
@@ -17,7 +17,7 @@
                             <span class="sr-only">More info</span>
                         </button>
                         <div id="results-tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                            Showing 1-100 of 436 results
+                            Showing {{ $vehicles->firstItem() }}-{{ $vehicles->lastItem() }} of {{ $vehicles->total() }} results
                             <div class="tooltip-arrow" data-popper-arrow=""></div>
                         </div>
                     </div>
@@ -340,9 +340,10 @@
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="p-4">
+                                <th scope="col" class="p-4 pr-0">
                                     <div class="flex items-center">
-                                        <input id="checkbox-all" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <input id="checkbox-selectAll" type="checkbox" wire:model.live="selectAll"
+                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                         <label for="checkbox-all" class="sr-only">checkbox</label>
                                     </div>
                                 </th>
@@ -350,21 +351,24 @@
                                 <th scope="col" class="p-4">Type</th>
                                 <th scope="col" class="p-4">Status</th>
                                 <th scope="col" class="p-4">Price/Day</th>
-                                <th scope="col" class="p-4">Discount/Day</th>
-                                <th scope="col" class="p-4">Rating</th>
                                 <th scope="col" class="p-4">Sales</th>
+                                <th scope="col" class="p-4">Rating</th>
                                 <th scope="col" class="p-4">Owner</th>
-                                <th scope="col" class="p-4">Last Update</th>
+                                <th scope="col" class="p-4">Promote</th>
+                                <th scope="col" class="p-4 text-right">Last Update</th>
                             </tr>
                         </thead>
                         <tbody>
-
+                           
                             @foreach ($vehicles as $vehicle)
                                 <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <td class="p-4 w-4">
+                                    <td class="p-4 w-4 pr-0">
                                         <div class="flex items-center">
-                                            <x-checkbox id="checkbox-{{ $vehicle->id }}" value="{{ $vehicle->id }}" wire:model="selected" @checked(in_array($vehicle->id, $selected)) />                                            
-                                            <x-label for="checkbox-table-search-1" class="sr-only">checkbox</x-label>
+                                            <input id="checkbox-{{ $vehicle->id }}" type="checkbox"
+                                                value="{{ $vehicle->id }}" wire:model="selected"
+                                                @if(in_array($vehicle->id, $selected)) checked @endif
+                                                class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <label for="checkbox-{{ $vehicle->id }}" class="sr-only">checkbox</label>
                                         </div>
                                     </td>
                                     <th scope="row" class="px-4 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -376,24 +380,36 @@
                                     <td class="px-4 py-3">
                                         <span class="bg-{{ $vehicle->type_color }}-100 text-{{ $vehicle->type_color }}-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-{{ $vehicle->type_color }}-900 dark:text-{{ $vehicle->type_color }}-300">{{ $vehicle->type }}</span>
                                     </td>
+
+                                    {{-- Status --}}
                                     <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <div class="flex items-center">
                                             <div class="h-4 w-4 rounded-full inline-block mr-2 bg-{{ $vehicle->status_color }}-500"></div>
                                             {{ $vehicle->status }}
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ $vehicle->human_price }}
 
-                                    </td>
+                                    {{-- Price --}}
                                     <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         @if ($vehicle->discount(false) > 0)
-                                        {{-- add a tooltip here when hover on discount price so it shows original price --}}
-                                            {{ $vehicle->discount() }}
+                                            <x-tooltip id="{{ $vehicle->id }}" class=" text-{{ $vehicle->on_sale_status_color }}">
+                                                <x-slot name="trigger">
+                                                    {{ $vehicle->human_price }}
+                                                </x-slot>
+                                                <x-slot name="content">
+                                                    <span class="text-{{ $vehicle->on_sale_status_color }} ">{{ $vehicle->discount() }} </span> Daily discount 
+                                                </x-slot>
+                                            </x-tooltip>
                                         @else
-                                            No
+                                            {{ $vehicle->human_price }}
                                         @endif
+                                        
                                     </td>
+
+                                    <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                       {{ $vehicle->human_price }} 
+                                    </td>
+                                    
                                     <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <div class="flex items-center text-lg">
                                             {{ $vehicle->rating_stars }}
@@ -403,16 +419,26 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        <div class="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-gray-400 mr-2" aria-hidden="true">
-                                                <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
-                                            </svg>
-                                            1.6M
-                                        </div>
+                                    {{-- Owner --}}
+                                    <td class="px-4 py-3">
+                                        
+                                        <a href="{{ route('admin.' . (strpos($vehicle->owner->type, 'admin') === true ? 'admins' : 'users') . '.show', $vehicle->owner()->id) }}">
+                                            {{ $vehicle->owner()->name }}
+                                        </a>                                        
+
                                     </td>
-                                    <td class="px-4 py-3"></td>
-                                    <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+
+                                    {{-- Promote --}}
+                                    <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input disabled type="checkbox" value="" class="sr-only peer" name="promote">
+                                            <div
+                                                class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                            </div>
+                                        </label>
+                                    </td>
+
+                                    <td class="px-4 py-3 font-medium text-right text-gray-900 whitespace-nowrap dark:text-white">
                                         <button id="dropdown-button-{{ $vehicle->id }}" type="button"
                                             data-dropdown-toggle="dropdown-{{ $vehicle->id }}"
                                             class="inline-flex items-center p-1 text-sm font-medium text-center text-gray-500 rounded-lg hover:text-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none dark:text-gray-400 dark:hover:text-gray-100">
@@ -467,47 +493,57 @@
                                 </tr> 
                             @endforeach
 
+                            {{-- If no Vehicle is found --}}
+                            @if ($vehicles->isEmpty())
+                                <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <td class="px-4 py-6 text-center text-md font-medium text-gray-900 whitespace-nowrap dark:text-white" colspan="10">
+                                        {{ __('There are no Vehicles found at this time') }}
+                                    </td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
-                <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
-                    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                        Showing
-                        <span class="font-semibold text-gray-900 dark:text-white">1-10</span>
-                        of
-                        <span class="font-semibold text-gray-900 dark:text-white">1000</span>
-                    </span>
+
+                {{-- Pagination --}}
+                <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0"
+                    aria-label="Table navigation">
+                    <div class="flex items-center space-x-3">
+                        <label for="rows" class="text-xs font-normal text-gray-500 dark:text-gray-400">Rows per
+                            page</label>
+                        <select id="rows" wire:model.lazy="perPage"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 pl-3.5 pr-6 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <div class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $vehicles->firstItem() }}</span>
+                            -
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $vehicles->lastItem() }}</span>
+                            of
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $vehicles->total() }}</span>
+                        </div>
+                    </div>
                     <ul class="inline-flex items-stretch -space-x-px">
                         <li>
-                            <a href="#" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                <span class="sr-only">Previous</span>
-                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </a>
+                            @if ($vehicles->onFirstPage())
+                                <span
+                                    class="flex text-sm w-20 items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">Previous</span>
+                            @else
+                                <button wire:click="previousPage" wire:loading.attr="disabled"
+                                    class="flex text-sm w-20 items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</button>
+                            @endif
                         </li>
                         <li>
-                            <a href="#" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-                        </li>
-                        <li>
-                            <a href="#" aria-current="page" class="flex items-center justify-center text-sm z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">100</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                <span class="sr-only">Next</span>
-                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </a>
+                            @if ($vehicles->hasMorePages())
+                                <button wire:click="nextPage" wire:loading.attr="disabled"
+                                    class="flex text-sm w-20 items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
+                            @else
+                                <span
+                                    class="flex text-sm w-20 items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">Next</span>
+                            @endif
                         </li>
                     </ul>
                 </nav>

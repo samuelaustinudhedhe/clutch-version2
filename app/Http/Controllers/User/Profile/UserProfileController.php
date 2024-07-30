@@ -17,7 +17,7 @@ class UserProfileController extends Controller
     public function show(Request $request)
     {
         return view(
-            'users.dashboard.profile.show',
+            'user.profile.show',
             [
                 'request' => $request,
                 'user' => $request->user(),
@@ -34,7 +34,7 @@ class UserProfileController extends Controller
     public function nameShow(Request $request)
     {
         return view(
-            'users.pages.profile.name',
+            'user.profile.name',
             [
                 'request' => $request,
                 'user' => $request->user(),
@@ -53,7 +53,7 @@ class UserProfileController extends Controller
     public function dateOfBirthShow(Request $request)
     {
         return view(
-            'users.pages.profile.birthday',
+            'user.profile.birthday',
             [
                 'request' => $request,
                 'user' => $request->user(),

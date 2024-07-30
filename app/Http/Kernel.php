@@ -84,6 +84,7 @@ class Kernel
         'roles' => \App\Http\Middleware\RoleMiddleware::class,
         'permission' => \App\Http\Middleware\PermissionMiddleware::class,
         'permissions' => \App\Http\Middleware\PermissionMiddleware::class,
+        'onboarding' => \App\Http\Middleware\CheckOnboarding::class,
     ];
 
     /**

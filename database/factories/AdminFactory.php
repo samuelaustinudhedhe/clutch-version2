@@ -24,30 +24,41 @@ class AdminFactory extends Factory
      */
     public function definition(): array
     {
-        // Exclude specific roles from the list of available roles for the AdminFactory
-        $excludeRoles = ['SuperAdmin', 'Administrator', 'Accountant'];
-
-        // Fetch roles from the Role model, authorized for admin section, excluding the roles in $excludeRoles
-        $roles = Role::where('guard', 'admin')->whereNotIn('name', $excludeRoles)->get();
-
-        // Convert the roles to an array of slugs
-        $role = $roles->pluck('slug')->toArray();
-
-        // The default attributes for the generated Admin model
         return [
-            'name' => fake()->name(), // Generate a random name
-            'email' => fake()->unique()->safeEmail(), // Generate a unique, random email
-            'email_verified_at' => now(), // Email verification timestamp
-            'phone' => json_encode([
-                'country_code' => fake()->countryCode(),
-                'phone' => fake()->unique()->numberBetween(19500000, 1090000000),
-                'verified_at' => now(), // Phone number is verified
-                
-            ]),// Generate a unique, random phone number
-            'password' => static::$password ?? Hash::make('password'), // Password (use static password or hash a default one)
-            'status' => Arr::random(['active', 'inactive', 'suspended']), // Random status
-            'role' => Arr::random($role), // Assign a random role from the available roles
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'phone' => $this->generatePhone(),
+            'password' => static::$password ?? Hash::make('password'),
+            'status' => Arr::random(['active', 'inactive', 'suspended']),
+            'role' => $this->getRandomRole(),
         ];
+    }
+
+    /**
+     * Generate a random phone number.
+     *
+     * @return string
+     */
+    protected function generatePhone(): string
+    {
+        return json_encode([
+            'country_code' => fake()->countryCode(),
+            'phone' => fake()->unique()->numberBetween(19500000, 1090000000),
+            'verified_at' => now(),
+        ]);
+    }
+
+    /**
+     * Get a random role excluding specific roles.
+     *
+     * @return string
+     */
+    protected function getRandomRole(): string
+    {
+        $excludeRoles = ['SuperAdmin', 'Administrator', 'Accountant'];
+        $roles = Role::where('guard', 'admin')->whereNotIn('name', $excludeRoles)->pluck('slug')->toArray();
+        return Arr::random($roles);
     }
 
     /**

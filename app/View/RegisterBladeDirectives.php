@@ -17,27 +17,8 @@ class RegisterBladeDirectives
     public static function boot()
     {
         self::registerRole();
-        self::registerIs();
-        self::registerCan();
-    }
-
-    /**
-     * Registers the 'is' Blade directive.
-     *
-     * This directive checks if the authenticated user or the authenticated admin
-     * has a specific role.
-     *
-     * @return void
-     */
-    public static function registerIs()
-    {
-        Blade::directive('is', function ($role) {
-            return "<?php if(auth()->check() && (auth()->user()->is($role) || (auth('admin')->check() && auth('admin')->user()->is($role)))): ?>";
-        });
-
-        Blade::directive('endis', function () {
-            return "<?php endif; ?>";
-        });
+        self::registerPermission();
+        self::registerAdminFirewall();
     }
 
     /**
@@ -50,17 +31,39 @@ class RegisterBladeDirectives
      */
     public static function registerRole()
     {
-        Blade::directive('role', function ($role) {
-            return "<?php if(auth()->check() && (auth()->user()->is($role) || (auth('admin')->check() && auth('admin')->user()->is($role)))): ?>";
+        Blade::directive('role', function ($roles) {
+            // Remove parentheses, spaces, and quotes from the roles string, then split it into an array
+            $roles = explode(',', str_replace(['(', ')', ' ', '"', "'"], '', $roles));
+
+            // Create a string of conditions to check if the user or admin has any of the specified roles
+            $rolesCheck = implode(' || ', array_map(function ($role) {
+                return "auth()->user()->is('$role') || (auth('admin')->check() && auth('admin')->user()->is('$role'))";
+            }, $roles));
+
+            // Return the Blade directive for the role check
+            return "<?php if(auth()->check() && ($rolesCheck)): ?>";
+        });
+
+        Blade::directive('notrole', function ($roles) {
+            // Remove parentheses, spaces, and quotes from the roles string, then split it into an array
+            $roles = explode(',', str_replace(['(', ')', ' ', '"', "'"], '', $roles));
+
+            // Create a string of conditions to check if the user or admin does not have any of the specified roles
+            $rolesCheck = implode(' && ', array_map(function ($role) {
+                return "!auth()->user()->is('$role') && (!auth('admin')->check() || !auth('admin')->user()->is('$role'))";
+            }, $roles));
+
+            // Return the Blade directive for the notrole check
+            return "<?php if(auth()->check() && ($rolesCheck)): ?>";
         });
 
         Blade::directive('endrole', function () {
+            // Return the Blade directive to end the role check
             return "<?php endif; ?>";
         });
     }
-
     /**
-     * Registers the 'can' Blade directive.
+     * Registers the 'permission' Blade directive.
      *
      * This directive checks if the authenticated user or the authenticated admin
      * has a specific permission.
@@ -69,12 +72,112 @@ class RegisterBladeDirectives
      */
     public static function registerCan()
     {
-        Blade::directive('can', function ($permission) {
-            return "<?php if(auth()->check() && (auth()->user()->can($permission) || (auth('admin')->check() && auth('admin')->user()->can($permission)))): ?>";
+        Blade::directive('can', function ($permissions) {
+            // Remove parentheses, spaces, and quotes from the permissions string, then split it into an array
+            $permissions = explode(',', str_replace(['(', ')', ' ', '"', "'"], '', $permissions));
+
+            // Create a string of conditions to check if the user or admin has any of the specified permissions
+            $permissionsCheck = implode(' || ', array_map(function ($permission) {
+                return "auth()->user()->can('$permission') || (auth('admin')->check() && auth('admin')->user()->can('$permission'))";
+            }, $permissions));
+
+            // Return the Blade directive for the permission check
+            return "<?php if(auth()->check() && ($permissionsCheck)): ?>";
+        });
+
+        Blade::directive('notcan', function ($permissions) {
+            // Remove parentheses, spaces, and quotes from the permissions string, then split it into an array
+            $permissions = explode(',', str_replace(['(', ')', ' ', '"', "'"], '', $permissions));
+
+            // Create a string of conditions to check if the user or admin does not have any of the specified permissions
+            $permissionsCheck = implode(' && ', array_map(function ($permission) {
+                return "!auth()->user()->can('$permission') && (!auth('admin')->check() || !auth('admin')->user()->can('$permission'))";
+            }, $permissions));
+
+            // Return the Blade directive for the notcan check
+            return "<?php if(auth()->check() && ($permissionsCheck)): ?>";
         });
 
         Blade::directive('endcan', function () {
+            // Return the Blade directive to end the permission check
             return "<?php endif; ?>";
         });
+    }
+
+    /**
+     * Registers the 'permission' Blade directive.
+     *
+     * This directive checks if the authenticated user or the authenticated admin
+     * has a specific permission.
+     *
+     * @return void
+     */
+    public static function registerPermission()
+    {
+        Blade::directive('permission', function ($permissions) {
+            // Remove parentheses, spaces, and quotes from the permissions string, then split it into an array
+            $permissions = explode(',', str_replace(['(', ')', ' ', '"', "'"], '', $permissions));
+
+            // Create a string of conditions to check if the user or admin has any of the specified permissions
+            $permissionsCheck = implode(' || ', array_map(function ($permission) {
+                return "auth()->user()->can('$permission') || (auth('admin')->check() && auth('admin')->user()->can('$permission'))";
+            }, $permissions));
+
+            // Return the Blade directive for the permission check
+            return "<?php if(auth()->check() && ($permissionsCheck)): ?>";
+        });
+
+        Blade::directive('notpermission', function ($permissions) {
+            // Remove parentheses, spaces, and quotes from the permissions string, then split it into an array
+            $permissions = explode(',', str_replace(['(', ')', ' ', '"', "'"], '', $permissions));
+
+            // Create a string of conditions to check if the user or admin does not have any of the specified permissions
+            $permissionsCheck = implode(' && ', array_map(function ($permission) {
+                return "!auth()->user()->can('$permission') && (!auth('admin')->check() || !auth('admin')->user()->can('$permission'))";
+            }, $permissions));
+
+            // Return the Blade directive for the notpermission check
+            return "<?php if(auth()->check() && ($permissionsCheck)): ?>";
+        });
+
+        Blade::directive('endpermission', function () {
+            // Return the Blade directive to end the permission check
+            return "<?php endif; ?>";
+        });
+    }
+
+    /**
+     * Registers the 'adminfirewall' Blade directive.
+     *
+     * This directive checks if the authenticated user is an admin.
+     * If not, it redirects to the previous URL after 5 seconds and shows a 501 error.
+     *
+     * @return void
+     */
+    public static function registerAdminFirewall()
+    {
+        Blade::directive('adminfirewall', function () {
+            $command = self::handleAdminFirewall();
+            return "<?php $command  ?>";
+        });
+    }
+
+    public static function handleAdminFirewall()
+    {
+        if (!auth('admin')->check()) { 
+            if (url()->previous() !== url()->current()) {
+                header('Refresh: 5; url=' . url()->previous()); 
+            } else {
+                if (auth()->check()) {
+                    header('Refresh: 5; url=' . url('/user/dashboard'));
+                        error(404);
+                        die;
+                } else {
+                    header('Refresh: 5; url=' . url('/'));
+                }
+            }
+            error(501); 
+            exit(501); 
+        }
     }
 }

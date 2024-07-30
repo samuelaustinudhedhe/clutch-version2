@@ -45,7 +45,7 @@ trait Attachments
      */
     public function image()
     {
-        $image = $this->gallery()->where('ping', true)->first();
+        $image = $this->gallery()->where('is_featured', true)->first();
         return $image->url ?? $this->placeHolder();
     }
 
@@ -133,7 +133,7 @@ trait Attachments
         return $this->attachments()->create([
             'name' => $author->name . '\'s ' . basename(Storage::disk('public')->path($file)),
             'status' => 'active',
-            'ping' => true,
+            'is_featured' => true,
             'metadata' => [
                 'size' => filesize($file),
                 'dimension' => [

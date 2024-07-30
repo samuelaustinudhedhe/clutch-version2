@@ -237,6 +237,14 @@
                             </tr>
                         @endforeach
 
+                        {{-- If no Permission is found --}}
+                        @if ($permissions->isEmpty())
+                            <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <td class="px-4 py-6 text-center text-md font-medium text-gray-900 whitespace-nowrap dark:text-white" colspan="10">
+                                    {{ __('There are no Permissions found at this time') }}
+                                </td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>

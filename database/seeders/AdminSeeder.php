@@ -43,6 +43,6 @@ class AdminSeeder extends Seeder
             ]);
         }
         // Create 20 admin users
-        Admin::factory(20)->create();
+        Admin::factory(2)->create();
     }
 }

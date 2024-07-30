@@ -7,64 +7,21 @@ use Illuminate\Http\Request;
 
 class ErrorPageController extends PageController
 {
- /**
-     * Display the 404 error page.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function notFound()
-    {
-        return view('errors.404');
-    }
-
     /**
-     * Display the 503 error page.
+     * Display the error page based on the provided error code.
      *
+     * @param int $code The HTTP status code to display.
      * @return \Illuminate\View\View
      */
-    public function serviceUnavailable()
+    public function showErrorPage($code)
     {
-        return view('errors.503');
-    }
+        $view = "pages.errors.{$code}";
 
-    /**
-     * Display the 419 error page.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function pageExpired()
-    {
-        return view('errors.419');
-    }
+        if (view()->exists($view)) {
+            return view($view);
+        }
 
-    /**
-     * Display the 500 error page.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function serverError()
-    {
-        return view('errors.500');
+        // Fallback to a generic error page if the specific error view does not exist
+        return view('pages.errors.generic', ['code' => $code]);
     }
-
-    /**
-     * Display the 403 error page.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function forbidden()
-    {
-        return view('errors.403');
-    }
-
-    /**
-     * Display the 401 error page.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function unauthorized()
-    {
-        return view('errors.401');
-    }
-
 }
