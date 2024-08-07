@@ -80,23 +80,31 @@
                         <a href="#"
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
-                                <img class="w-11 h-11 rounded-full"
-                                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
-                                    alt="Jese Leos avatar" />
-                                <div
-                                    class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-gray-900 rounded-full border border-white dark:border-gray-700">
-                                    <svg aria-hidden="true" class="w-3 h-3 text-white" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z">
-                                        </path>
-                                    </svg>
-                                </div>
+                                @isset($notifcation->data['image_url'])
+                                    
+                                    <img class="w-11 h-11 rounded-full"
+                                        src="{{ $notification->data['image_url'] }}"
+                                        alt="Notification image for {{ $notification->data['title'] }}" />
+                                    <div
+                                        class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-gray-900 rounded-full border border-white dark:border-gray-700">
+                                        <svg aria-hidden="true" class="w-3 h-3 text-white" fill="currentColor"
+                                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z">
+                                            </path>
+                                        </svg>
+                                    </div>                                
+                                @endisset
+
                             </div>
                             <div class="pl-3 w-full">
                                 <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400">
+                                    @isset( $notification->data['title'] )
+                                    {{ $notification->data['title'] }}
+                                    @endisset
+                                    @isset( $notification->data['message'] )
                                     {{ $notification->data['message'] }}
-                                    <p>Read: {{ $notification->read_at ? 'Yes' : 'No' }}</p>
+                                    @endisset
                                 </div>
                                 <div class="text-xs font-medium text-primary-600 dark:text-primary-500">
                                     {{ $notification->updated_at->diffForHumans() }}

@@ -45,6 +45,14 @@ class PermissionSeeder extends Seeder
             ['name' => 'Manage Comments', 'slug' => 'manage_comments', 'roles' => ['moderator', 'editor', 'administrator', 'superadmin']],
             ['name' => 'Manage Invoices', 'slug' => 'manage_invoices', 'roles' => ['accountant', 'administrator', 'superadmin']],
             ['name' => 'View Financial Reports', 'slug' => 'view_financial_reports', 'roles' => ['accountant', 'administrator', 'superadmin']],
+            //Vehicles and related permissions
+            ['name' => 'Add Vehicles', 'slug' => 'add_vehicles', 'roles' => ['administrator', 'superadmin', 'owner']],
+            ['name' => 'Delete Vehicles', 'slug' => 'delete_vehicles', 'roles' => ['administrator', 'superadmin', 'owner']],
+            ['name' => 'Edit Vehicles', 'slug' => 'edit_vehicles', 'roles' => ['administrator', 'superadmin', 'owner']],
+            ['name' => 'Manage Vehicles', 'slug' => 'manage_vehicles', 'roles' => ['administrator', 'superadmin', 'owner']],
+            ['name' => 'Read Posts', 'slug' => 'read_posts', 'roles' => ['subscriber', 'administrator', 'author', 'owner', 'moderator', 'support', 'accountant', 'driver', 'superadmin']],
+            ['name' => 'Edit Own Posts', 'slug' => 'edit_own_posts', 'roles' => ['author', 'owner', 'administrator', 'superadmin']],
+            ['name' => 'Delete Own Posts', 'slug' => 'delete_own_posts', 'roles' => ['author', 'owner', 'administrator', 'superadmin']],
         ];
 
         // Iterate over each permission and process it

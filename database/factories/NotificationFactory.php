@@ -27,9 +27,10 @@ class NotificationFactory extends Factory
             'notifiable_id' => $notifiable->id,
             'notifiable_type' => $notifiable->getMorphClass(),
             'data' => json_encode([
-                'title' => $this->faker->title(),
+                'title' => $this->faker->text(60),
                 'message' => $this->faker->text(200),
                 'action'=> $this->faker->url(),
+                'image_url' => $this->faker->imageUrl(),
             ]),
             'read_at' => null,
             'created_at' => now(),

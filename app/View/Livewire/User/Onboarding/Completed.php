@@ -10,7 +10,7 @@ class Completed extends Component
         
         $this->dispatch('onboarding-completed');
     }
-
+    
     public function render()
     {
         return view('user.onboarding.completed');

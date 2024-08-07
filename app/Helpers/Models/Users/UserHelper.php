@@ -25,7 +25,7 @@ if (!function_exists('getUser')) {
         if ($attribute) {
             return $user->$attribute ?? null;
         }
-        return $user;
+        return $user ?? null;
     }
 }
 
@@ -51,7 +51,7 @@ if (!function_exists('getUserMeta')) {
         $user = getUser();
 
         // Return current user metadata
-        return getMetaData($user, $key);
+        return getMetaData($user, $key) ?? null;
     }
 }
 
@@ -86,6 +86,106 @@ function getUserPP($full = false, string $class = '', $fallback = true, bool $ec
     }
 }
 
+if (!function_exists('getUserPhone')) {
+
+    /**
+     * Retrieves the user's phone number based on the specified type.
+     *
+     * @param bool $code Whether to include the country code in the output. Default is true.
+     * @param bool $format Whether to format the phone number. Default is false.
+     * @param bool $echo Whether to echo the phone number or return it as a string. Default is false.
+     * @param string $type The type of phone number to retrieve (e.g., 'work', 'home'). Default is 'work'.
+     * @return string|null The formatted phone number as a string, or null if the phone number does not exist.
+     */
+    function getUserPhone(bool $code = true, bool $format = false, bool $echo = false, string $type = 'work')
+    {
+        // Get the user's phone metadata
+        $phone = getUserMeta('phone');
+
+        // Check if the specified phone type exists
+        if (!isset($phone->$type)) {
+            return null;
+        }
+
+        // Retrieve the phone type details
+        $phoneType = $phone->$type;
+        // Get the country code
+        $countryCode = $phoneType->country_code;
+        // Get the phone number
+        $number = $phoneType->number;
+
+        // Construct the output by combining the country code and phone number
+        $output = (empty($countryCode)) ? $number : '+' . $countryCode . $number;
+
+        // If formatting is requested, format the phone number
+        if ($format) {
+            // Format the number as XXXX XXX XXXX
+            $number = preg_replace('/(\d{4})(\d{3})(\d{4})/', '$1 $2 $3', $number);
+            // Construct the output with formatted number
+            $output = (empty($countryCode) || $code == false) ? $number : '+(' . $countryCode . ') ' . $number;
+        }
+
+        // If echo is requested, echo the output
+        if ($echo) {
+            echo $output;
+        }
+
+        // Return the output as a string
+        return $output ?? null;
+    }
+}
+
+if (!function_exists('getUserAddress')) {
+    /**
+     * Retrieves the full address of the currently authenticated user.
+     *
+     * @param string $type The type of address to retrieve (e.g., 'home', 'work'). Default is 'home'.
+     * @return string|null The full address of the user, or null if the address details are not available.
+     */
+    /**
+     * Retrieves the full address of the currently authenticated user.
+     *
+     * @param string $type The type of address to retrieve (e.g., 'home', 'work'). Default is 'home'.
+     * @param string $format The format in which to return the address. Default is '{street}, {unit}, {city}, {state}, {country}, {postal_code}'.
+     * @param array $exclude The parts of the address to exclude (e.g., ['unit', 'country']). Default is an empty array.
+     * @return string|null The formatted full address of the user, or null if the address details are not available.
+     */
+    function getUserAddress($type = 'home', $format = 'unit, street, city, state, country, postal_code', $exclude = [])
+    {
+        // Get the user's address metadata
+        $address = getUserMeta('address');
+
+        // Check if the address details exist for the specified type
+        if (!isset($address->$type)) {
+            return null;
+        }
+
+        // Construct the full address
+        $addressDetails = $address->$type;
+        $addressParts = [
+            'street' => $addressDetails->street,
+            'unit' => $addressDetails->unit,
+            'city' => $addressDetails->city,
+            'state' => $addressDetails->state,
+            'country' => $addressDetails->country,
+            'postal_code' => $addressDetails->postal_code,
+        ];
+
+        // Remove excluded parts from the address
+        foreach ($exclude as $part) {
+            $placeholder = '{' . $part . '}';
+            if (isset($addressParts[$placeholder])) {
+                unset($addressParts[$placeholder]);
+            }
+        }
+
+        // Format the address
+        $fullAddress = str_replace(array_keys($addressParts), array_values($addressParts), $format);
+
+        // Return the formatted full address
+        return $fullAddress;
+    }
+}
 /**
  * Retrieves the user with a specific role.
  *
@@ -101,9 +201,9 @@ function getUserByRole(string $role)
     if (!$role) {
         return null;
     }
-    $users = User::search('role', $role->slug)->get();
+    $users = User::where('role', $role->slug)->get();
 
-    return $users;
+    return $users ?? null;
 }
 
 /**

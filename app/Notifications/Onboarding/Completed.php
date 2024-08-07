@@ -31,7 +31,10 @@ class Completed extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => 'Congratulations! You have completed the onboarding process.',
+            'title' => ' Welcome onboard',
+            'message' => 'Congratulations! You have completed the onboarding process. You are now a verified user.',
         ];
     }
+
+    
 }

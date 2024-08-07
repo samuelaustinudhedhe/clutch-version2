@@ -31,7 +31,8 @@ class Skipped extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => 'You have skipped the onboarding process.',
+            'title' => 'Onboarding Skipped',
+            'message' => 'You have skipped the onboarding process. Resume it to complete you account verification',
         ];
     }
 }

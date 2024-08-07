@@ -1,9 +1,8 @@
 {{-- resources/views/layouts/user.blade.php  --}}
-<x-app-layout class="user-dashboard-layout">
+<x-app-layout>
     {{-- @userfirewall --}}
     @auth('web')
         <div class="antialiased bg-gray-50 dark:bg-gray-900">
-            @include('layouts.partials.session-flash')
             <header>
                 <livewire:user-header />
             </header>
@@ -11,13 +10,15 @@
             <livewire:user-sidebar />
 
             {{-- content --}}
-            <main class="p-4 md:ml-64 h-auto pt-20">
-                {{ $slot }}
+            <main class="md:ml-64">
+                <div class="text-gray-900 dark:text-gray-100 xl:min-h-[calc(100vh-97px)] sm:min-h-[calc(100vh-81px)] min-h-[calc(100vh-101px)] pt-20">
+                    {{ $slot }}
+
+                </div>
+                {{-- Footer --}}
+                <livewire:user-footer />
             </main>
 
-            <footer>
-                <livewire:user-footer />
-            </footer>
         </div>
     @endauth
 </x-app-layout>

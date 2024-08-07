@@ -2,38 +2,44 @@
 
 namespace App\View\Livewire\User\Onboarding;
 
-use App\Models\Role;
-use App\Models\User;
 use App\Notifications\Onboarding\Completed;
 use App\Notifications\Onboarding\Skipped;
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
-class Show extends Component
+class Layout extends Component
 {
     public $step = 0;
     public $role;
     public $user;
 
-    protected $rules = [
-        'role' => 'required|exists:roles,slug',
-    ];
-
-    public function mount(){
+    /**
+     * Initialize the component by setting the user property.
+     * 
+     * This method is called when the component is mounted. It retrieves the current user
+     * and assigns it to the user property of the component.
+     * 
+     * @return void
+     */
+    public function mount()
+    {
         $this->user = getUser();
     }
+    
     /**
      * Check and update the current step based on the user's role.
      */
     public function checkSteps()
     {
         if (auth()->user()->role !== 'subscriber' && ($this->step == 0 || $this->step == 1)) {
-            $this->step = 2;
+            //    $this->step = 2;
         }
     }
 
     /**
      * Move to the next step in the onboarding process.
+     * 
+     * @return void
      */
     #[On('onboarding-next-step')]
     public function nextStep()
@@ -44,6 +50,8 @@ class Show extends Component
 
     /**
      * Move to the previous step in the onboarding process.
+     * 
+     * @return void
      */
     #[On('onboarding-prev-step')]
     public function prevStep()
@@ -54,6 +62,8 @@ class Show extends Component
 
     /**
      * Complete the onboarding process.
+     * 
+     * @return \Illuminate\Http\RedirectResponse Redirects to the user dashboard with a completion message.
      */
     #[On('onboarding-completed')]
     public function completeOnboarding()
@@ -72,56 +82,29 @@ class Show extends Component
 
     /**
      * Skip the onboarding process.
+     * 
+     * @return \Illuminate\Http\RedirectResponse Redirects to the user dashboard with a skip message.
      */
     #[On('onboarding-skip')]
     public function skipOnboarding()
     {
+        // Update the user's onboarding status
         $this->user->forceFill([
             'boarding->status' => 'skipped',
             'boarding->step' => $this->step,
             'boarding->restart_at' => now()->addDays(2),
             'boarding->completed_at' => '',
         ])->save();
+
+        // Notify the user about the skipped onboarding process 
         $this->user->notify(new Skipped());
+
         // Redirect to the user dashboard after skipping the onboarding process
         return redirect()->route('user.dashboard')->with('info', 'You have skipped the onboarding process.');
     }
 
-    /**
-     * Validate the selected role.
-     *
-     * @return bool
-     */
-    public function validateRole(): bool
-    {
-        $role = Role::where('slug', $this->role)->where('guard', 'web')->first();
-        return $role !== null;
-    }
-
-    /**
-     * Update the user's role and move to the next step.
-     */
-    public function updateRole()
-    {
-        $this->validate();
-
-        if ($this->validateRole()) {
-            $this->user->role = $this->role;
-            $this->user->save();
-
-            $this->nextStep();
-        } else {
-            $this->addError('role', 'Invalid selection.');
-        }
-    }
-
-    /**
-     * Render the onboarding view.
-     *
-     * @return \Illuminate\View\View
-     */
     public function render()
     {
-        return view('user.onboarding.show');
+        return view('user.onboarding.layout');
     }
 }

@@ -19,12 +19,15 @@
         @livewireStyles
     </head>
     <body class="font-sans text-gray-900 dark:text-gray-100 antialiased">
-        
+        {{-- Notification --}}
+        @include('layouts.partials.session-flash')
+
         {{-- Header Content--}}        
         <header>
             {{-- Add your navigation or header content here --}}
             @include('layouts.partials.header')
         </header>
+
         {{-- Main Page Content --}}
         <main>
             {{ $slot }}

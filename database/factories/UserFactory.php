@@ -31,33 +31,14 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'phone' => $this->generatePhone(),
             'password' => static::$password ??= Hash::make('password'),
-            'two_factor_secret' => null,
-            'two_factor_recovery_codes' => null,
-            'remember_token' => Str::random(10),
-            'profile_photo_path' => null,
-            'current_team_id' => null,
-            'status' => Arr::random(['active', 'inactive', 'suspended']),
+            'status' => Arr::random(['active', 'inactive', 'suspended', 'onboarding']),
             'rating' => Arr::random(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.2', '4.5', '4.6', '4.7', '4.8', '5.0']),
             'role' => $this->getRandomRole(),
+            'details' => $this->generateDetails(),
         ];
     }
 
-    /**
-     * Generate a random phone number.
-     *
-     * @return string
-     */
-    protected function generatePhone(): string
-    {
-        return json_encode([
-            'country_code' => fake()->countryCode(),
-            'phone' => fake()->unique()->numberBetween(19500000, 1090000000),
-            'verified_at' => now(),
-        ]);
-    }
 
     /**
      * Get a random role excluding specific roles.
@@ -73,6 +54,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the model's email address should be unverified.
+     *
+     * @return static
      */
     public function unverified(): static
     {
@@ -82,7 +65,86 @@ class UserFactory extends Factory
     }
 
     /**
+     * Generate user details.
+     *
+     * @return string
+     */
+    public function generateDetails()
+    {
+        return json_encode([
+            'phone' => [
+                'work' => $this->generatePhone(),
+                'home' => $this->generatePhone(),
+            ],
+            'date_of_birth' => fake()->date(max: '2006-12-31'),
+            'gender' => Arr::random(['Male', 'Female', 'Prefer not to say']),
+            'address' => $this->generateAddress(),
+            'social' => $this->generateSocialLinks(),
+        ]);
+    }
+
+    /**
+     * Generate a random phone number.
+     *
+     * @return array
+     */
+    protected function generatePhone()
+    {
+        return [
+            'country_code' => fake()->countryCode(),
+            'number' => fake()->unique()->numberBetween(19500000, 1090000000),
+            'verified_at' => now(),
+        ];
+    }
+
+    /**
+     * Generate a random address.
+     *
+     * @return array
+     */
+    public function generateAddress()
+    {
+        return [
+            'home' => [
+                'street' => fake()->streetAddress,
+                'unit' => fake()->buildingNumber,
+                'city' => fake()->city,
+                'state' => fake()->state,
+                'country' => fake()->country,
+                'postal_code' => fake()->postcode,
+            ],
+            'work' => [
+                'street' => fake()->streetAddress,
+                'unit' => fake()->buildingNumber,
+                'city' => fake()->city,
+                'state' => fake()->state,
+                'country' => fake()->country,
+                'postal_code' => fake()->postcode,
+            ],
+            // Add others as needed
+        ];
+    }
+
+    /**
+     * Generate social media links.
+     *
+     * @return array
+     */
+    public function generateSocialLinks()
+    {
+        return [
+            'facebook' => 'https://facebook.com/' . fake()->userName,
+            'instagram' => 'https://instagram.com/' . fake()->userName,
+            'x' => 'https://x.com/' . fake()->userName,
+            'linkedin' => 'https://linkedin.com/' . fake()->userName,
+        ];
+    }
+
+    /**
      * Indicate that the user should have a personal team.
+     *
+     * @param callable|null $callback
+     * @return static
      */
     public function withPersonalTeam(callable $callback = null): static
     {

@@ -6,7 +6,7 @@ use Laravel\Jetstream\Http\Controllers\TeamInvitationController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Jetstream\Jetstream;
 
-Route::prefix('user')->name('user.')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(function () {
+Route::prefix('user')->name('user.')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'onboarding'])->group(function () {
     Route::group(['middleware' => 'verified'], function () {
         if (Jetstream::hasTeamFeatures()) {
             Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');

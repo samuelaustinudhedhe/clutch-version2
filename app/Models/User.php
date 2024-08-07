@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Traits\Attachments;
+use App\Traits\HasDetails;
 use App\Traits\HasRolesAndPermissions;
 use App\Traits\Onboarding;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,10 +21,13 @@ class User extends Authenticatable
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
+    use HasDetails;
     use TwoFactorAuthenticatable;
     use HasRolesAndPermissions;
     use Attachments;
     use Onboarding;
+
+
 
     /**
      * The attributes that are mass assignable.
@@ -38,10 +42,7 @@ class User extends Authenticatable
         'role',
         'status',
         'rating',
-        'gender',
-        'date_of_birth',
-        'address',
-        'social'
+        'details'
     ];
 
     /**
@@ -69,18 +70,13 @@ class User extends Authenticatable
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'social' => 'object',
-            'address' => 'object',
-            'date_of_birth' => 'date'
-            // 'roles' => 'array',
-        ];
-    }
+     */ protected $casts = [
+
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'details' => 'object',
+        'verification' => 'array',
+    ];
 
     /**
      * Get the color associated with the user's role.
@@ -113,6 +109,7 @@ class User extends Authenticatable
         return [
             'active' => 'green',
             'suspended' => 'red',
+            'deleted' => 'red',
         ][$this->status] ?? 'gray'; // Default to 'gray' if status doesn't match
     }
 
@@ -129,6 +126,4 @@ class User extends Authenticatable
 
         return $socialLogos;
     }
-
-    
 }

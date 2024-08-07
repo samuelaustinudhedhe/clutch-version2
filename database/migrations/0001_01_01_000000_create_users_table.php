@@ -16,23 +16,34 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->json('phone')->nullable();
             $table->string('password');
             $table->string('status')->default('inactive'); // user status (active or inactive or suspended)
             $table->float('rating')->default(0);
             $table->rememberToken();
-            $table->date('date_of_birth')->nullable(); // user status (active or inactive or suspended)
-            $table->string('gender')->nullable();
-            $table->json('address')->nullable();
-            $table->json('social')->nullable();
-            $table->foreignId('current_team_id')->nullable();
-            $table->string('profile_photo_path', 2048)->nullable();
+            $table->json('details')->default(json_encode([
+                'phone' => [
+                    'work' => ['country_code' => '', 'number' => '', 'verified_at' => null],
+                    'home' => ['country_code' => '', 'number' => '', 'verified_at' => null]
+                ],
+                'date_of_birth' => null,
+                'gender' => 'Rather not say',
+                'address' => null,
+                'social' => null,
+            ]));
+
+            //$table->foreignId('current_team_id')->nullable();
             $table->json('boarding')->default(json_encode([
                 'status' => 'start',
                 'step' => 0,
                 'restart_at' => '',
                 'completed_at' => '',
-            ])); // user onboarding true or false
+            ]));
+            $table->json('verification')->default(json_encode([
+                'verified' => false,
+                'verified_at' => null,
+                'verified_status' => 'pending', // pending, approved, rejected
+            ]));       
+            $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
         });
 

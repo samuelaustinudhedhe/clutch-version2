@@ -151,7 +151,7 @@
                                 </th>
                                 <td class="px-4 py-3 max-w-sm">
                                     @php
-                                        aggregateUserData(collect($role->permissions), 0, 4, $role_permissions, $permissions_count);
+                                        aggregateUserData(output:$role_permissions, count:$permissions_count, input:collect($role->permissions));
 
                                     @endphp
                                     @foreach ($role_permissions as $permission)
@@ -174,7 +174,7 @@
                                     <div class="flex -space-x-4 w-28">
                                         @php
                                             $users = getUsersByRole($role->slug);
-                                            aggregateUserData($users, 0, 4, $users, $count);
+                                            aggregateUserData(output:$users, count:$count, input:$users);
 
                                         @endphp
                                         @foreach ($users as $user)

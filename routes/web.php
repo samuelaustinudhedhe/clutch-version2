@@ -15,18 +15,18 @@ Route::get('/csrf-token', function () {
     return response()->json(['token' => csrf_token()]);
 });
 
-Route::middleware(['auth:admin'])->group(function () {
-    Route::post('/roles/{role}/assign-permission', [RolePermissionController::class, 'assignPermission'])->name('roles.assign-permission');
-    Route::post('/roles/{role}/remove-permission', [RolePermissionController::class, 'removePermission'])->name('roles.remove-permission');
-});
+// Route::middleware(['auth:admin'])->group(function () {
+//     Route::post('/roles/{role}/assign-permission', [RolePermissionController::class, 'assignPermission'])->name('roles.assign-permission');
+//     Route::post('/roles/{role}/remove-permission', [RolePermissionController::class, 'removePermission'])->name('roles.remove-permission');
+// });
 
 
 
-Route::middleware(['auth', 'role:administrator||SuperAdmin'])->group(function () {
-    Route::get('/admin-dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-});
+// Route::middleware(['auth', 'role:administrator||SuperAdmin'])->group(function () {
+//     Route::get('/admin-dashboard', function () {
+//         return view('admin.dashboard');
+//     })->name('admin.dashboard');
+// });
 
 
 

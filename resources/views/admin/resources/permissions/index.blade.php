@@ -174,7 +174,7 @@
                                     <div class="flex -space-x-4 w-28">
                                         @php
                                             $users = getUsersByRole($permission->roles);
-                                            aggregateUserData($users, 0, 4, $users, $count);
+                                            aggregateUserData(output:$users, count:$count, input:$users);
 
                                         @endphp
                                         @foreach ($users as $user)

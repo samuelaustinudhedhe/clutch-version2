@@ -144,7 +144,7 @@ function getWordFromString($string, $position)
  * 
  * @return void This function does not return a value. It modifies the $output and $count parameters by reference.
  */
-function aggregateUserData($input, int $offset = 0, int $limit = 4, &$output, &$count)
+function aggregateUserData(&$output, &$count, $input, int $offset = 0, int $limit = 4)
 {
     // Extract the total number of users from the input collection
     $totalUsers = $input->count();

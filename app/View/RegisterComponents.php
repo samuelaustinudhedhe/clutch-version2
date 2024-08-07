@@ -30,6 +30,7 @@ class RegisterComponents
      */
     public static function registerAdminComponents()
     {
+        // Livewire components for admin interface
         Livewire::component('admin-header', \App\View\Livewire\Admin\Partials\Header::class);
         Livewire::component('admin-footer', \App\View\Livewire\Admin\Partials\Footer::class);
         Livewire::component('admin-sidebar', \App\View\Livewire\Admin\Partials\Sidebar::class);
@@ -38,6 +39,9 @@ class RegisterComponents
 
         Livewire::component('admin-profile', \App\View\Livewire\Admin\Profile::class);
         Livewire::component('admin-Dashboard', \App\View\Livewire\Admin\Dashboard::class);
+
+        //Regular components for admin interface
+
     }
 
     /**
@@ -47,11 +51,13 @@ class RegisterComponents
      */
     public static function registerUserComponents()
     {
-        Livewire::component('user-header', \App\View\Livewire\user\Partials\Header::class);
-        Livewire::component('user-footer', \App\View\Livewire\user\Partials\Footer::class);
-        Livewire::component('user-sidebar', \App\View\Livewire\user\Partials\Sidebar::class);
-        
-        Livewire::component('user-profile', \App\View\Livewire\user\Profile::class);
-        Livewire::component('user-Dashboard', \App\View\Livewire\user\Dashboard::class);
+        // Livewire components for user interface
+        Livewire::component('user-header', \App\View\Livewire\User\Partials\Header::class);
+        Livewire::component('user-footer', \App\View\Livewire\User\Partials\Footer::class);
+        Livewire::component('user-sidebar', \App\View\Livewire\User\Partials\Sidebar::class);
+        Livewire::component('user-profile', \App\View\Livewire\User\Profile::class);
+        Livewire::component('user-dashboard', \App\View\Livewire\User\Dashboard::class);
+
+        // Regular components for user interface
     }
 }

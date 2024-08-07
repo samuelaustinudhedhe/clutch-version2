@@ -10,7 +10,7 @@ class RegisterBladeDirectives
      * Bootstraps the registration of custom Blade directives.
      *
      * This method initializes the registration of custom Blade directives
-     * for role, is, and can checks.
+     * for custom directives.
      *
      * @return void
      */
@@ -18,7 +18,9 @@ class RegisterBladeDirectives
     {
         self::registerRole();
         self::registerPermission();
-        self::registerAdminFirewall();
+        self::registerAdminFirewall(); //Admin FireWall 🔥 directive
+        self::registerDarkMode(); // Register the darkModeSwitch directive
+
     }
 
     /**
@@ -162,22 +164,53 @@ class RegisterBladeDirectives
         });
     }
 
+    /**
+     * Handles the admin firewall check.
+     *
+     * This function checks if the authenticated user is an admin. If not, it redirects
+     * the user to the previous URL or a default URL after 5 seconds and shows an error.
+     *
+     * @return void
+     */
     public static function handleAdminFirewall()
     {
-        if (!auth('admin')->check()) { 
+        if (!auth('admin')->check()) {
             if (url()->previous() !== url()->current()) {
-                header('Refresh: 5; url=' . url()->previous()); 
+                header('Refresh: 5; url=' . url()->previous());
             } else {
                 if (auth()->check()) {
                     header('Refresh: 5; url=' . url('/user/dashboard'));
-                        error(404);
-                        die;
+                    error(404);
+                    die;
                 } else {
                     header('Refresh: 5; url=' . url('/'));
                 }
             }
-            error(501); 
-            exit(501); 
+            error(501);
+            exit(501);
         }
     }
+
+    /**
+     * Registers the 'darkMode' Blade directive.
+     *
+     * This directive outputs the dark mode  component.
+     *
+     * @return void
+     */
+    public static function registerDarkMode()
+    {
+        Blade::directive('darkModeSwitch', function () {
+            return "<?php echo darkModeSwitch(); ?>";
+        });
+
+        Blade::directive('darkModeButton', function () {
+            return "<?php echo darkModeButton(); ?>";
+        });
+
+        Blade::directive('darkModeModal', function () {
+            return "<?php echo darkModeModal(); ?>";
+        });
+    }
+
 }

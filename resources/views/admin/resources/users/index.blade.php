@@ -196,7 +196,7 @@
 
                                         @php
                                             $socialLinks = json_decode($user->social, true);
-                                            aggregateUserData(collect($socialLinks), 0, 4, $socials, $socialCount);
+                                            aggregateUserData(output:$socials, count:$socialCount, input:collect($socialLinks));
                                             $socialLogos = $user->social_logo;
                                         @endphp
                                         @if($socials)

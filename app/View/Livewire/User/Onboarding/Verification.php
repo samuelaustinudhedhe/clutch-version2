@@ -4,7 +4,7 @@ namespace App\View\Livewire\User\Onboarding;
 
 use Livewire\Component;
 
-class Step3 extends Component
+class Verification extends Component
 {
     public $preferences = [
         'notifications' => true,
@@ -26,6 +26,6 @@ class Step3 extends Component
 
     public function render()
     {
-        return view('user.onboarding.step3');
+        return view('user.onboarding.verification');
     }
 }

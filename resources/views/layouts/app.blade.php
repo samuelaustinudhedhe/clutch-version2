@@ -19,6 +19,8 @@
     </head>
 
     <body class="h-full font-sans antialiased">
+        {{-- Toasts --}}
+        @livewire('toast.notify')
         {{-- Page Content Start --}}
         {{ $slot }}
         {{-- Page Conent End --}}
