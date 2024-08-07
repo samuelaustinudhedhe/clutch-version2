@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();            
             $table->string('name');            
             $table->string('slug')->unique();
+            // $table->string('vin')->unique();
             $table->text('description');
             $table->float('rating')->default(0);
             $table->json('price')->nullable();
             $table->string('status')->default('active');
-// add vin number of vehicles
             $table->string('type');            
             $table->json('location');
             $table->json('details')->nullable();

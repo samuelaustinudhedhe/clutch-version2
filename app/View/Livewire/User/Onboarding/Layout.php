@@ -25,7 +25,7 @@ class Layout extends Component
     {
         $this->user = getUser();
     }
-    
+
     /**
      * Check and update the current step based on the user's role.
      */
@@ -88,16 +88,19 @@ class Layout extends Component
     #[On('onboarding-skip')]
     public function skipOnboarding()
     {
-        // Update the user's onboarding status
-        $this->user->forceFill([
-            'boarding->status' => 'skipped',
-            'boarding->step' => $this->step,
-            'boarding->restart_at' => now()->addDays(2),
-            'boarding->completed_at' => '',
-        ])->save();
+        // Check if the user's onboarding status is already 'skipped'
+        if ($this->user->boarding->status !== 'skipped') {
+            // Update the user's onboarding status
+            $this->user->forceFill([
+                'boarding->status' => 'skipped',
+                'boarding->step' => $this->step,
+                'boarding->restart_at' => now()->addDays(2),
+                'boarding->completed_at' => '',
+            ])->save();
 
-        // Notify the user about the skipped onboarding process 
-        $this->user->notify(new Skipped());
+            // Notify the user about the skipped onboarding process 
+            $this->user->notify(new Skipped());
+        }
 
         // Redirect to the user dashboard after skipping the onboarding process
         return redirect()->route('user.dashboard')->with('info', 'You have skipped the onboarding process.');

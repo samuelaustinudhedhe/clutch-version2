@@ -1,13 +1,13 @@
 <div class="-mt-4">
-    <x-div class="!py-4 flex justify-between items-center">
-        <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
-            <h1 class="text-2xl font-bold">My Vehicles </h1>
-            <div class="w-full md:w-1/2">
+    <x-div class="!py-6 flex justify-between items-center">
+        <div class="flex items-center w-4/6 max-w-xl space-x-8 ">
+            <h1 class="text-xl xl:text-2xl font-bold whitespace-nowrap">My Vehicles </h1>
+            <div class=" w-full max-w-sm">
                 <x-search wire:model="search" placeholder="Search vehicles..." />
             </div>
         </div>
 
-        <div>
+        <div class="flex items-center justify-end space-x-8 ">
             <a type="button"
                 class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                 <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"

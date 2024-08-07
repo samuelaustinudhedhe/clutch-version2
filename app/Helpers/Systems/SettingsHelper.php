@@ -110,7 +110,7 @@ if (!function_exists('app_logo')) {
     function app_logo(bool $echo = false)
     {
         $setting = DB::table('settings')->where('key', 'app_logo')->first();
-        $data = $setting ? $setting->value : asset('images/default-logo.png'); // Fallback to a default logo
+        $data = $setting ? $setting->value : '/assets/images/logos/clutch.png'; // Fallback to a default logo
 
         if ($echo) {
             echo "<img src='{$data}' alt='" . app_name(false) . "' height='34'>";

@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold">Your Role</p>
+                    <p class="text-sm font-semibold">Your Goal</p>
                     <p class="text-sm text-gray-600 dark:text-gray-400">What do you want to do</p>
                 </div>
             </li>
@@ -179,7 +179,7 @@
                 @break
 
                 @case(4)
-                    @livewire('user.onboarding.verification')
+                    @livewire('user.onboarding.kyc')
                 @break
 
                 @default

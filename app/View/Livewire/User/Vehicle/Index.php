@@ -8,6 +8,7 @@ use Livewire\Component;
 class Index extends Component
 {
     public $vehicles;
+    public $owner; # Current owner details
 
     ##Filters##
     public $search; # Search query for filtering vehicles
@@ -19,6 +20,7 @@ class Index extends Component
 
     public function mount()
     {
+        $this->owner = getUser();
     }
 
     public function updatedSelectAll($value)
@@ -39,10 +41,11 @@ class Index extends Component
 
     public function render()
     {
-        $vehicles = Vehicle::search('name', $this->search)->paginate($this->perPage);
+        $vehicles = Vehicle::search('name', $this->search)->whereJsonContains('owner', ['id' => $this->owner->id, 'type' => get_class($this->owner)])->paginate($this->perPage);
+        
         $this->currentPageVehicles = $vehicles->pluck('id')->toArray();
 
         $vehiclesCount = Vehicle::all()->count();
-        return view('user.vehicle.index', compact('vehicles','vehiclesCount'))->layout('layouts.user');
+        return view('user.vehicle.index', compact('vehicles', 'vehiclesCount'))->layout('layouts.user');
     }
 }
