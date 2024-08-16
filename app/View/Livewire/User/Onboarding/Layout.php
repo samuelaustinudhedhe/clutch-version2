@@ -89,7 +89,7 @@ class Layout extends Component
     public function skipOnboarding()
     {
         // Check if the user's onboarding status is already 'skipped'
-        if ($this->user->boarding->status !== 'skipped') {
+        if ($this->user->onboarding->status !== 'skipped') {
             // Update the user's onboarding status
             $this->user->forceFill([
                 'boarding->status' => 'skipped',

@@ -12,8 +12,7 @@ trait Onboarding
     public function onboarding()
     {
         // Decode the JSON encoded onboarding data.
-        $onboarding = json_decode($this->boarding);
-
+        $onboarding = is_string($this->boarding) ? json_decode($this->boarding) : $this->boarding;
         // Automatically assign onboarding keys if it's null or empty.
         if (is_null($onboarding) || empty($onboarding)) {
             // Fill the onboarding attribute with default values and save the model.
