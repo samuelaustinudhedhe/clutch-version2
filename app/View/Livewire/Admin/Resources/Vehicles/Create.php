@@ -171,8 +171,6 @@ class Create extends Component
     }
 
 
-
-
     public function setFeaturedImage($index)
     {
         $this->featuredImageIndex = $index;
