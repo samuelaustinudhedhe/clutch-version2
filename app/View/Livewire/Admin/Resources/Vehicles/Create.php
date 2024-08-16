@@ -16,7 +16,8 @@ use setasign\Fpdi\Fpdi;
 
 class Create extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithPagination;
+    use WithFileUploads;
 
     public $vin;
     public $vit;
@@ -113,48 +114,63 @@ class Create extends Component
     {
         foreach ($this->newDocuments as $newDocument) {
             $fileName = $newDocument->getClientOriginalName();
-            $tempPath = $newDocument->getRealPath();
+            $error = '';
 
-            // Calculate a hash of the file to check for duplicates
-            $documentHash = md5_file($tempPath);
+            // Validate the file type
+            if ($newDocument->getClientOriginalExtension() !== 'pdf') {
+                $error = "The file " . $fileName . " is not a valid PDF document.";
+            }
+            // Validate the file size
+            elseif ($newDocument->getSize() > 1024 * 1024 * 5) { // 5MB limit
+                $error = "The file " . $fileName . " exceeds the maximum size of 5MB.";
+            } else {
+                // // Store the PDF in the 'public' disk
+                // $storedPath = $newDocument->store('tmp', 'public');
 
-            // Check if the document already exists in the documents array
-            $alreadyExists = false;
-            foreach ($this->documents as $document) {
-                if (md5_file($document['path']) === $documentHash) {
-                    $alreadyExists = true;
-                    break;
+                // // Add the document's path to the list
+                // $this->documents[] = [
+                //     'name' => $fileName,
+                //     'path' => $storedPath,
+                //     'file' => $newDocument,
+                // ];
+                $documentHash = md5_file($newDocument->getRealPath());
+
+                $alreadyExists = false;
+                foreach ($this->documents as $document) {
+                    // Correctly access the 'file' key to get the file object
+                    if (md5_file($document['file']->getRealPath()) === $documentHash) {
+                        $alreadyExists = true;
+                        break;
+                    }
+                }
+
+                if ($alreadyExists) {
+                    $error = "The document " . $fileName . " already exists.";
+                } else {
+                    // Save the PDF and generate a thumbnail preview (optional)
+                    $storedPath = $newDocument->store('tmp', 'public');
+                    // Store the document information with thumbnail path
+
+                    $this->documents[] = [
+                            'name' => $fileName,
+                            'path' => $storedPath,
+                            'file' => $newDocument,
+                        ];
                 }
             }
 
-            if ($alreadyExists) {
-                // Handle duplicate logic (e.g., set error message)
-                $this->documentErrorMessages[] = "The document " . $fileName . " already exists.";
-            } else {
-                // Move the file to the final storage location
-                $storedPath = $newDocument->storeAs('documents', $fileName, 'public');
-                $fileUrl = Storage::url($storedPath);
-
-                // Add the document to the documents array
-                $this->documents[] = [
-                    'name' => $fileName,
-                    'path' => $storedPath,  // Store the path for later access
-                    'url' => $fileUrl,
-                ];
+            // If there was an error, add it to the errorMessages array
+            if ($error && !in_array($error, $this->documentErrorMessages)) {
+                $this->documentErrorMessages[] = $error;
             }
         }
+        $this->dispatch('notify', implode('<br>', $this->documentErrorMessages), 'warning');
 
         // Clear the temporary newDocuments property
         $this->newDocuments = [];
     }
 
-    public function removeDocument($index)
-    {
-        // Remove the document from the list and delete the file
-        Storage::disk('public')->delete($this->documents[$index]['path']);
-        unset($this->documents[$index]);
-        $this->documents = array_values($this->documents); // Reindex array
-    }
+
 
 
     public function setFeaturedImage($index)
@@ -201,6 +217,17 @@ class Create extends Component
         $user->profile_photo_path = $path;
         $user->save();
     }
+
+
+
+    public function removeDocument($index)
+    {
+        // Remove the document from the list
+        unset($this->documents[$index]);
+        $this->documents = array_values($this->documents); // Reindex array
+    }
+
+
 
     public function saveVehicle()
     {
