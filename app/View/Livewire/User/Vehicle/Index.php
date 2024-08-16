@@ -2,6 +2,7 @@
 
 namespace App\View\Livewire\User\Vehicle;
 
+use App\Models\User;
 use App\Models\Vehicle;
 use Livewire\Component;
 
@@ -41,11 +42,10 @@ class Index extends Component
 
     public function render()
     {
-        $vehicles = Vehicle::search('name', $this->search)->whereJsonContains('owner', ['id' => $this->owner->id, 'type' => get_class($this->owner)])->paginate($this->perPage);
-        
+        $vehicles = $this->owner->vehicles()->paginate($this->perPage);
         $this->currentPageVehicles = $vehicles->pluck('id')->toArray();
 
-        $vehiclesCount = Vehicle::all()->count();
+        $vehiclesCount = $this->owner->vehicles()->count();
         return view('user.vehicle.index', compact('vehicles', 'vehiclesCount'))->layout('layouts.user');
     }
 }

@@ -13,9 +13,8 @@ trait HasVehicles
      */
     public function vehicles()
     {
-        $owner = $this->morphMany(Vehicle::class, 'owner');
         $ownerable =   $this->morphMany(Vehicle::class, 'ownerable');
-        return $owner ?? $ownerable;
+        return $ownerable;
     }
 
     /**
