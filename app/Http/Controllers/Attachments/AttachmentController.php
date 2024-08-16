@@ -10,7 +10,8 @@ use Intervention\Image\ImageManager;
 class AttachmentController extends Controller
 {
 
-    public function read($file){
+    public function read($file)
+    {
         $driver = ImageManager::gd();
         $file = $driver->read($file);
 
@@ -30,7 +31,9 @@ class AttachmentController extends Controller
     public static function makeDir(string $directory, string $disk = 'public')
     {
         // Use Laravel's Storage facade to create the directory on the specified disk.
-        Storage::disk($disk)->makeDirectory($directory);
+        if (!Storage::disk($disk)->exists($directory)) {
+            Storage::disk($disk)->makeDirectory($directory);
+        }
     }
 
     /**
@@ -80,10 +83,9 @@ class AttachmentController extends Controller
      *
      * @return void
      */
-    public static function create($name, $description, $file, $attachable, $authorable, $path)
+    public static function create($name, $description, $file, $attachable, $authorable, $path, $is_featured = false)
     {
-        // Set default values for ping and status
-        $ping = true;
+        // Set default values for is_featured and status
         $active = 'active';
 
         // Get the MIME type of the file
@@ -102,7 +104,7 @@ class AttachmentController extends Controller
         ];
 
         // Create the Attachment using the raw method
-        self::createRaw($name, $description, $active, $ping, $metadata, $mime_type, $attachable, $authorable, $path);
+        self::createRaw($name, $description, $active, $is_featured, $metadata, $mime_type, $attachable, $authorable, $path);
     }
 
     /**
@@ -111,7 +113,7 @@ class AttachmentController extends Controller
      * @param string $name The name of the Attachment.
      * @param string $description The description of the Attachment.
      * @param string $active The status of the Attachment.
-     * @param bool $ping Whether the Attachment is pingable.
+     * @param bool $is_featured Whether the Attachment is is_featurable.
      * @param array $metadata The metadata of the Attachment.
      * @param string $mime_type The MIME type of the Attachment.
      * @param object $attachable The model that the Attachment is attached to.
@@ -120,14 +122,14 @@ class AttachmentController extends Controller
      *
      * @return void
      */
-    public static function createRaw(string $name, string $description, string $active, bool $ping, array $metadata, string $mime_type, object $attachable, object $authorable, string $path)
+    public static function createRaw(string $name, string $description, string $active, bool $is_featured, array $metadata, string $mime_type, object $attachable, object $authorable, string $path)
     {
         // Create the Attachment record in the database
         Attachment::create([
             'name' => $name,
             'description' => $description,
             'status' => $active,
-            'ping' => $ping,
+            'is_featured' => $is_featured,
             'metadata' => json_encode($metadata),
             'mime_type' => $mime_type,
             'attachable_id' => $attachable->id,

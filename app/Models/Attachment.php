@@ -11,14 +11,21 @@ class Attachment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'size', 'status', 'metadata', 'mime_type', 'file_path', 'attachable_id', 'attachable_type', 'authorable_id', 'authorable_type',
+        'name',
+        'size',
+        'status',
+        'metadata',
+        'mime_type',
+        'file_path',
+        'attachable_id',
+        'attachable_type',
+        'authorable_id',
+        'authorable_type',
     ];
 
     protected $casts = [
-        'metadata' => 'array',
-        'dimensions' => 'array',
-        // 'post' => 'object',
-        // 'author' => 'object',
+        'metadata' => 'object',
+        'dimensions' => 'object',
     ];
 
     // You can use the $documentMimeTypes array in your code
@@ -52,25 +59,28 @@ class Attachment extends Model
         'image/webp',
     ];
 
-    // public function author()
-    // {
-    //     $author = $this->author;
 
-    //     if ($author && isset($author['type'], $author['id'])) {
-    //         $modelClass = $author['type'];
-    //         return $modelClass::find($author['id']);
-    //     }
-
-    //     return null;
-    // }
-
-    // Polymorphic relationship to the parent model (e.g., Post, Vehicle)
+    /**
+     * Establish a polymorphic relationship to the parent model.
+     *
+     * This function defines a polymorphic relationship to the parent model, 
+     * which can be any model that the attachment is associated with, such as Post or Vehicle.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo The polymorphic relationship to the parent model.
+     */
     public function attachable()
     {
         return $this->morphTo();
     }
 
-    // Polymorphic relationship to the author (User or Admin)
+    /**
+     * Establish a polymorphic relationship to the author model.
+     *
+     * This function defines a polymorphic relationship to the author model, 
+     * which can be either a User or an Admin.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo The polymorphic relationship to the author model.
+     */
     public function authorable()
     {
         return $this->morphTo();

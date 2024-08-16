@@ -30,19 +30,25 @@ return new class extends Migration
                 'address' => null,
                 'social' => null,
             ]));
+            $table->json('records')->default(json_encode([
+                'password_resets_count' => 0,
+                'password_changed_at' => null,
+                'email_changed at' => null,
+                'email_changed_count' => 0,
+            ]));
 
-            //$table->foreignId('current_team_id')->nullable();
             $table->json('boarding')->default(json_encode([
                 'status' => 'start',
                 'step' => 0,
                 'restart_at' => '',
                 'completed_at' => '',
             ]));
+
             $table->json('verification')->default(json_encode([
                 'verified' => false,
                 'verified_at' => null,
                 'verified_status' => 'pending', // pending, approved, rejected
-            ]));       
+            ]));
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
         });

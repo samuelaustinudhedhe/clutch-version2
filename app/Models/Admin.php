@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Traits\Attachments;
+use App\Traits\HasAttachments;
 use App\Traits\HasRolesAndPermissions;
+use App\Traits\HasVehicles;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,8 +21,8 @@ class Admin extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use TwoFactorAuthenticatable;
     use HasRolesAndPermissions;
-    use Attachments;
-
+    use HasAttachments;
+    use HasVehicles;
 
     protected $guard = 'admin';
 
@@ -81,6 +82,7 @@ class Admin extends Authenticatable implements MustVerifyEmail
             'author' => 'yellow',
         ][$this->role] ?? 'zinc'; // Default to 'gray' if status doesn't match
     }
+
     /**
      * Get the color associated with the user's status.
      *
@@ -97,5 +99,4 @@ class Admin extends Authenticatable implements MustVerifyEmail
             'suspended' => 'red',
         ][$this->status] ?? 'gray'; // Default to 'gray' if status doesn't match
     }
-    
 }

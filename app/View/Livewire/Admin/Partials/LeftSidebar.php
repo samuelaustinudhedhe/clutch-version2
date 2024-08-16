@@ -8,6 +8,6 @@ class LeftSidebar extends Component
 {
     public function render()
     {
-        return view('admin.dashboard.left-sidebar');
+        return view('admin.partials.left-sidebar');
     }
 }

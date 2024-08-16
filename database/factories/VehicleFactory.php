@@ -16,176 +16,164 @@ class VehicleFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = fake();
         return [
-            'name' => $faker->word,
-            'slug' => $faker->slug,
-            'description' => $faker->paragraph,
-            'price' => $this->generatePrice($faker),
-            'type' => $faker->randomElement(['car', 'truck', 'motorcycle', 'bicycle', 'bus', 'airplane', 'boat']),
-            'location' => $this->generateLocation($faker),
-            'status' => $faker->randomElement(['available', 'unavailable', 'rented']),
-            'rating' => $faker->randomElement(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.2', '4.5', '4.6', '4.7', '4.8', '5.0']),
-            'details' => $this->generateDetails($faker),
-            'specifications' => $this->generateSpecifications($faker),
-            'features' => $this->generateFeatures($faker),
-            'faults' => $faker->randomElement(['none', 'minor', 'major']),
-            'service' => $this->generateService($faker),
-            'owner' => $this->generateOwner($faker),
+            'name' => fake()->word,
+            'slug' => fake()->slug,
+            'vin' => $this->generateVin(),
+            'description' => fake()->paragraph,
+            'price' => $this->generatePrice(),
+            'location' => $this->generateLocation(),
+            'status' => fake()->randomElement(['available', 'unavailable', 'rented']),
+            'rating' => fake()->randomElement(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.2', '4.5', '4.6', '4.7', '4.8', '5.0']),
+            'details' => $this->generateDetails(),
+            'ownerable_id' => $this->generateOwnerable()->id,
+            'ownerable_type' => $this->generateOwnerable()->getMorphClass(),
+
             'created_at' => now(),
             'updated_at' => now(),
         ];
     }
 
     /**
-     * Generate the price details.
+     * Generate a Vehicle Identification Number (VIN) or similar identifier.
      *
-     * @param \Faker\Generator $faker
-     * @return string
+     * This function creates a JSON-encoded string representing a vehicle identifier,
+     * which includes a type and a randomly generated number.
+     *
+     * @return string JSON-encoded string containing the vehicle identifier type and number.
      */
-    protected function generatePrice($faker): string
+    protected function generateVin()
     {
         return json_encode([
-            'sale' => $faker->numberBetween(1000, 100000),
-            'amount' => $faker->numberBetween(1000, 100000),
-            'on_sale' => $faker->randomElement([true, false]),
+            'type' => fake()->randomElement(['VIN', 'HIN', 'TN', 'SN', 'UIC', 'PIN', 'VSN']),
+            'number' => strtoupper(fake()->bothify('??######??######'))
         ]);
     }
 
     /**
-     * Generate the location details.
+     * Generate the price details for the vehicle.
      *
-     * @param \Faker\Generator $faker
-     * @return string
+     * This function creates an array containing the sale price, amount, and sale status of the vehicle.
+     *
+     * @return array<string, mixed> An associative array with the following keys:
+     * - 'sale': The sale price of the vehicle, a random number between 1000 and 100000.
+     * - 'amount': The amount price of the vehicle, a random number between 1000 and 100000.
+     * - 'on_sale': A boolean indicating whether the vehicle is on sale.
      */
-    protected function generateLocation($faker): string
+    protected function generatePrice()
     {
-        return json_encode([
-            'pickup' => $faker->address,
-            'dropoff' => $faker->address,
-        ]);
+        return [
+            'sale' => fake()->numberBetween(1000, 100000),
+            'amount' => fake()->numberBetween(1000, 100000),
+            'on_sale' => fake()->randomElement([true, false]),
+        ];
     }
 
     /**
-     * Generate the vehicle details.
+     * Generate the location details for the vehicle.
      *
-     * @param \Faker\Generator $faker
-     * @return string
+     * This function creates an array containing the pickup and dropoff addresses for the vehicle.
+     *
+     * @return array<string, string> An associative array with the following keys:
+     * - 'pickup': A randomly generated address for the pickup location.
+     * - 'dropoff': A randomly generated address for the dropoff location.
      */
-    protected function generateDetails($faker): string
+    protected function generateLocation()
+    {
+        return [
+            'pickup' => fake()->address,
+            'dropoff' => fake()->address,
+        ];
+    }
+
+    /**
+     * Generate detailed information about the vehicle.
+     *
+     * This function creates a JSON-encoded string containing various details about the vehicle,
+     * including make, model, year, dimensions, exterior and interior features, engine specifications,
+     * transmission details, fuel type, security features, safety features, modifications, and service status.
+     *
+     * @return string JSON-encoded string containing the vehicle details.
+     */
+    protected function generateDetails(): string
     {
         return json_encode([
-            'make' => $faker->company,
-            'manufacturer' => $faker->company,
-            'model' => $faker->word,
-            'year' => $faker->year,
-            'mileage' => $faker->numberBetween(0, 200000),
+            'make' => fake()->company,
+            'manufacturer' => fake()->company,
+            'model' => fake()->word,
+            'year' => fake()->year,
+            'mileage' => fake()->numberBetween(0, 200000),
+            'type' => fake()->randomElement(['car', 'truck', 'motorcycle', 'bicycle', 'bus', 'airplane', 'boat']),
             'dimensions' => [
-                'length' => $faker->randomFloat(2, 3, 5),
-                'width' => $faker->randomFloat(2, 1.5, 2.5),
-                'height' => $faker->randomFloat(2, 1, 2),
+                'length' => fake()->randomFloat(2, 3, 5),
+                'width' => fake()->randomFloat(2, 1.5, 2.5),
+                'height' => fake()->randomFloat(2, 1, 2),
             ],
             'exterior' => [
-                'color' => $faker->safeColorName,
-                'type' => $faker->randomElement(['Sedan', 'SUV', 'Coupe']),
-                'doors' => $faker->numberBetween(2, 5),
-                'windows' => $faker->randomElement(['Power windows', 'Tinted windows']),
+                'color' => fake()->safeColorName,
+                'type' => fake()->randomElement(['Sedan', 'SUV', 'Coupe']),
+                'doors' => fake()->numberBetween(2, 5),
+                'windows' => fake()->randomElement(['Power windows', 'Tinted windows']),
             ],
             'interior' => [
-                'seats' => $faker->numberBetween(2, 7),
-                'upholstery' => $faker->randomElement(['Leather', 'Cloth']),
-                'ac' => $faker->boolean,
-                'heater' => $faker->boolean,
+                'seats' => fake()->numberBetween(2, 7),
+                'upholstery' => fake()->randomElement(['Leather', 'Cloth']),
+                'ac' => fake()->boolean,
+                'heater' => fake()->boolean,
             ],
-        ]);
-    }
-
-    /**
-     * Generate the vehicle specifications.
-     *
-     * @param \Faker\Generator $faker
-     * @return string
-     */
-    protected function generateSpecifications($faker): string
-    {
-        return json_encode([
             'engine' => [
-                'size' => $faker->randomElement(['2.5L', '3.0L', '1.8L']),
-                'hp' => $faker->numberBetween(100, 500),
-                'type' => $faker->randomElement(['Inline 4', 'V6', 'V8']),
+                'size' => fake()->randomElement(['2.5L', '3.0L', '1.8L']),
+                'hp' => fake()->numberBetween(100, 500),
+                'type' => fake()->randomElement(['Inline 4', 'V6', 'V8']),
             ],
             'transmission' => [
-                'type' => $faker->randomElement(['Automatic', 'Manual', 'Semi-Automatic']),
-                'gear_ratio' => $faker->randomFloat(1, 4, 7) . ':1',
-                'gears' => $faker->numberBetween(4, 8),
-                'oil' => $faker->randomElement(['Castrol', 'Mobil', 'Valvoline']),
-                'drivetrain' => $faker->randomElement(['FWD', 'RWD', 'AWD']),
+                'type' => fake()->randomElement(['Automatic', 'Manual', 'Semi-Automatic']),
+                'gear_ratio' => fake()->randomFloat(1, 4, 7) . ':1',
+                'gears' => fake()->numberBetween(4, 8),
+                'oil' => fake()->randomElement(['Castrol', 'Mobil', 'Valvoline']),
+                'drivetrain' => fake()->randomElement(['FWD', 'RWD', 'AWD']),
             ],
             'fuel' => [
-                'type' => $faker->randomElement(['Gasoline', 'Diesel']),
-                'economy' => $faker->randomFloat(2, 5, 15) . ' L/100km',
+                'type' => fake()->randomElement(['Gasoline', 'Diesel']),
+                'economy' => fake()->randomFloat(2, 5, 15) . ' L/100km',
             ],
-        ]);
-    }
-
-    /**
-     * Generate the vehicle features.
-     *
-     * @param \Faker\Generator $faker
-     * @return string
-     */
-    protected function generateFeatures($faker): string
-    {
-        return json_encode([
             'security' => [
-                'auto_lock' => $faker->boolean,
-                'alarm_system' => $faker->boolean,
-                'tracking_system' => $faker->boolean,
+                'auto_lock' => fake()->boolean,
+                'alarm_system' => fake()->boolean,
+                'tracking_system' => fake()->boolean,
             ],
             'safety' => [
-                'airbags' => $faker->randomElement(['Driver', 'Passenger', 'Side', 'Rear']),
-                'emergency_braking' => $faker->randomElement(['Automatic', 'Manual']),
+                'airbags' => fake()->randomElement(['Driver', 'Passenger', 'Side', 'Rear']),
+                'emergency_braking' => fake()->randomElement(['Automatic', 'Manual']),
             ],
             'modifications' => [
-                'performance' => $faker->sentence,
-                'aesthetic' => $faker->sentence,
-                'interior' => $faker->sentence,
+                'performance' => fake()->sentence,
+                'aesthetic' => fake()->sentence,
+                'interior' => fake()->sentence,
+            ],
+            'service' => [
+                'status' => fake()->randomElement(['serviced', 'in service', 'overdue', 'pending']),
+                'last_service_date' => fake()->date,
+                'last_inspection_date' => fake()->date,
             ],
         ]);
     }
 
-    /**
-     * Generate the service details.
-     *
-     * @param \Faker\Generator $faker
-     * @return string
-     */
-    protected function generateService($faker): string
-    {
-        return json_encode([
-            'status' => $faker->randomElement(['good', 'fair', 'poor']),
-            'last_service_date' => $faker->date,
-            'last_inspection_date' => $faker->date,
-        ]);
-    }
 
     /**
-     * Generate the owner details.
+     * Generate a random ownerable entity.
      *
-     * @param \Faker\Generator $faker
-     * @return string
+     * This function fetches a random user or admin from the database and returns one of them
+     * as the ownerable entity.
+     *
+     * @return \App\Models\User|\App\Models\Admin A randomly selected user or admin model instance.
      */
-    protected function generateOwner($faker): string
+    protected function generateOwnerable()
     {
-        return json_encode($faker->randomElement([
-            [
-                'id' => \App\Models\User::inRandomOrder()->first()->id,
-                'type' => 'user',
-            ],
-            [
-                'id' => \App\Models\Admin::inRandomOrder()->first()->id,
-                'type' => 'admin',
-            ]
-        ]));
+        // Fetch a random user or admin
+        $user = \App\Models\User::inRandomOrder()->first();
+        $admin = \App\Models\Admin::inRandomOrder()->first();
+        // Determine which one to use as authorable
+        return fake()->randomElement(['user', 'admin']) === 'user' ? $user : $admin;
     }
 }

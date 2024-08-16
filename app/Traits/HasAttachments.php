@@ -5,7 +5,7 @@ namespace App\Traits;
 use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
 
-trait Attachments
+trait HasAttachments
 {
 
     /**
@@ -148,5 +148,14 @@ trait Attachments
             'attachable_id' => $this->id,
             'attachable_type' => get_class($this)
         ]);
+    }
+
+    /**
+     * Polymorphic relationship to the authorable.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function authorable(){
+        return $this->morphMany(Attachment::class, 'authorable');
     }
 }

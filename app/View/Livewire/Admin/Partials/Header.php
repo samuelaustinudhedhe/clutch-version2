@@ -8,6 +8,6 @@ class Header extends Component
 {
     public function render()
     {
-        return view('admin.dashboard.header');
+        return view('admin.partials.header');
     }
 }

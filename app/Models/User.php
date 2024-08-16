@@ -4,9 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Traits\Attachments;
+use App\Traits\HasAttachments;
 use App\Traits\HasDetails;
 use App\Traits\HasRolesAndPermissions;
+use App\Traits\HasVehicles;
 use App\Traits\Onboarding;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,10 +25,9 @@ class User extends Authenticatable
     use HasDetails;
     use TwoFactorAuthenticatable;
     use HasRolesAndPermissions;
-    use Attachments;
+    use HasAttachments;
     use Onboarding;
-
-
+    use HasVehicles;
 
     /**
      * The attributes that are mass assignable.
@@ -70,12 +70,12 @@ class User extends Authenticatable
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
-     */ protected $casts = [
-
+     */
+    protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'details' => 'object',
-        'verification' => 'array',
+        'verification' => 'object',
     ];
 
     /**
@@ -95,6 +95,7 @@ class User extends Authenticatable
             'host' => 'sky',
         ][$this->role] ?? 'zinc'; // Default to 'zinc' if role doesn't match
     }
+
     /**
      * Get the color associated with the user's status.
      *
@@ -109,18 +110,28 @@ class User extends Authenticatable
         return [
             'active' => 'green',
             'suspended' => 'red',
+            'onboarding' => 'teal',
             'deleted' => 'red',
         ][$this->status] ?? 'gray'; // Default to 'gray' if status doesn't match
     }
 
+    /**
+     * Get the social media logos associated with the user's social links.
+     *
+     * This accessor method returns an array of social media platform logos based on the user's social links.
+     * It constructs the logo file paths for each social media platform the user has provided a link for.
+     *
+     * @return array<string, string> An associative array where the keys are social media platform names
+     *                               and the values are the paths to their corresponding logo images.
+     */
     public function getSocialLogoAttribute()
     {
         $socialLogos = [];
-        $socialLinks = json_decode($this->social, true);
+        $socialLinks = $this->getDetails()->social;
 
         if ($socialLinks) {
             foreach ($socialLinks as $platform => $link) {
-                $socialLogos[$platform] = resource_path("/images/logos/{$platform}.svg");
+                $socialLogos[$platform] = "assets/images/logos/{$platform}.svg";
             }
         }
 

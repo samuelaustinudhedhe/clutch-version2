@@ -35,12 +35,12 @@
                         <x-search type="text" id="simple-search" wire:model.live='search' placeholder="Search for products" />
                     </div>
                     <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                        <button type="button" id="createProductButton" data-modal-toggle="createProductModal" class="flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                        <x-button type="button" href="{{ route('admin.vehicles.create') }}" id="createProductButton" data-modal-toggle="createProductModal" >
                             <svg class="h-3.5 w-3.5 mr-1.5 -ml-1" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                             </svg>
-                            Add product
-                        </button>
+                            Add vehicle
+                        </x-button>
                         <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-4 w-4 mr-1.5 -ml-1 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
@@ -419,13 +419,12 @@
                                             </span>
                                         </div>
                                     </td>
+
                                     {{-- Owner --}}
                                     <td class="px-4 py-3">
-                                        
-                                        <a href="{{ route('admin.' . (strpos($vehicle->owner->type, 'admin') === true ? 'admins' : 'users') . '.show', $vehicle->owner()->id) }}">
-                                            {{ $vehicle->owner()->name }}
-                                        </a>                                        
-
+                                        <a href="{{ route('admin.' . (strpos($vehicle->ownerable_type, 'Admin') !== false ? 'admins' : 'users') . '.show', $vehicle->ownerable_id) }}">
+                                                {{ $vehicle->owner->name ?? '' }}                                        
+                                        </a>                                 
                                     </td>
 
                                     {{-- Promote --}}
@@ -437,7 +436,8 @@
                                             </div>
                                         </label>
                                     </td>
-
+                                    
+                                    {{-- Actions --}}
                                     <td class="px-4 py-3 font-medium text-right text-gray-900 whitespace-nowrap dark:text-white">
                                         <button id="dropdown-button-{{ $vehicle->id }}" type="button"
                                             data-dropdown-toggle="dropdown-{{ $vehicle->id }}"
@@ -494,13 +494,13 @@
                             @endforeach
 
                             {{-- If no Vehicle is found --}}
-                            @if ($vehicles->isEmpty())
-                                <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            @empty($vehicles)
+                               <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td class="px-4 py-6 text-center text-md font-medium text-gray-900 whitespace-nowrap dark:text-white" colspan="10">
                                         {{ __('There are no Vehicles found at this time') }}
                                     </td>
-                                </tr>
-                            @endif
+                                </tr>  
+                            @endempty
                         </tbody>
                     </table>
                 </div>

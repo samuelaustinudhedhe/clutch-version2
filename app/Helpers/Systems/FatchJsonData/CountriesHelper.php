@@ -10,10 +10,8 @@ use Illuminate\Support\Facades\File;
  * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException If the JSON file is not found.
  * @throws \Exception If there is an error decoding the JSON data.
  */
-function fetchCountries()
+function fetchJsonData($path = null, $associative = true)
 {
-    $path = resource_path('json/countries.json');
-
     // Check if the file exists
     if (!File::exists($path)) {
         // Handle the error, maybe throw an exception or return an error response
@@ -24,7 +22,7 @@ function fetchCountries()
     $json = File::get($path);
 
     // Decode the JSON data into an array
-    $countries = json_decode($json, true);
+    $countries = json_decode($json, $associative);
 
     // Handle decoding errors
     if (json_last_error() !== JSON_ERROR_NONE) {
@@ -47,6 +45,23 @@ if (!function_exists('countries')) {
      */
     function countries()
     {
-        return fetchCountries();
+        $path = resource_path('json/countries.json');
+        return fetchJsonData($path);
+    }
+}
+
+if (!function_exists('vehicleTypes')) {
+    /**
+     * Fetches the list of countries from a JSON file and returns it as an array.
+     *
+     * @return array The list of countries.
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException If the JSON file is not found.
+     * @throws \Exception If there is an error decoding the JSON data.
+     */
+    function vehicleTypes()
+    {
+        $path = resource_path('json/vehicle/types.json');
+        return fetchJsonData($path);
     }
 }

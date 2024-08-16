@@ -155,7 +155,7 @@ if (!function_exists('app_currency_symbol')) {
     {
         $currency = app_currency(false); // Get the currency code
 
-        $countries = fetchCountries();
+        $countries = countries();
 
         $symbol = $currency; // Default to currency code if symbol is not found
 

@@ -12,7 +12,7 @@ class AttachmentUploadController extends AttachmentController
      * Uploads and processes an image file, resizes it if necessary, compresses it, and stores it in the specified folder.
      * It also creates a new attachment record in the database.
      *
-     * @param object $author The user who is uploading the image.
+     * @param object $authorable The user who is uploading the image.
      * @param mixed $image The source of the image (e.g., file path, stream, or uploaded file).
      * @param string $folder The folder where the image will be stored.
      * @param string $filename The name of the image file.
@@ -23,7 +23,7 @@ class AttachmentUploadController extends AttachmentController
      *
      * @return string The path of the stored image file.
      */
-    public static function image(object $author, $image, $folder, $filename, $size = 'resize', ?int $width = null, ?int $height = null, $quality = 80)
+    public static function image(object $authorable, $image, $folder, $filename, $size = 'resize', ?int $width = null, ?int $height = null, $quality = 80, $attachable = null)
     {
         // Get the file extension from the filename
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
@@ -52,8 +52,8 @@ class AttachmentUploadController extends AttachmentController
         // Create a new attachment record in the database
         AttachmentController::createRaw(
             // Generate a title from the filename
-            $author->name . '\'s ' . ucwords(toSlug(pathinfo($filename, PATHINFO_FILENAME), ' ')),
-            'profile picture for ' . $author->name,
+            $authorable->name . '\'s ' . ucwords(toSlug(pathinfo($filename, PATHINFO_FILENAME), ' ')),
+            'profile picture for ' . $authorable->name,
             'active',
             true,
             [
@@ -66,8 +66,8 @@ class AttachmentUploadController extends AttachmentController
                 'format' => $extension,
             ],
             $encodedImage->mediaType(),
-            $author,
-            $author,
+            $attachable ?? $authorable,
+            $authorable,
             $path
         );
 

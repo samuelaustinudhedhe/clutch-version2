@@ -195,7 +195,7 @@
                                     <div class="flex items-center space-x-1.5">
 
                                         @php
-                                            $socialLinks = json_decode($user->social, true);
+                                            $socialLinks = $user->getDetails()->social;
                                             aggregateUserData(output:$socials, count:$socialCount, input:collect($socialLinks));
                                             $socialLogos = $user->social_logo;
                                         @endphp

@@ -133,30 +133,72 @@ function getWordFromString($string, $position)
 //     }
 // }
 
+// /**
+//  * Aggregates user data by slicing the input collection and calculating the remaining count.
+//  *
+//  * @param \Illuminate\Support\Collection $input The input collection of user data.
+//  * @param int $offset The offset to start slicing the collection. Default is 0.
+//  * @param int $limit The maximum number of items to include in the output. Default is 4.
+//  * @param \Illuminate\Support\Collection &$output The output collection containing the sliced data.
+//  * @param int &$count The count of remaining items after slicing.
+//  * 
+//  * @return void This function does not return a value. It modifies the $output and $count parameters by reference.
+//  */
+// function aggregateUserData(&$output, &$count, $input, int $offset = 0, int $limit = 4)
+// {
+//     // Check if the input is a collection, if not convert it to a collection
+//     if (!($input instanceof \Illuminate\Support\Collection)) {
+//         $input = collect($input);
+//     }
+
+//     // Extract the total number of users from the input collection
+//     $totalUsers = $input->count();
+
+//     // Slice the input collection based on the offset and limit
+//     $data = $input->slice($offset, $limit);
+
+//     // Calculate the number of remaining users after slicing
+//     $remaining = $totalUsers - $data->count();
+
+//     // Assign the sliced data to the output parameter
+//     $output = collect($data);
+
+//     // Assign the remaining count to the count parameter
+//     $count = $remaining;
+// }
+
 /**
- * Aggregates user data by slicing the input collection and calculating the remaining count.
+ * Aggregates user data by slicing the input and calculating the remaining count.
  *
- * @param \Illuminate\Support\Collection $input The input collection of user data.
- * @param int $offset The offset to start slicing the collection. Default is 0.
+ * @param mixed $input The input which can be a collection, array, or string.
+ * @param int $offset The offset to start slicing. Default is 0.
  * @param int $limit The maximum number of items to include in the output. Default is 4.
- * @param \Illuminate\Support\Collection &$output The output collection containing the sliced data.
+ * @param mixed &$output The output containing the sliced data.
  * @param int &$count The count of remaining items after slicing.
  * 
  * @return void This function does not return a value. It modifies the $output and $count parameters by reference.
  */
 function aggregateUserData(&$output, &$count, $input, int $offset = 0, int $limit = 4)
 {
-    // Extract the total number of users from the input collection
-    $totalUsers = $input->count();
+    // Check if the input is a collection, if not convert it to a collection
+    if ($input instanceof \Illuminate\Support\Collection) {
+        $totalItems = $input->count();
+        $data = $input->slice($offset, $limit);
+    } elseif (is_array($input)) {
+        $totalItems = count($input);
+        $data = array_slice($input, $offset, $limit);
+    } elseif (is_string($input)) {
+        $totalItems = strlen($input);
+        $data = substr($input, $offset, $limit);
+    } else {
+        throw new InvalidArgumentException("Unsupported input type.");
+    }
 
-    // Slice the input collection based on the offset and limit
-    $data = $input->slice($offset, $limit);
-
-    // Calculate the number of remaining users after slicing
-    $remaining = $totalUsers - $data->count();
+    // Calculate the number of remaining items after slicing
+    $remaining = $totalItems - (is_array($data) ? count($data) : (is_string($data) ? strlen($data) : $data->count()));
 
     // Assign the sliced data to the output parameter
-    $output = collect($data);
+    $output = $data;
 
     // Assign the remaining count to the count parameter
     $count = $remaining;

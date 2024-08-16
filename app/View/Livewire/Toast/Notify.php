@@ -27,11 +27,11 @@ class Notify extends Component
     private function setClass()
     {
         $this->class = match ($this->type) {
-            // 'success' => 'bg-green-500',
-            // 'error' => 'bg-red-500',
-            // 'info' => 'bg-blue-800/80',
-            // 'warning' => 'bg-yellow-500',
-            default => 'bg-white dark:bg-gray-800',
+            'success' => 'border-green-800 dark:border-green-300',
+            'error' => 'border-red-800 dark:border-red-300',
+            'info' => 'border-blue-900 dark:border-blue-800',
+            'warning' => 'border-yellow-800 dark:border-yellow-300 ',
+            default => 'border-gray-300 dark:border-gray-600',
         };
     }
     private function initializeFromSession()

@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use App\Traits\Attachments;
-use Attribute;
+use App\Traits\HasAttachments;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use function Pest\Laravel\json;
 
 class Vehicle extends Model
 {
-    use HasFactory, Attachments;
+    use HasFactory, HasAttachments;
 
     protected $fillable = [
         'title',
@@ -20,13 +18,8 @@ class Vehicle extends Model
         'description',
         'rating',
         'price',
-        'type',
         'location',
         'details',
-        'specifications',
-        'features',
-        'service',
-        'faults',
         'insurance',
         'chauffeur',
         'owner',
@@ -34,99 +27,441 @@ class Vehicle extends Model
 
     protected $casts = [
         'price' => 'object',
-        'owner' => 'object',
-        'details' => 'array',
-        'location' => 'array',
-        'service' => 'array',
-        'specifications' => 'array',
-        'features' => 'array',
-        'faults' => 'array',
-        'insurance' => 'array',
-        'chauffeur' => 'array',
+        'details' => 'object',
+        'location' => 'object',
+        'insurance' => 'object',
+        'chauffeur' => 'object',
     ];
 
     /**
-     * Set default values for attributes if they are not set.
+     * Retrieve the available vehicle types.
      *
-     * This method initializes default values for attributes such as price,
-     * details, specifications, features, and service to ensure that they
-     * always have a defined structure.
+     * This static method returns an array of vehicle types by calling the `vehicleTypes` function.
      *
-     * @return void
+     * @return array The array of available vehicle types.
      */
-    public function setDefaults()
+    public static function types()
     {
-        $this->price = $this->price ?? [
-            'sale' => '',
-            'amount' => '',
-            'on_sale' => false,
-        ];
+        return vehicleTypes();
+    }
 
-        $this->details = $this->details ?? [
-            'make' => '',
-            'manufacturer' => '',
-            'model' => '',
-            'year' => '',
-            'exterior' => [
-                'color' => '',
-                'type' => '',
-                'doors' => '',
-                'windows' => '',
-            ],
-            'interior' => [
-                'seats' => 3,
-                'upholstery' => 'Leather',
-                'ac' => true,
-                'heater' => false,
-            ],
-            'dimensions' => [
-                'length' => '',
-                'width' => '',
-                'height' => '',
-            ],
-        ];
+    //Vehicle Identification Types
+    public static $vits = [
+        'VIN' => 'Vehicle Identification Number',
+        'HIN' => 'Hull Identification Number',
+        'TN' => 'Trade Number',
+        'SN' => 'Serial Number',
+        'UIC' => 'Unique Identification Code',
+        'PIN' => 'Product Identification Number',
+        'VSN' => 'Vehicle Serial Number',
+        'IMN' => 'Importation Number',
+        'EAN' => 'European Article Number',
+        'Chassis Number' => 'Number identifying the vehicle’s chassis',
+        'Frame Number' => 'Number identifying the vehicle’s frame',
+        'IIN' => 'Issuing Identification Number',
+        'RIN' => 'Registration Identification Number',
+        'CAN' => 'Controller Area Network ID',
+        'TIN' => 'Transponder Identification Number',
+        'LID' => 'License Identifier',
+        'BINA' => 'Boat Identification Number Assignment'
+    ];
 
-        $this->specifications = $this->specifications ?? [
-            'engine' => [
-                'size' => '',
-                'hp' => '',
-                'type' => '',
-            ],
-            'transmission' => [
-                'type' => 'Semi-Automatic',
-                'gear_ratio' => '5:1',
-                'gears' => 5,
-                'oil' => 'Castrol',
-                'drivetrain' => 'FWD',
-            ],
-            'fuel' => [
-                'type' => '',
-                'economy' => '',
-            ],
-        ];
 
-        $this->features = $this->features ?? [
-            'modifications' => [
-                'performance' => '',
-                'aesthetic' => '',
-                'interior' => '',
-            ],
-            'security' => [
-                'auto_lock' => false,
-                'alarm_system' => false,
-                'tracking_system' => false,
-            ],
-            'safety' => [
-                'airbags' => '',
-                'emergency_braking' => '',
-            ],
-        ];
+    /**
+     * Decode and retrieve the VIN attribute.
+     *
+     * This method decodes the JSON-encoded VIN attribute and returns it as an object.
+     *
+     * @return object|null The decoded VIN object, or null if the VIN attribute is not set.
+     */
+    public function getVin()
+    {
+        return json_decode($this->vin);
+    }
 
-        $this->service = $this->service ?? [
-            'status' => '',
-            'last_service_date' => null,
-            'last_inspection_date' => null,
-        ];
+    /**
+     * Get the VIN type attribute.
+     *
+     * This accessor method retrieves the type of the vehicle's VIN from the JSON-decoded
+     * VIN attribute. If the type is not set, it returns null.
+     *
+     * @return string|null The type of the vehicle's VIN, or null if not set.
+     */
+    public function getVinTypeAttribute()
+    {
+        return $this->getVin()->type ?? null;
+    }
+
+    /**
+     * Get the VIN number attribute.
+     *
+     * This accessor method retrieves the VIN number from the JSON-decoded
+     * VIN attribute. If the VIN number is not set, it returns null.
+     *
+     * @return string|null The VIN number, or null if not set.
+     */
+    public function getVinNumberAttribute()
+    {
+        return $this->getVin()->number ?? null;
+    }
+
+
+    /**
+     * Get the decoded price .
+     *
+     * This accessor method returns the decoded price attribute as an object.
+     *
+     * @return object The decoded price object.
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * Get the formatted human-readable price attribute.
+     *
+     * This accessor method formats the price attribute into a human-readable string,
+     * including the currency symbol and amount with two decimal places.
+     *
+     * @return string The formatted price with the currency symbol.
+     */
+    public function getHumanPriceAttribute()
+    {
+        return app_currency_symbol() . ' ' . number_format($this->getPrice()->amount);
+    }
+
+    /**
+     * Get the formatted human-readable sale price attribute.
+     *
+     * This accessor method formats the sale price into a human-readable string,
+     * including the currency symbol and amount with two decimal places.
+     *
+     * @return string The formatted sale price with the currency symbol.
+     */
+    public function getHumanSalePriceAttribute()
+    {
+        return app_currency_symbol() . ' ' . number_format($this->sale_price);
+    }
+
+    /**
+     * Get the sale price from the price attribute.
+     *
+     * This method extracts and returns the sale price from the JSON-decoded
+     * price attribute.
+     *
+     * @return float|null The sale price.
+     */
+    public function getSalePriceAttribute()
+    {
+        $price = $this->getPrice();
+        return $price->sale ?? null;
+    }
+
+    /**
+     * Calculate the discount percentage based on the sale and original price.
+     *
+     * This method calculates the discount percentage if the vehicle is on sale.
+     * If not on sale, it returns 0.
+     *
+     * @return float The discount percentage or 0 if not on sale.
+     */
+    public function discount($symbol = true)
+    {
+        $price = $this->getPrice();
+        $sale = $price->sale ?? 0;
+        $on_sale = $price->on_sale ?? false;
+        $amount = $price->amount ?? 0;
+        $discount = '';
+        if ($symbol) {
+            $symbol = '%';
+        }
+
+        if ($on_sale) {
+            $discount = round((($amount - $sale) / $amount) * 100);
+        }
+        return $discount >= 0 ? $discount . $symbol : 0 . $symbol;
+    }
+
+
+    /**
+     * Determine if the vehicle is on sale.
+     *
+     * This accessor method returns whether the vehicle is currently on sale.
+     *
+     * @return bool True if on sale, otherwise false.
+     */
+    public function getOnSaleAttribute()
+    {
+        return $this->get_price->on_sale ?? false;
+    }
+
+    /**
+     * Get the price attribute as an object.
+     *
+     * This accessor method decodes the JSON-encoded price attribute and returns it
+     * as an object.
+     *
+     * @return object The decoded price object.
+     */
+    public function price()
+    {
+        $price = json_decode($this->price);
+        $sale = $price->sale ?? 0;
+        $on_sale = $price->on_sale ?? false;
+        $amount = $price->amount ?? 0;
+
+        if ($on_sale) {
+            return $sale;
+        }
+        return $amount;
+    }
+
+    /**
+     * Get the decoded details attribute.
+     *
+     * This method decodes the JSON-encoded details attribute and returns it as an object.
+     *
+     * @return object The decoded details object.
+     */
+    public function getDetails()
+    {
+        return json_decode($this->details);
+    }
+
+    /**
+     * Get the type attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the type of the vehicle from the JSON-decoded
+     * details attribute. If the type is not set, it returns null.
+     *
+     * @return string|null The type of the vehicle, or null if not set.
+     */
+    public function getTypeAttribute()
+    {
+        return $this->getDetails()->type ?? null;
+    }
+
+    /**
+     * Get the make attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the make of the vehicle from the JSON-decoded
+     * details attribute. If the make is not set, it returns null.
+     *
+     * @return string|null The make of the vehicle, or null if not set.
+     */
+    public function getMakeAttribute()
+    {
+        return $this->getDetails()->make ?? null;
+    }
+
+    /**
+     * Get the model attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the model of the vehicle from the JSON-decoded
+     * details attribute. If the model is not set, it returns null.
+     *
+     * @return string|null The model of the vehicle, or null if not set.
+     */
+    public function getModelAttribute()
+    {
+        return $this->getDetails()->model ?? null;
+    }
+
+    /**
+     * Get the manufacturer attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the manufacturer of the vehicle from the JSON-decoded
+     * details attribute. If the manufacturer is not set, it returns null.
+     *
+     * @return string|null The manufacturer of the vehicle, or null if not set.
+     */
+    public function getManufacturerAttribute()
+    {
+        return $this->getDetails()->manufacturer ?? null;
+    }
+
+    /**
+     * Get the year attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the year of the vehicle from the JSON-decoded
+     * details attribute. If the year is not set, it returns null.
+     *
+     * @return int|null The year of the vehicle, or null if not set.
+     */
+    public function getYearAttribute()
+    {
+        return $this->getDetails()->year ?? null;
+    }
+
+    /**
+     * Get the exterior attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the exterior details of the vehicle from the JSON-decoded
+     * details attribute. If the exterior details are not set, it returns null.
+     *
+     * @return string|null The exterior details of the vehicle, or null if not set.
+     */
+    public function getExteriorAttribute()
+    {
+        return $this->getDetails()->exterior ?? null;
+    }
+
+    /**
+     * Get the interior attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the interior details of the vehicle from the JSON-decoded
+     * details attribute. If the interior details are not set, it returns null.
+     *
+     * @return string|null The interior details of the vehicle, or null if not set.
+     */
+    public function getInteriorAttribute()
+    {
+        return $this->getDetails()->interior ?? null;
+    }
+
+    /**
+     * Get the dimensions attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the dimensions of the vehicle from the JSON-decoded
+     * details attribute. If the dimensions are not set, it returns null.
+     *
+     * @return string|null The dimensions of the vehicle, or null if not set.
+     */
+    public function getDimensionsAttribute()
+    {
+        return $this->getDetails()->dimensions ?? null;
+    }
+
+    /**
+     * Get the engine attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the engine details of the vehicle from the JSON-decoded
+     * details attribute. If the engine details are not set, it returns null.
+     *
+     * @return string|null The engine details of the vehicle, or null if not set.
+     */
+    public function getEngineAttribute()
+    {
+        return $this->getDetails()->engine ?? null;
+    }
+
+    /**
+     * Get the transmission attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the transmission details of the vehicle from the JSON-decoded
+     * details attribute. If the transmission details are not set, it returns null.
+     *
+     * @return string|null The transmission details of the vehicle, or null if not set.
+     */
+    public function getTransmissionAttribute()
+    {
+        return $this->getDetails()->transmission ?? null;
+    }
+
+    /**
+     * Get the fuel attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the fuel details of the vehicle from the JSON-decoded
+     * details attribute. If the fuel details are not set, it returns null.
+     *
+     * @return string|null The fuel details of the vehicle, or null if not set.
+     */
+    public function getFuelAttribute()
+    {
+        return $this->getDetails()->fuel ?? null;
+    }
+
+    /**
+     * Get the modifications attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the modifications details of the vehicle from the JSON-decoded
+     * details attribute. If the modifications details are not set, it returns null.
+     *
+     * @return string|null The modifications details of the vehicle, or null if not set.
+     */
+    public function getModificationsAttribute()
+    {
+        return $this->getDetails()->modifications ?? null;
+    }
+
+    /**
+     * Get the safety attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the safety details of the vehicle from the JSON-decoded
+     * details attribute. If the safety details are not set, it returns null.
+     *
+     * @return string|null The safety details of the vehicle, or null if not set.
+     */
+    public function getSafetyAttribute()
+    {
+        return $this->getDetails()->safety ?? null;
+    }
+
+    /**
+     * Get the service attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the service details of the vehicle from the JSON-decoded
+     * details attribute. If the service details are not set, it returns null.
+     *
+     * @return string|null The service details of the vehicle, or null if not set.
+     */
+    public function getServiceAttribute()
+    {
+        return $this->getDetails()->service ?? null;
+    }
+
+    /**
+     * Get the faults attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the faults of the vehicle from the JSON-decoded
+     * details attribute. If the faults are not set, it returns null.
+     *
+     * @return string|null The faults of the vehicle, or null if not set.
+     */
+    public function getFaultsAttribute()
+    {
+        return $this->getDetails()->faults ?? null;
+    }
+
+    /**
+     * Define a polymorphic relationship to the owner model.
+     *
+     * This method sets up a polymorphic relationship, allowing the vehicle to belong to
+     * multiple types of models (e.g., User, Admin) through a single association.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo The polymorphic relationship instance.
+     */
+    public function ownerable()
+    {
+        return $this->morphTo();
+    }
+
+    /**
+     * Define a relationship with the User model for the owner.
+     *
+     * This method sets up a belongs-to relationship with the User model,
+     * indicating that each vehicle is owned by a user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo The related User or Admin model instance.
+     */
+    public function getOwnerAttribute()
+    {
+        return $this->ownerable;
+    }
+
+    /**
+     * Determine if the vehicle is on sale and return the corresponding color.
+     *
+     * This accessor method returns a color string based on whether the vehicle is on sale.
+     * The color is used for visual representation of the sale status.
+     *
+     * @return string The color associated with the sale status.
+     *                'green' if on sale, otherwise 'red'.
+     */
+    public function getOnSaleStatusColorAttribute()
+    {
+        return $this->discount(false) > 0 ? 'green-400' : 'white';
     }
 
     /**
@@ -173,190 +508,4 @@ class Vehicle extends Model
             'minivan' => 'fuchsia',
         ][$this->type] ?? 'slate'; // Default color if type is not matched
     }
-
-    /**
-     * Get the formatted human-readable price attribute.
-     *
-     * This accessor method formats the price attribute into a human-readable string,
-     * including the currency symbol and amount with two decimal places.
-     *
-     * @return string The formatted price with the currency symbol.
-     */
-    public function getHumanPriceAttribute()
-    {
-        return app_currency_symbol() . ' ' . number_format($this->get_price->amount);
-    }
-
-    /**
-     * Get the formatted human-readable sale price attribute.
-     *
-     * This accessor method formats the sale price into a human-readable string,
-     * including the currency symbol and amount with two decimal places.
-     *
-     * @return string The formatted sale price with the currency symbol.
-     */
-    public function getHumanSalePriceAttribute()
-    {
-        return app_currency_symbol() . ' ' . number_format($this->get_price->sale);
-    }
-
-    /**
-     * Get the sale price from the price attribute.
-     *
-     * This method extracts and returns the sale price from the JSON-decoded
-     * price attribute.
-     *
-     * @return float|null The sale price.
-     */
-    public function getSalePriceAttribute()
-    {
-        $price = json_decode($this->price);
-        return $price->sale ?? null;
-    }
-
-    /**
-     * Calculate the discount percentage based on the sale and original price.
-     *
-     * This method calculates the discount percentage if the vehicle is on sale.
-     * If not on sale, it returns 0.
-     *
-     * @return float The discount percentage or 0 if not on sale.
-     */
-    public function discount($symbol = true)
-    {
-        $price = json_decode($this->price);
-        $sale = $price->sale ?? 0;
-        $on_sale = $price->on_sale ?? false;
-        $amount = $price->amount ?? 0;
-        $discount = '';
-        if ($symbol) {
-            $symbol = '%';
-        }
-
-        if ($on_sale) {
-            $discount = round((($amount - $sale) / $amount) * 100);
-        }
-        return $discount >= 0 ? $discount . $symbol : 0 . $symbol;
-    }
-
-    /**
-     * Determine if the vehicle is on sale and return the corresponding color.
-     *
-     * This accessor method returns a color string based on whether the vehicle is on sale.
-     * The color is used for visual representation of the sale status.
-     *
-     * @return string The color associated with the sale status.
-     *                'green' if on sale, otherwise 'red'.
-     */
-    public function getOnSaleStatusColorAttribute()
-    {
-        return $this->discount(false) > 0 ? 'green-400' : 'white';
-    }
-    /**
-     * Determine if the vehicle is on sale.
-     *
-     * This accessor method returns whether the vehicle is currently on sale.
-     *
-     * @return bool True if on sale, otherwise false.
-     */
-    public function getOnSaleAttribute()
-    {
-        return $this->get_price->on_sale ?? false;
-    }
-
-    /**
-     * Get the price attribute as an object.
-     *
-     * This accessor method decodes the JSON-encoded price attribute and returns it
-     * as an object.
-     *
-     * @return object The decoded price object.
-     */
-    public function price()
-    {
-        $price = json_decode($this->price);
-        $sale = $price->sale ?? 0;
-        $on_sale = $price->on_sale ?? false;
-        $amount = $price->amount ?? 0;
-
-        if ($on_sale) {
-            return $sale;
-        }
-        return $amount;
-    }
-
-    /**
-     * Get the decoded price attribute.
-     *
-     * This accessor method returns the decoded price attribute as an object.
-     *
-     * @return object The decoded price object.
-     */
-    public function getGetPriceAttribute()
-    {
-        return json_decode($this->price);
-    }
-
-    /**
-     * Get the rating stars as a string.
-     *
-     * This accessor method returns a string of stars representing the vehicle's rating
-     * on a 5-star scale. Full stars (★) represent the rating, and empty stars (☆) fill
-     * the remaining slots.
-     *
-     * @return string The rating represented as stars.
-     */
-    public function getRatingStarsAttribute()
-    {
-        $rating = $this->rating ?? 0; // Default rating is 0 if not set
-        return str_repeat('★', $rating) . str_repeat('☆', 5 - $rating); // Assume a 5-star rating system
-    }
-
-    /**
-     * Define a relationship with the User model for the owner.
-     *
-     * This method sets up a belongs-to relationship with the User model,
-     * indicating that each vehicle is owned by a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null The related User or Admin model instance, or null if the owner is not set or invalid.
-     * @throws Exception If the owner type is invalid.
-     */
-    public function owner()
-    {
-        // Get the owner attribute
-        $owner = $this->owner;
-
-        // Check if the owner attribute is set and has type and id properties
-        if ($owner && isset($owner->type, $owner->id)) {
-            $modelClass = $owner->type;
-
-            // Determine the model class based on the owner type
-            if ($modelClass === 'user') {
-                $modelClass = 'App\Models\User';
-            } elseif ($modelClass === 'admin') {
-                $modelClass = 'App\Models\Admin';
-            } elseif (strpos($modelClass, 'App\Models') == false) {
-                $modelClass = 'App\Models\\' . ucwords($modelClass);
-            } else {
-                throw new Exception('Invalid owner type: ' . $owner->type);
-            }
-
-            // Find and return the owner model instance by id
-            return $modelClass::find($owner->id);
-        }
-
-        // Return null if the owner is not set or invalid
-        return null;
-    }
-
-    public function getOwnerTypeAttribute(){
-        $owner = $this->owner;
-        return $owner->type;
-    }
-
-    public function getOwnerIdAttribute(){
-        $owner = $this->owner;
-        return $owner->id;
-    }
-    
 }
