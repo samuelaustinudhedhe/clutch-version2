@@ -5,14 +5,14 @@ use App\View\Livewire\User\Profile\DateOfBirth;
 use App\View\Livewire\User\Profile\Email;
 use App\View\Livewire\User\Profile\Gender;
 use App\View\Livewire\User\Profile\Name;
+use App\View\Livewire\User\Profile\Photo;
 use App\View\Livewire\User\Profile\Show;
 
 Route::prefix('user')->name('user.')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', ])->group(function () {
     Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/',  Show::class);
         Route::get('/',  Show::class)->name('show');
 
-        Route::get('/picture', [UserProfileController::class, 'editShow'])->name('picture');
+        Route::get('/picture', [Photo::class])->name('photo');
         Route::get('/name', Name::class)->name('name');
         Route::get('/birthday', DateOfBirth::class)->name('birthday');
         Route::get('/gender', Gender::class)->name('gender');

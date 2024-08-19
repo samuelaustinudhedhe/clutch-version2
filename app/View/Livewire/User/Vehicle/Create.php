@@ -8,6 +8,6 @@ class Create extends Component
 {
     public function render()
     {
-        return view('user.vehicle.create');
+        return view('user.vehicle.create')->layout('layouts.user');
     }
 }

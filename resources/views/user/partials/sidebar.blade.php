@@ -18,7 +18,7 @@
 
         {{-- Vehicles --}}
         @permission('add_vehicles', 'create_posts')
-            <x-aside-menu-dropdown name="vehicles" href="vehicles">
+            <x-aside-menu-dropdown name="vehicles" href="{{ route('user.vehicles.index') }}">
                 <svg aria-hidden="true"
                     class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -27,13 +27,13 @@
                 </svg>
                 My Vehicles
                 <x-slot name="items">
-                    <x-aside-menu-dropdown-item name="Rentals" href="/" />
-                    <x-aside-menu-dropdown-item name="Trips" href="/" />
+                    <x-aside-menu-dropdown-item name="Rentals" href="{{ route('user.vehicles.index') }}" />
+                    <x-aside-menu-dropdown-item name="Trips" href="{{ route('user.vehicles.index') }}" />
 
                 </x-slot>
             </x-aside-menu-dropdown>
         @endpermission
-        <x-aside-menu-dropdown name="trips" href="/user/trips">
+        <x-aside-menu-dropdown name="trips" href="{{ route('user.trips.index') }}">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -60,7 +60,7 @@
         </x-aside-menu-dropdown>
 
         {{-- Wallet --}}
-        <x-aside-menu-dropdown name="wallet" href="/wallet">
+        <x-aside-menu-dropdown name="wallet" href="{{ route('user.wallet.index') }}">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -92,7 +92,7 @@
         </x-aside-menu-dropdown>
 
         {{-- Profile --}}
-        <x-aside-menu-dropdown name="profile" href="/profile">
+        <x-aside-menu-dropdown name="profile" href="{{ route('user.profile.show') }}">
             <svg class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                 viewBox="0 0 24 24">
@@ -102,9 +102,9 @@
             Profile
 
             <x-slot name="items">
-                <x-aside-menu-dropdown-item name="Edit Photo" href="/user/profile/photo/" />
-                <x-aside-menu-dropdown-item name="Change Passwod" href="/user/profile/password/" />
-                <x-aside-menu-dropdown-item name="2AF" href="/user/profile/2af/" />
+                <x-aside-menu-dropdown-item name="Edit Photo" href="{{ route('user.profile.photo') }}" />
+                <x-aside-menu-dropdown-item name="Change Passwod" href="{{ route('user.profile.password') }}" />
+                <x-aside-menu-dropdown-item name="2AF" href="{{ route('user.profile.2af') }}" />
             </x-slot>
         </x-aside-menu-dropdown>
     </x-aside-menu>
@@ -113,7 +113,7 @@
     <x-aside-menu name="menu2" class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
 
         {{-- Doc --}}
-        <x-aside-menu-dropdown name="doc" href="/wallet">
+        <x-aside-menu-dropdown name="doc" href="/docs">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -125,7 +125,7 @@
         </x-aside-menu-dropdown>
 
         {{-- Components --}}
-        <x-aside-menu-dropdown name="components" href="/wallet">
+        <x-aside-menu-dropdown name="components" href="/faq">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -134,11 +134,11 @@
                 </path>
             </svg>
 
-            Components
+            FAQ
         </x-aside-menu-dropdown>
 
         {{-- Help --}}
-        <x-aside-menu-dropdown name="help" href="/wallet">
+        <x-aside-menu-dropdown name="help" href="/help">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"

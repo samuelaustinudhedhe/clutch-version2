@@ -1,8 +1,8 @@
 {{-- Container --}}
-<div class="">
+<div class="max-w-screen-xl m-auto">
     {{-- Top Section --}}
     <div
-        class="rounded-xl bg-white dark:bg-gray-800 text-center text-gray-600 dark:text-gray-300 shadow-lg overflow-hidden sm:p-8 p-4 mt-10 sm:m-4 ">
+        class="rounded-xl bg-white dark:bg-gray-800 text-center  text-gray-600 dark:text-gray-300 shadow-lg overflow-hidden sm:p-8 p-4 mt-10 sm:m-4 ">
         <h1 class="lg:text-2xl text-xl mb-2 text-gray-900 dark:text-white">Personal info</h1>
         <p class="mb-6 lg:text-base text-sm">Info about you and your preferences across Clutch services</p>
 
@@ -40,7 +40,7 @@
         </p>
 
         {{-- main --}}
-        <a href="{{ route('user.profile.picture') }}"
+        <a href="{{ route('user.profile.photo') }}"
             class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Profile picture

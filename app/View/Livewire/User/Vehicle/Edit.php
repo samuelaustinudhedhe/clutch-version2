@@ -8,6 +8,6 @@ class Edit extends Component
 {
     public function render()
     {
-        return view('user.vehicle.edit');
+        return view('user.vehicle.edit')->layout('layouts.user');
     }
 }
