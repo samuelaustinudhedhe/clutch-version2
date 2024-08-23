@@ -147,12 +147,12 @@ class Kernel
      * @param array|string $roles The roles to be checked. Can be an array of roles or a single role as a string.
      * @return string The middleware string for role checking.
      */
-    public static function role($roles)
+    public static function role($roles, $guard = null)
     {
         if (is_array($roles)) {
             $roles = implode('|', $roles);
         }
-        return "role:$roles";
+        return "role:$roles,$guard";
     }
 
     /**
@@ -164,17 +164,17 @@ class Kernel
      * @param array|string $permissions The permissions to be checked. Can be an array of permissions or a single permission as a string.
      * @return string The middleware string for permission checking.
      */
-    public static function permission($permissions)
+    public static function permission($permissions, $guard = null)
     {
         if (is_array($permissions)) {
             $permissions = implode('|', $permissions);
         }
-        return "permission:$permissions";
+        return "permission:$permissions,$guard";
     }
 
     public static function adminAuthMiddleware():array{
 
-        return ['auth:admin', 'admin'];
+        return ['admin'];
         
     } 
 

@@ -52,7 +52,7 @@ class AttachmentFactory extends Factory
             'authorable_id' => $authorable->id,
             'authorable_type' => $authorable->getMorphClass(),
 
-            'created_at' =>  $faker->dateTimeBetween('-2 years', 'now'),
+            'created_at' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d H:i:s'),            
             'updated_at' => now(),
         ];
     }

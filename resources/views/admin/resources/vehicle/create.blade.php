@@ -276,74 +276,6 @@
                                 <x-input-error for="interior_ac" />
                             </div>
                         </div>
-
-                    </div>
-                    {{-- Location --}}
-                    <div
-                        class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-                        <div class="mb-2 flex items-center gap-1">
-                            <p class="text-lg text-gray-900 dark:text-white">
-                                Location
-                            </p>
-                            <svg class="h-4 w-4 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                data-tooltip-target="role-type-desc-1" data-tooltip-trigger="hover"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.408-5.5a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2h-.01ZM10 10a1 1 0 1 0 0 2h1v3h-1a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-1v-4a1 1 0 0 0-1-1h-2Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <div id="role-type-desc-1" role="tooltip"
-                                class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700">
-                                Select a Vehicle type to create a new Vehicle.
-                                <div class="tooltip-arrow" data-popper-arrow></div>
-                            </div>
-                        </div>
-
-                        <div class="grid gap-4 sm:grid-cols-2">
-
-                            <div>
-                                <x-label for="street-address">Street</x-label>
-                                <x-xinput type="text" wire:model="street" id="street-address"
-                                    name="street-address" />
-                                <x-input-error for="street" />
-                            </div>
-
-                            <div>
-                                <x-label for="apt-unit">Apt/Unit Number</x-label>
-                                <x-xinput type="text" wire:model="house" id="apt-unit" name="apt-unit" />
-                                <x-input-error for="house" />
-                            </div>
-                            <div class="sm:col-span-2 flex gap-4">
-
-                                <div class="w-2/4">
-                                    <x-label for="city">City</x-label>
-                                    <x-xinput type="text" wire:model="city" id="city" name="city" />
-                                    <x-input-error for="city" />
-                                </div>
-
-                                <div class="w-2/4">
-                                    <x-label for="state">State/Province</x-label>
-                                    <x-xinput type="text" wire:model="state" id="state" name="state" />
-                                    <x-input-error for="state" />
-                                </div>
-                            </div>
-                            <div class="sm:col-span-2 flex gap-4">
-                                <div class="w-2/4">
-                                    <x-label for="postal-code">Postal/Zip Code</x-label>
-                                    <x-xinput type="text" wire:model="zip_code" id="postal-code"
-                                        name="postal-code" />
-                                    <x-input-error for="postal-code" />
-                                </div>
-
-                                <div class="w-2/4">
-                                    <x-label for="country">Country</x-label>
-                                    <x-xinput type="text" wire:model="country" id="country" name="country" />
-                                    <x-input-error for="country" />
-                                </div>
-                            </div>
-                            <x-input-error for="role" />
-                        </div>
                     </div>
                 </div>
 
@@ -421,7 +353,8 @@
 
 
                     <div>
-                        <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+                        <div
+                            class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
                             <div class="mb-2 flex items-center gap-1">
                                 <p class="text-lg text-gray-900 dark:text-white">
                                     PDF Document Upload
@@ -430,9 +363,16 @@
 
                             <div class="grid grid-cols-3 gap-4 mb-4">
                                 @foreach ($documents as $document)
-                                    <div class="relative overflow-hidden rounded-lg sm:w-36 sm:h-36 dark:bg-gray-700 border-4 border-transparent">
-                                        <embed src="{{ Storage::url($document['path']) }}" type="application/pdf" class="max-w-[156px] max-h-[156px] min-w-[156px] min-h-[156px] rounded-lg"
-                                        width="156px" height="156px" />
+                                    <div
+                                        class="relative overflow-hidden rounded-lg sm:w-36 sm:h-36 dark:bg-gray-700 border-4 border-transparent">
+                                        @if (str_contains($document['mime_type'], 'pdf'))
+                                            <embed src="{{ Storage::url($document['path']) }}" type="application/pdf"
+                                                class="max-w-[156px] max-h-[156px] min-w-[156px] min-h-[156px] rounded-lg"
+                                                width="156px" height="156px" />
+                                        @else
+                                            <img src="{{ Storage::url($document['path']) }}" alt="PDF Document"
+                                                class="max-w-[144px] max-h-[144px] min-w-[144px] min-h-[144px] object-cover" />
+                                        @endif
 
                                         <button type="button" wire:click="removeDocument({{ $loop->index }})"
                                             class="absolute text-rose-600 dark:text-rose-500 hover:text-rose-500 dark:hover:text-rose-400 bottom-1 left-1 p-1 bg-[#00000063] rounded-lg ">
@@ -447,13 +387,14 @@
                                     </div>
                                 @endforeach
                             </div>
-                    
+
                             <div class="flex items-center justify-center w-full">
                                 <label for="dropzone-file"
                                     class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                         </svg>
@@ -462,12 +403,13 @@
                                         </p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">PDF (MAX. 5MB)</p>
                                     </div>
-                                    <input id="dropzone-file" type="file" wire:model="newDocuments" multiple class="hidden">
+                                    <input id="dropzone-file" type="file" wire:model="newDocuments" multiple
+                                        class="hidden">
                                 </label>
                             </div>
                         </div>
                     </div>
-                    
+
 
                     {{-- Vehicle Owner --}}
                     <div class="space-y-4 sm:space-y-6">

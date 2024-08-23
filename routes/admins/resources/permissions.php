@@ -9,7 +9,7 @@ use App\View\Livewire\Admin\Resources\Permissions\Show as PermissionShow;
 
 Route::prefix(app_admin_url())->name('admin.')->middleware(Kernel::adminAuthMiddleware())->group(function () {
 
-    Route::prefix('permissions')->name('permissions.')->middleware([ Kernel::permission(['manage_permissions']),Kernel::role('SuperAdmin')])->group(function () {
+    Route::prefix('permissions')->name('permissions.')->middleware([ Kernel::permission(['manage_permissions'],'admin'),Kernel::role('SuperAdmin','admin')])->group(function () {
         Route::get('/', PermissionsIndex::class)->name('index');
         Route::get('create', PermissionCreate::class)->name('create');
         Route::get('edit/{role}', PermissionEdit::class)->name('edit');

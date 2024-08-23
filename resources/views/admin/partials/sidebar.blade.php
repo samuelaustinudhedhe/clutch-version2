@@ -18,7 +18,7 @@
         </x-aside-menu-dropdown>
 
         {{-- Users --}}
-        <x-aside-menu-dropdown name="users" href="users">
+        <x-aside-menu-dropdown name="users" href="{{ route('admin.users.index') }}">
             <svg class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                 viewBox="0 0 24 24">
@@ -36,7 +36,7 @@
         </x-aside-menu-dropdown>
 
         {{-- Vehicles --}}
-        <x-aside-menu-dropdown name="vehicles" href="vehicles">
+        <x-aside-menu-dropdown name="vehicles" href="{{ route('admin.vehicles.index') }}">
 
             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M4 4a1 1 0 0 1 1-1h1.5a1 1 0 0 1 .979.796L7.939 6H19a1 1 0 0 1 .979 1.204l-1.25 6a1 1 0 0 1-.979.796H9.605l.208 1H17a3 3 0 1 1-2.83 2h-2.34a3 3 0 1 1-4.009-1.76L5.686 5H5a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
@@ -55,7 +55,7 @@
     <x-aside-menu name="menu2" class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
 
         {{-- Help desk --}}
-        <x-aside-menu-dropdown name="helpdesk" href="/wallet">
+        <x-aside-menu-dropdown name="helpdesk" href="#">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -67,7 +67,7 @@
         </x-aside-menu-dropdown>
 
         {{-- Refunds --}}
-        <x-aside-menu-dropdown name="Refunds" href="/wallet">
+        <x-aside-menu-dropdown name="Refunds" href="#">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

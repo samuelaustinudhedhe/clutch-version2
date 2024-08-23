@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
                 'role' => $role->slug,
             ]);
         }
-        // Create 1432 users
-        User::factory(30)->create();
+        // Create fake users
+        User::factory(2)->create();
     }
 }
