@@ -45,6 +45,9 @@ class Create extends Component
     public $newDocuments = [];
     public $documentErrorMessages = [];
 
+    // Upload progress
+    public $uploadProgress = 0;
+
     // Vehicle owner
     public $owner;
     public $selectedUser;
@@ -92,7 +95,7 @@ class Create extends Component
                 $error = "The file " . $fileName . " is not a valid image.";
             }
             // Validate the file size (1MB limit)
-            elseif ($newImage->getSize() > 1024 * 2024) {
+            elseif ($newImage->getSize() > 1024 * 1024 * 4) {
                 $error = "The file " . $fileName . " exceeds the maximum size of 1MB.";
             }
             // Check if the image already exists
@@ -290,12 +293,12 @@ class Create extends Component
 
             // Determine the storage path for the document
             $path = $document['path'];
-            $storedPath = Storage::disk('public')->move($path, $folder . '/' . $filename. '.'. $extension);
-    
+            $storedPath = Storage::disk('public')->move($path, $folder . '/' . $filename . '.' . $extension);
+
             // Create a new attachment record for the document
             AttachmentController::create(
                 $document['name'],
-                $vehicle->name.'documents', // You can add a description if necessary
+                $vehicle->name . 'documents', // You can add a description if necessary
                 '', // No encoded content since this is not an image
                 $vehicle,
                 $user,
@@ -304,7 +307,7 @@ class Create extends Component
             );
         }
     }
-    
+
 
 
     /**
@@ -444,8 +447,8 @@ class Create extends Component
     public function render()
     {
         $users = User::search('name', $this->userSearch)
-                     ->where('role', 'owner')
-                     ->paginate($this->usersPerPage);
+            ->where('role', 'owner')
+            ->paginate($this->usersPerPage);
 
         return view(
             'admin.resources.vehicle.create',

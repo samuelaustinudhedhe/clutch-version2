@@ -28,7 +28,7 @@
 
             <div class="flex items-center justify-center">
                 <div class="grid space-y-6 text-center">
-                    <img src="/assets/images/placeholders/985e307e72.png" alt="Placeholder Image" class="mx-auto max-w-sm">
+                    <img src="/assets/images/placeholders/985e307e72.png" alt="Placeholder Image" class="mx-auto max-w-[200px] min-w-[150px]">                    
                     <p class="text-gray-600 mt-8 dark:text-gray-300">No vehicles found.</p>
                     <p class="text-gray-600 mt-8 dark:text-gray-300">List a Vehicle and start earing form Africa's
                         largest vehicle sharing

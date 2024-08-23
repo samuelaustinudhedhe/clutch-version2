@@ -351,7 +351,7 @@
                         <x-input-error for="images" />
                     </div>
 
-
+                    {{-- Vehicle Documents  --}}
                     <div>
                         <div
                             class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
@@ -409,7 +409,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     {{-- Vehicle Owner --}}
                     <div class="space-y-4 sm:space-y-6">

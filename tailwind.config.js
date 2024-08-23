@@ -85,5 +85,6 @@ export default {
         forms,
         typography,
         require('flowbite/plugin'), // Add this line
+        require('@tailwindcss/line-clamp'),
     ],
 };
