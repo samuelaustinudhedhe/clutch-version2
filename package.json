@@ -6,8 +6,11 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@tailwindcss/aspect-ratio": "^0.4.2",
+        "@tailwindcss/container-queries": "^0.1.1",
         "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/typography": "^0.4.1",
+        "@types/tailwindcss__typography": "^0.5.0",
         "autoprefixer": "^10.4.16",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0",
@@ -16,7 +19,6 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "@tailwindcss/line-clamp": "^0.4.4",
         "flowbite": "^2.3.0"
     }
 }

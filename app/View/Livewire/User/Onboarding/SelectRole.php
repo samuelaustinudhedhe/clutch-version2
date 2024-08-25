@@ -56,24 +56,6 @@ class SelectRole extends Component
         }
     }
 
-    // Move to the next step in the onboarding process
-    public function nextStep()
-    {
-        $this->dispatch('onboarding-next-step');
-    }
-
-    // Move to the previous step in the onboarding process
-    public function prevStep()
-    {
-        $this->dispatch('onboarding-prev-step');
-    }
-
-    // Skip the onboarding process
-    public function skip()
-    {
-        $this->dispatch('onboarding-skip');
-    }
-
     // Render the view for the component
     public function render()
     {

@@ -1,7 +1,7 @@
 <div>
     <section class="bg-white py-8 antialiased dark:bg-gray-900">
 
-        <form action="#" class="mx-auto max-w-screen-xl px-4 2xl:px-0" wire:submit.prevent="createVehicle">
+        <form action="#" class="mx-auto max-w-screen-xl px-4 2xl:px-0" wire:submit.prevent="storeVehicle">
 
             <h2 class="text-xl text-gray-900 dark:text-white sm:text-2xl">Create New Vehicle</h2>
 

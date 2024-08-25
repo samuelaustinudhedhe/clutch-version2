@@ -4,14 +4,47 @@ namespace App\View\Livewire\User\Onboarding;
 
 use App\Notifications\Onboarding\Completed;
 use App\Notifications\Onboarding\Skipped;
+use App\Traits\WithSteps;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Layout extends Component
 {
-    public $step = 0;
+    use WithSteps;
+
     public $role;
     public $user;
+    public $data = [];
+
+    protected $rules = [
+
+        // 'data.role' => '',
+        // 'data.address'=> '',
+        // 'data.address.home.street'=> '',
+        // 'data.address.home.unit'=> '',
+        // 'data.address.home.city'=> '',
+        // 'data.address.home.state'=> '',
+        // 'data.address.home.country'=> '',
+        // 'data.address.home.postal_code'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+        // 'data.'=> '',
+    ];
+
 
     /**
      * Initialize the component by setting the user property.
@@ -22,43 +55,42 @@ class Layout extends Component
      * @return void
      */
     public function mount()
-    {
+    {        
+
         $this->user = getUser();
+        $this->data = $this->load();
     }
 
+    public function defineSteps()
+    {
+        $this->stepNames = [
+            0 => 'Introduction',
+            1 => 'Your Goal',
+            2 => 'Personal Details',
+            3 => 'Verification',
+            4 => 'KYC',
+            5 => 'Review and Submit'
+        ];
+        $this->totalSteps = count($this->stepNames) - 1;
+    }
+
+    public function defineStore()
+    {
+        $this->rules['data.role'] = 'required|exists:roles,slug';
+
+        $this->storePath = "Users/".getUser()->id."/data/onboarding.json";
+        $this->storeData = $this->data;
+    }
     /**
      * Check and update the current step based on the user's role.
      */
     public function checkSteps()
     {
-        if (auth()->user()->role !== 'subscriber' && ($this->step == 0 || $this->step == 1)) {
-            //    $this->step = 2;
+        if (getUser()->role !== 'subscriber' && ($this->currentStep == 0 || $this->currentStep == 1)) {
+            $this->currentStep = 2;
         }
     }
 
-    /**
-     * Move to the next step in the onboarding process.
-     * 
-     * @return void
-     */
-    #[On('onboarding-next-step')]
-    public function nextStep()
-    {
-        $this->step++;
-        $this->checkSteps();
-    }
-
-    /**
-     * Move to the previous step in the onboarding process.
-     * 
-     * @return void
-     */
-    #[On('onboarding-prev-step')]
-    public function prevStep()
-    {
-        $this->step--;
-        $this->checkSteps();
-    }
 
     /**
      * Complete the onboarding process.
@@ -70,7 +102,7 @@ class Layout extends Component
     {
         $this->user->forceFill([
             'boarding->status' => 'completed',
-            'boarding->step' => $this->step,
+            'boarding->step' => $this->currentStep,
             'boarding->restart_at' => '',
             'boarding->completed_at' => now(),
         ])->save();
@@ -93,7 +125,7 @@ class Layout extends Component
             // Update the user's onboarding status
             $this->user->forceFill([
                 'boarding->status' => 'skipped',
-                'boarding->step' => $this->step,
+                'boarding->step' => $this->currentStep,
                 'boarding->restart_at' => now()->addDays(2),
                 'boarding->completed_at' => '',
             ])->save();
@@ -106,8 +138,22 @@ class Layout extends Component
         return redirect()->route('user.dashboard')->with('info', 'You have skipped the onboarding process.');
     }
 
+
+
+
+
     public function render()
     {
-        return view('user.onboarding.layout');
+        return view(
+            'user.onboarding.layout',
+            [
+                'prevStepName' => $this->getPrevStepName(),
+                'nextStepName' => $this->getNextStepName(),
+                'currentStepName' => $this->getStepName($this->currentStep),
+                'currentStep' => $this->currentStep,
+                'nextPrefix' => 'next-',
+                'prevPrefix' => 'prev-',
+            ]
+        );
     }
 }

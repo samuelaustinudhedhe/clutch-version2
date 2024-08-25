@@ -24,15 +24,102 @@ class Create extends Component
     use WithFileUploads;
 
     // Vehicle properties
-    public $vin;
-    public $vit;
     public $vits = [];
-    public $status;
     public $vehicleTypes = [];
     public $vehicleSubTypes = [];
     public $selectedVehicleSubType;
     public $selectedVehicleType;
-    public $vehicleDetails = [];
+    public $vehicleD = [];
+
+    // Basic Vehicle Information
+    public $name = '';  // Name of the vehicle
+    public $slug = '';  // Unique slug for the vehicle
+    public $vit = '';  // Vehicle identification type (e.g., VIN, HIN, etc.)
+    public $vin = '';  // Vehicle identification number
+    public $description = '';  // Description of the vehicle
+    public $rating = 0;  // Rating of the vehicle
+    public $price = 0;  // Price of the vehicle
+    public $status = '';  // Status of the vehicle (e.g., active, inactive, etc.)
+
+    // Location Information
+    public $location_city = '';  // City where the vehicle is located
+    public $location_state = '';  // State where the vehicle is located
+    public $location_country = '';  // Country where the vehicle is located
+
+    // Vehicle Details
+    public $type = '';  // Vehicle type (e.g., car, motorcycle, etc.)
+    public $make = '';  // Make of the vehicle (e.g., Toyota, Honda, etc.)
+    public $manufacturer = '';  // Manufacturer of the vehicle
+    public $model = '';  // Model of the vehicle (e.g., Camry, Accord, etc.)
+    public $year = '';  // Year of manufacture
+
+    // Exterior Details
+    public $exterior_color = '';  // Exterior color of the vehicle
+    public $exterior_type = '';  // Type of exterior (e.g., Sedan, Convertible, etc.)
+    public $exterior_doors = 0;  // Number of doors
+    public $exterior_windows = '';  // Type of windows (e.g., Power, Manual, etc.)
+
+    // Interior Details
+    public $interior_seats = 0;  // Number of seats
+    public $interior_upholstery = '';  // Upholstery type (e.g., Leather, Fabric, etc.)
+    public $interior_color = '';  // Interior color
+    public $interior_ac = '';  // Air conditioning availability
+    public $interior_heater = '';  // Heater availability
+
+    // Dimensions
+    public $dimensions_length = '';  // Length of the vehicle
+    public $dimensions_width = '';  // Width of the vehicle
+    public $dimensions_height = '';  // Height of the vehicle
+
+    // Engine Details
+    public $engine_size = '';  // Engine size (e.g., 2.5L)
+    public $engine_hp = '';  // Horsepower of the engine
+    public $engine_type = '';  // Type of engine (e.g., Inline-4, V6, etc.)
+
+    // Transmission Details
+    public $transmission_type = '';  // Transmission type (e.g., Automatic, Manual, etc.)
+    public $transmission_gear_ratio = '';  // Gear ratio
+    public $transmission_gears = 0;  // Number of gears
+    public $transmission_oil = '';  // Oil type used in transmission
+    public $transmission_drivetrain = '';  // Drivetrain type (e.g., FWD, AWD, etc.)
+
+    // Fuel Details
+    public $fuel_type = '';  // Fuel type (e.g., Gasoline, Diesel, etc.)
+    public $fuel_economy = '';  // Fuel economy (e.g., 28 city / 39 highway)
+
+    // Modifications
+    public $modifications_performance = '';  // Performance modifications (e.g., Turbo, Exhaust, etc.)
+    public $modifications_aesthetic = '';  // Aesthetic modifications (e.g., Custom rims)
+    public $modifications_interior = '';  // Interior modifications (e.g., LED lighting)
+
+    // Security Features
+    public $security_auto_lock = '';  // Auto lock availability
+    public $security_alarm_system = '';  // Alarm system availability
+    public $security_tracking_system = '';  // Tracking system availability
+
+    // Safety Features
+    public $safety_airbags = '';  // Airbags availability
+    public $safety_emergency_braking = '';  // Emergency braking system availability
+
+    // Service Information
+    public $service_status = '';  // Service status (e.g., serviced, in service, etc.)
+    public $last_service_date = '';  // Last service date
+    public $last_inspection_date = '';  // Last inspection date
+
+    // Faults
+    public $faults = '';  // Any faults with the vehicle (e.g., brakes, tires, etc.)
+
+    // Insurance Information
+    public $insurance_provider = '';  // Insurance provider
+    public $insurance_policy_number = '';  // Insurance policy number
+    public $insurance_coverage = '';  // Type of coverage (e.g., Full, Third-party, etc.)
+    public $insurance_expiry_date = '';  // Expiry date of the insurance
+
+    // Chauffeur Information
+    public $chauffeur_name = '';  // Name of the chauffeur
+    public $chauffeur_license_number = '';  // Chauffeur's license number
+    public $chauffeur_availability = '';  // Availability of the chauffeur (e.g., Full-time, Part-time)
+
 
     // Images for the vehicle
     public $images = [];
@@ -255,7 +342,7 @@ class Create extends Component
 
             // Compress and encode the image
             $image = (new AttachmentCompressController)->read($image);
-            $encodedImage = AttachmentCompressController::image($image, 'jpg', 80);
+            $encodedImage = AttachmentCompressController::image($image, 'webp', 80);
 
             // Store the encoded image in the specified path
             AttachmentController::store($path, $encodedImage);
@@ -317,7 +404,7 @@ class Create extends Component
      *
      * @return \Illuminate\Http\RedirectResponse Redirects to the vehicle index page with a success message.
      */
-    public function saveVehicle()
+    public function storeVehicle()
     {
         $this->validate([
             'vin' => 'required|size:17', // Validate VIN (Vehicle Identification Number)
@@ -327,14 +414,101 @@ class Create extends Component
         ]);
 
         // Create a new vehicle record
-        $vehicle = new Vehicle();
-        $vehicle->vin = $this->vin;
-        $vehicle->type = $this->selectedVehicleType;
-        $vehicle->sub_type = $this->selectedVehicleSubType;
-        // Set other vehicle properties as needed
 
-        $vehicle->save(); // Save the vehicle to the database
-
+        $vehicle = Vehicle::create([
+            'name' => '',
+            'slug' => '',
+            'vin' => json_encode([
+                'type' => $this->vit,
+                'number' => $this->vin,
+            ]),
+            'description' => 'A reliable mid-size sedan with excellent fuel economy and a comfortable interior.',
+            'rating' => 4.5,
+            'price' => json_encode([
+                'currency' => 'NGN',
+                'amount' => $this->price,
+            ]),
+            'status' => $this->status,
+            'location' => json_encode([
+                'city' => 'Los Angeles',
+                'state' => 'California',
+                'country' => 'USA',
+            ]),
+            'details' => json_encode([
+                'type' => $this->type,
+                'make' => $this->make,
+                'manufacturer' => $this->manufacturer,
+                'model' => $this->model,
+                'year' => $this->year,
+                'exterior' => [
+                    'color' => $this->exterior_color,
+                    'type' => $this->exterior_type,
+                    'doors' => $this->exterior_doors,
+                    'windows' => $this->exterior_windows,
+                ],
+                'interior' => [
+                    'seats' => $this->interior_seats,
+                    'upholstery' => $this->interior_upholstery,
+                    'color' => $this->interior_color,
+                    'ac' => $this->interior_ac,
+                    'heater' => $this->interior_heater,
+                ],
+                'dimensions' => [
+                    'length' => $this->dimensions_length,
+                    'width' => $this->dimensions_width,
+                    'height' => $this->dimensions_height,
+                ],
+                'engine' => [
+                    'size' => $this->engine_size,
+                    'hp' => $this->engine_hp,
+                    'type' => $this->engine_type,
+                ],
+                'transmission' => [
+                    'type' => $this->transmission_type,
+                    'gear_ratio' => $this->transmission_gear_ratio,
+                    'gears' => $this->transmission_gears,
+                    'oil' => $this->transmission_oil,
+                    'drivetrain' => $this->transmission_drivetrain,
+                ],
+                'fuel' => [
+                    'type' => $this->fuel_type,
+                    'economy' => $this->fuel_economy,
+                ],
+                'modifications' => [
+                    'performance' => $this->modifications_performance,
+                    'aesthetic' => $this->modifications_aesthetic,
+                    'interior' => $this->modifications_interior,
+                ],
+                'security' => [
+                    'auto_lock' => $this->security_auto_lock,
+                    'alarm_system' => $this->security_alarm_system,
+                    'tracking_system' => $this->security_tracking_system,
+                ],
+                'safety' => [
+                    'airbags' => $this->safety_airbags,
+                    'emergency_braking' => $this->safety_emergency_braking,
+                ],
+                'service' => [
+                    'status' => $this->service_status,
+                    'last_service_date' => $this->last_service_date,
+                    'last_inspection_date' => $this->last_inspection_date,
+                ],
+                'faults' => $this->faults,
+            ]),
+            'insurance' => json_encode([
+                'provider' => $this->insurance_provider,
+                'policy_number' => $this->insurance_policy_number,
+                'coverage' => $this->insurance_coverage,
+                'expiry_date' => $this->insurance_expiry_date,
+            ]),
+            'chauffeur' => json_encode([
+                'name' => $this->chauffeur_name,
+                'license_number' => $this->chauffeur_license_number,
+                'availability' => $this->chauffeur_availability,
+            ]),
+            'ownerable_id' => $this->getOwner()->id,
+            'ownerable_type' => get_class($this->getOwner()),
+        ]);
         // Store the vehicle images and documents
         $this->storeVehicleImages($this->getOwner(), $vehicle);
         $this->storeVehicleDocuments($this->getOwner(), $vehicle);

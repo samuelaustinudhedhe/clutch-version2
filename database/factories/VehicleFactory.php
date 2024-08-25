@@ -172,7 +172,8 @@ class VehicleFactory extends Factory
     {
         // Fetch a random user or admin
         $user = \App\Models\User::inRandomOrder()->first();
-        $admin = \App\Models\Admin::inRandomOrder()->first();
+        $admin = \App\Models\User::inRandomOrder()->first();//replace admin with user so all users will have a vehicle association
+        // $admin = \App\Models\Admin::inRandomOrder()->first();
         // Determine which one to use as authorable
         return fake()->randomElement(['user', 'admin']) === 'user' ? $user : $admin;
     }

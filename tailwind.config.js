@@ -1,7 +1,8 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
-const colors = require('tailwindcss/colors');
+import aspectRatio from '@tailwindcss/aspect-ratio';
+import containerQueries from '@tailwindcss/container-queries';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -10,7 +11,7 @@ export default {
         './vendor/laravel/jetstream/**/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
-        "./node_modules/flowbite/**/*.js"
+        './node_modules/flowbite/**/*.js'
     ],
 
     darkMode: ['selector'],
@@ -20,9 +21,7 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
-            colors: {
-                ...colors,
-            },
+
         },
         screens: {
             'sm': '425px',
@@ -84,7 +83,10 @@ export default {
     plugins: [
         forms,
         typography,
+        aspectRatio,
+        containerQueries,
         require('flowbite/plugin'), // Add this line
-        require('@tailwindcss/line-clamp'),
+
     ],
 };
+``
