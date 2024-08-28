@@ -9,13 +9,14 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Http\Controllers\Attachments\AttachmentUploadController as Upload;
-
+use Illuminate\Support\Facades\Storage;
 
 class Layout extends Component
 {
     use WithSteps, WithFileUploads;
 
     public $user;
+    public $profile_photo;
 
 
     /**
@@ -27,11 +28,58 @@ class Layout extends Component
      * @return void
      */
     public function mount()
-    {        
+    {
         $this->user = getUser();
-
     }
 
+    public function updateProfile_Photo()
+    {
+        $fileName = $this->profile_photo->getClientOriginalName();
+        $storedPath = $this->profile_photo->store('tmp', 'public');
+        $mimeType = $this->profile_photo->getMimeType();
+
+        // Delete the duplicate file uploaded by Livewire
+        $this->deleteFile($this->profile_photo);
+
+        // Store the document details in the documents array
+        $data = [
+            'name' => $fileName,
+            'path' => $storedPath,
+            'mime_type' => $mimeType,
+        ];
+
+        $this->putData(['profile_photo' => $data]);
+
+
+    }
+    /**
+     * Deletes a file from either temporary or permanent storage.
+     *
+     * This function checks if the file is in temporary storage and deletes it if found.
+     * If the file is not in temporary storage, it attempts to delete it from permanent storage.
+     *
+     * @param mixed $file The file to be deleted. This can be an object with a method `getRealPath` for temporary files,
+     *                    or an object with a `path` property for files in permanent storage.
+     * @return void
+     */
+    protected function deleteFile($file)
+    {
+        // Check if the file is in temporary storage
+        if (method_exists($file, 'getRealPath')) {
+            $filePath = $file->getRealPath();
+
+            // Delete the file from the temporary storage
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        } else {
+            // Handle permanent storage deletion if the file is already saved
+            $filePath = $file->path; // Adjust based on how you store the file path
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+        }
+    }
 
     public function defineSteps()
     {
@@ -49,7 +97,7 @@ class Layout extends Component
     public function defineStore()
     {
         $this->storeData = $this->load();
-        $this->storePath = "Users/".getUser()->id."/data/onboarding.json";
+        $this->storePath = "Users/" . getUser()->id . "/data/onboarding.json";
     }
     /**
      * Check and update the current step based on the user's role.
@@ -61,14 +109,15 @@ class Layout extends Component
         }
     }
 
-    protected function submit(){
+    protected function submit()
+    {
         if ($this->storageData['profile_photo']) {
             $this->storeProfilePicture($this->user);
         }
-
     }
 
-    protected function storeProfilePicture($user){
+    protected function storeProfilePicture($user)
+    {
         $folder = 'users/' . toSlug($user->name, '-') . '-' . $user->id . '/profile_photos';
         $filename = 'profile-picture.webp';
 

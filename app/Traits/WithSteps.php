@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Storage;
  * and resetting the process to the introduction step.
  */
 trait WithSteps
-{    
-    public $user;
-
+{
     /**
      * @var int $currentStep The current step in the process.
      */
@@ -40,7 +38,7 @@ trait WithSteps
      * @var string $storePath The path where the step data will be stored.
      */
     public $storePath = '';
-    
+
     /**
      * @var array $storeData The data to be stored.
      */
@@ -218,9 +216,17 @@ trait WithSteps
     public function store()
     {
         $data = $this->storeData ?? '';
-        $path = $this->storePath ?? ''; 
+        $path = $this->storePath ?? '';
         if (!empty($path) && !empty($data)) {
-            Storage::put($path, json_encode(array_merge($data, ['current_step'=> $this->currentStep])));
+            Storage::put($path, json_encode(array_merge($data, ['current_step' => $this->currentStep])));
+        }
+    }
+
+    public function putData($data)
+    {
+        $path = $this->storePath ?? '';
+        if (!empty($path) && !empty($data)) {
+            Storage::put($path, json_encode($data));
         }
     }
 
@@ -264,11 +270,11 @@ trait WithSteps
      */
     public function updateCurrentStep()
     {
-        if (isset($this->storeData['current_step']) && $this->storeData['current_step'] > $this->currentStep &&  $this->currentStep == 0  ) {
+        if (isset($this->storeData['current_step']) && $this->storeData['current_step'] > $this->currentStep &&  $this->currentStep == 0) {
             $this->currentStep = $this->storeData['current_step'];
         }
     }
-    
+
     /**
      * Define the steps for the multi-step process.
      *

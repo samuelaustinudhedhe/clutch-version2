@@ -8,14 +8,16 @@
         <div class="sm:col-span-2 py-4">
             <div class="items-center w-full sm:flex">
                 <img class="mb-4 w-20 h-20 rounded-full sm:mr-4 sm:mb-0 object-cover"
-                    src="{{ (isset($storeData['profile_photo']) && !empty($storeData['profile_photo'])) ? $storeData['profile_photo']->temporaryUrl() : 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png' }}"
+                    src="{{ isset($profile_photo) && is_object($profile_photo) ? $profile_photo->temporaryUrl() : 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png' }}"
                     alt="User Profile Picture">
                 <div class="w-full">
-                    <x-xinput id="profile_photo" wire:model="storeData.profile_photo"
-                        class="w-full text-sm cursor-pointer !p-0" aria-describedby="profile_photo_help" type="file" />
-                    <p class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-300"
-                        id="profile_photo_help">WEBP, PNG, JPG or GIF (MAX. 800x400px).</p>
-                        <x-xinput wire:model="storeData.profile_photo" type='text' />
+                    <x-xinput id="profile_photo" wire:model="profile_photo"
+                        class="w-full text-sm cursor-pointer !p-0" aria-describedby="profile_photo_help" type="file"
+                        wire:change="profile_photo" class="w-full text-sm cursor-pointer !p-0"
+                    aria-describedby="profile_photo_help"
+                    type="file" />
+                    <p class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-300" id="profile_photo_help">WEBP,
+                        PNG, JPG or GIF (MAX. 800x400px).</p>
                 </div>
             </div>
         </div>
@@ -25,15 +27,17 @@
         <div class="sm:col-span-2 mb-6 flex gap-6">
             <div class="w-2/5">
                 <x-label for="country_code">Country Code</x-label>
-                <select id="country_code"  wire:model="storeData.phone.home.country_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <select id="country_code" wire:model="storeData.phone.home.country_code"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option>Select a Code</option>
-                    @foreach($countries as $country)
-                        @if(isset($country['idd']['root']) && isset($country['idd']['suffixes']))
+                    @foreach ($countries as $country)
+                        @if (isset($country['idd']['root']) && isset($country['idd']['suffixes']))
                             <option value="{{ $country['idd']['root'] . $country['idd']['suffixes'][0] }}">
-                                {{ $country['name']['common'] }} ({{ $country['idd']['root'] . $country['idd']['suffixes'][0] }})
+                                {{ $country['name']['common'] }}
+                                ({{ $country['idd']['root'] . $country['idd']['suffixes'][0] }})
                             </option>
                         @endif
-                    @endforeach                                    
+                    @endforeach
                 </select>
                 <x-input-error for="country_code" />
             </div>
@@ -89,7 +93,7 @@
         <div class="mb-4">
             <x-label for="work-address">Work Address</x-label>
             <x-xinput type="text" wire:model="storeData.address.work" id="work-address" address='establishment'
-                onclick="initAddressAutocomplete()"  />
+                onclick="initAddressAutocomplete()" />
             <x-input-error for="work-address" />
         </div>
     </x-div>
@@ -109,5 +113,5 @@
             </div>
         </div>
     </x-div> --}}
-    
+
 </div>
