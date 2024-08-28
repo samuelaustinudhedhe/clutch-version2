@@ -17,7 +17,6 @@
         </x-aside-menu-dropdown>
 
         {{-- Vehicles --}}
-        @permission('add_vehicles', 'create_posts')
             <x-aside-menu-dropdown name="vehicles" href="{{ route('user.vehicles.index') }}">
                 <svg aria-hidden="true"
                     class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
@@ -32,7 +31,6 @@
 
                 </x-slot>
             </x-aside-menu-dropdown>
-        @endpermission
         <x-aside-menu-dropdown name="trips" href="{{ route('user.trips.index') }}">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
