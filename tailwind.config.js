@@ -86,7 +86,6 @@ export default {
         aspectRatio,
         containerQueries,
         require('flowbite/plugin'), // Add this line
-
     ],
 };
 ``

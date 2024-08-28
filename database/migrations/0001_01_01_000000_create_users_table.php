@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('status')->default('inactive'); // user status (active or inactive or suspended)
+            $table->string('status')->default('onboarding'); // user status (active or inactive or suspended)
             $table->float('rating')->default(0);
             $table->rememberToken();
             $table->json('details')->default(json_encode([
@@ -31,10 +31,28 @@ return new class extends Migration
                 'social' => null,
             ]));
             $table->json('records')->default(json_encode([
-                'password_resets_count' => 0,
-                'password_changed_at' => null,
-                'email_changed at' => null,
-                'email_changed_count' => 0,
+                'password' => [
+                    'resets_count' => 0,
+                    'changed_at' => null,
+                    'changed_count' => 0,
+                ],
+                'email' => [
+                    'changed_at' => null,
+                    'changed_from' => null,
+                    'changed_count' => 0,
+                ],
+                'phone' => [
+                    'home' => [
+                        'changed_at' => null,
+                        'changed_from' => null,
+                        'changed_count' => 0,
+                    ],
+                    'work' => [
+                        'changed_at' => null,
+                        'changed_from' => null,
+                        'changed_count' => 0,
+                    ],
+                ],
             ]));
 
             $table->json('boarding')->default(json_encode([
@@ -45,9 +63,29 @@ return new class extends Migration
             ]));
 
             $table->json('verification')->default(json_encode([
-                'verified' => false,
-                'verified_at' => null,
-                'verified_status' => 'pending', // pending, approved, rejected
+                'account' => [
+                    'status' => false, // pending, approved, rejected
+                    'verified_at' => null,
+                    'verified_status' => 'pending',
+                ],
+                'email' => [
+                    'code' => null,
+                    'code_sent_at' => null,
+                    'code_expires_at' => null,
+                    'attempts' => 0,
+                ],
+                'phone' => [
+                    'home' => [
+                        'code' => null,
+                        'code_sent_at' => null,
+                        'attempts' => 0,
+                    ],
+                    'work' => [
+                        'code' => null,
+                        'code_sent_at' => null,
+                        'attempts' => 0,
+                    ],
+                ],
             ]));
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();

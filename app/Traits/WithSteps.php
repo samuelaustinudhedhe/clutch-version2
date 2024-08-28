@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Storage;
  * and resetting the process to the introduction step.
  */
 trait WithSteps
-{
+{    
+    public $user;
+
     /**
      * @var int $currentStep The current step in the process.
      */
@@ -32,16 +34,28 @@ trait WithSteps
         2 => 'Step 2',
         3 => 'Step 3',
         4 => 'Review and Submit'
-
     ];
 
+    /**
+     * @var string $storePath The path where the step data will be stored.
+     */
     public $storePath = '';
     
+    /**
+     * @var array $storeData The data to be stored.
+     */
     public $storeData = [];
+
     /**
      * Get the name of the current step.
      *
      * @return string The name of the current step.
+     *
+     * @example
+     * ```php
+     * $currentStepName = $this->getCurrentStepName();
+     * echo $currentStepName; // Outputs: 'Introduction'
+     * ```
      */
     public function getCurrentStepName()
     {
@@ -52,6 +66,12 @@ trait WithSteps
      * Get the name of the previous step.
      *
      * @return string|null The name of the previous step, or null if there is no previous step.
+     *
+     * @example
+     * ```php
+     * $prevStepName = $this->getPrevStepName();
+     * echo $prevStepName; // Outputs: 'Step 1' if current step is 2
+     * ```
      */
     public function getPrevStepName()
     {
@@ -65,6 +85,12 @@ trait WithSteps
      * Get the name of the next step.
      *
      * @return string|null The name of the next step, or null if there is no next step.
+     *
+     * @example
+     * ```php
+     * $nextStepName = $this->getNextStepName();
+     * echo $nextStepName; // Outputs: 'Step 2' if current step is 1
+     * ```
      */
     public function getNextStepName()
     {
@@ -79,6 +105,12 @@ trait WithSteps
      *
      * @param int $step The step number.
      * @return string The name of the specified step, or 'Unknown Step' if the step number is invalid.
+     *
+     * @example
+     * ```php
+     * $stepName = $this->getStepName(2);
+     * echo $stepName; // Outputs: 'Step 2'
+     * ```
      */
     private function getStepName($step)
     {
@@ -92,6 +124,12 @@ trait WithSteps
      * and stores the updated step data.
      *
      * @return void
+     *
+     * @example
+     * ```php
+     * $this->nextStep();
+     * echo $this->currentStep; // Outputs: 1 if the initial step was 0
+     * ```
      */
     public function nextStep()
     {
@@ -108,6 +146,12 @@ trait WithSteps
      * This function decrements the current step counter and stores the updated step data.
      *
      * @return void
+     *
+     * @example
+     * ```php
+     * $this->prevStep();
+     * echo $this->currentStep; // Outputs: 0 if the initial step was 1
+     * ```
      */
     public function prevStep()
     {
@@ -123,6 +167,12 @@ trait WithSteps
      *
      * @param int $step The step number to navigate to.
      * @return void
+     *
+     * @example
+     * ```php
+     * $this->goToStep(2);
+     * echo $this->currentStep; // Outputs: 2
+     * ```
      */
     public function goToStep($step)
     {
@@ -140,6 +190,12 @@ trait WithSteps
      * This function sets the current step to the introduction step and stores the updated step data.
      *
      * @return void
+     *
+     * @example
+     * ```php
+     * $this->backToIntro();
+     * echo $this->currentStep; // Outputs: 0
+     * ```
      */
     public function backToIntro()
     {
@@ -147,19 +203,41 @@ trait WithSteps
         $this->store();
     }
 
+    /**
+     * Store the data temporarily in a JSON file under the user's directory.
+     *
+     * @return void
+     *
+     * @example
+     * ```php
+     * $this->storeData = ['key' => 'value'];
+     * $this->storePath = 'path/to/store.json';
+     * $this->store();
+     * ```
+     */
     public function store()
     {
-        // Store the data temporarily in a JSON file under the user's directory
         $data = $this->storeData ?? '';
-        $path = $this->storePath ?? '';
+        $path = $this->storePath ?? ''; 
         if (!empty($path) && !empty($data)) {
-            Storage::put($path, json_encode($data));
+            Storage::put($path, json_encode(array_merge($data, ['current_step'=> $this->currentStep])));
         }
     }
 
+    /**
+     * Load data from the JSON file if it exists.
+     *
+     * @return array The loaded data.
+     *
+     * @example
+     * ```php
+     * $this->storePath = 'path/to/store.json';
+     * $data = $this->load();
+     * print_r($data); // Outputs the data stored in the JSON file
+     * ```
+     */
     public function load()
     {
-        // Load data from the JSON file if it exists
         $path = $this->storePath ?? '';
 
         if (Storage::exists($path)) {
@@ -169,22 +247,91 @@ trait WithSteps
         return [];
     }
 
-    // Make a function called defineSteps() that will be overwritten in the component that uses this trait
+    /**
+     * Update the current step if the stored current step is greater than the current step.
+     *
+     * This function checks if the 'current_step' key is set in the stored data and updates
+     * the current step if the stored value is greater than the current step.
+     *
+     * @return void
+     *
+     * @example
+     * ```php
+     * $this->storeData = ['current_step' => 2];
+     * $this->updateCurrentStep();
+     * echo $this->currentStep; // Outputs: 2
+     * ```
+     */
+    public function updateCurrentStep()
+    {
+        if (isset($this->storeData['current_step']) && $this->storeData['current_step'] > $this->currentStep &&  $this->currentStep == 0  ) {
+            $this->currentStep = $this->storeData['current_step'];
+        }
+    }
+    
+    /**
+     * Define the steps for the multi-step process.
+     *
+     * This function should be implemented in the component that uses this trait.
+     *
+     * @return bool
+     *
+     * @example
+     * ```php
+     * public function defineSteps()
+     * {
+     *     $this->stepNames = [
+     *         0 => 'Intro',
+     *         1 => 'Details',
+     *         2 => 'Confirmation'
+     *     ];
+     *     $this->totalSteps = 2;
+     *     return true;
+     * }
+     * ```
+     */
     public function defineSteps()
     {
-        // This function should be implemented in the component that uses this trait
         return false;
-    
-    }
-    // Make a function called defineStore() that will be overwritten in the component that uses this trait
-    public function defineStore()
-    {
-        // This function should be implemented in the component that uses this trait
-        return false;
-    
     }
 
-    // Call a construct that will call defineSteps() when the class is instantiated if it is present in the child component
+    /**
+     * Define the store path and data for the multi-step process.
+     *
+     * This function should be implemented in the component that uses this trait.
+     *
+     * @return bool
+     *
+     * @example
+     * ```php
+     * public function defineStore()
+     * {
+     *     $this->storePath = 'path/to/store.json';
+     *     $this->storeData = ['key' => 'value'];
+     *     return true; #optional or return false to skip store definition
+     * }
+     * ```
+     */
+    public function defineStore()
+    {
+        return false;
+    }
+
+    /**
+     * Constructor to initialize the steps and store definitions.
+     *
+     * This function calls defineSteps() and defineStore() if they are present in the child component.
+     *
+     * @example
+     * ```php
+     * public function __construct()
+     * {
+     *     parent::__construct();
+     *     $this->defineSteps();
+     *     $this->defineStore();
+     * }
+     * ```
+     */
     public function __construct()
     {
         if (method_exists($this, 'defineSteps') && $this->defineSteps() !== false) {
@@ -193,4 +340,5 @@ trait WithSteps
         if (method_exists($this, 'defineStore') && $this->defineStore() !== false) {
             $this->defineStore();
         }
-    }}
+    }
+}

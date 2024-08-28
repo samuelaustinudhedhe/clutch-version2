@@ -26,6 +26,38 @@
         {{-- Page Conent End --}}
         @stack('modals')
         @livewireScripts
+        {{-- Google Map --}}
+        <script async src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places&callback=initAddressAutocomplete"></script>
+  
+        <script>
+            function initAddressAutocomplete() {
+                const addressInputs = document.querySelectorAll('[address]');
+                addressInputs.forEach(input => {
+                    // Remove any existing pac-container
+                    const existingPacContainers = document.querySelectorAll('.pac-container');
+                    existingPacContainers.forEach(container => container.remove());
+        
+                    // Initialize a new autocomplete instance
+                    const autocomplete = new google.maps.places.Autocomplete(input);
+                    autocomplete.setOptions({
+                        types: [(input.dataset.type || 'address')],
+                        strictBounds: false
+                    });
+        
+                    autocomplete.addListener('place_changed', function() {
+                        const place = autocomplete.getPlace();
+        
+                        // Trigger the input event to ensure the value is recognized
+                        const event = new Event('input', {
+                            bubbles: true,
+                            cancelable: true,
+                        });
+                        input.dispatchEvent(event);
+                    });
+                });
+            }
+        </script>
+
     </body>
 
 </html>

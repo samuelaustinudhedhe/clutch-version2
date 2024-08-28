@@ -1,0 +1,51 @@
+     /* Default (Light Mode) */
+     /* Container for the autocomplete suggestions */
+     .pac-container {
+        @apply mt-1 bg-white rounded-lg shadow-md;
+    }
+
+    /* Remove top border for the first suggestion item */
+    .pac-item:nth-child(1) {
+        @apply border-t-0;
+    }
+
+    /* Style for each suggestion item */
+    .pac-item {
+        @apply p-2.5 cursor-pointer text-gray-600;
+    }
+
+    /* Hover effect for suggestion items */
+    .pac-item:hover {
+        @apply bg-gray-100;
+    }
+
+    /* Style for the query text within suggestion items */
+    .pac-item-query {
+        @apply font-semibold text-gray-700;
+    }
+
+    /* Hide the Google logo within the container */
+    .pac-container.pac-logo::after {
+        @apply hidden;
+    }
+
+    /* Dark Mode */
+    /* Container for the autocomplete suggestions in dark mode */
+    .dark .pac-container {
+        @apply bg-gray-800 text-gray-300 border border-gray-700 rounded-lg;
+    }
+
+    /* Style for each suggestion item in dark mode */
+    .dark .pac-item {
+        @apply text-gray-400 border-gray-700 p-2.5 cursor-pointer;
+    }
+
+    /* Hover effect for suggestion items in dark mode */
+    .dark .pac-item:hover {
+        @apply bg-gray-700;
+    }
+
+    /* Style for the query text within suggestion items in dark mode */
+    .dark .pac-item-query {
+        @apply text-gray-300;
+    }

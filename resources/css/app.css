@@ -1,4 +1,5 @@
 @import 'flowbite';
+@import 'map.css';
 
 @tailwind base;
 @tailwind components;

@@ -152,7 +152,7 @@
 
 
         {{-- Logo --}}
-        <div class="flex items-center justify-between absolute top-0 mb-8 mt-12 space-x-4 lg:hidden w-full" >
+        <div class="flex items-center justify-between absolute top-0 mb-8 mt-12 space-x-4 lg:hidden w-full">
             <a href="#" class="flex items-center text-2xl font-semibold">
                 <img class="w-10 h-10 mr-2" src="{{ app_logo() }}" />
                 <span class="text-gray-900 dark:text-white">{{ app_name() }}</span>
@@ -162,7 +162,7 @@
                 < Back to Dashboard </a>
         </div>
 
-        <foem class="grid mx-auto w-full mt-10 mb-40" wire:submit="completeOnboarding">
+        <div class="grid mx-auto w-full mt-10 mb-40">
             {{-- Onboarding content --}}
             @switch($currentStep)
                 @case(0)
@@ -188,21 +188,23 @@
                 @default
                     @include('user.onboarding.completed')
             @endswitch
+   
+   
 
-            {{-- Steps Navigation --}}
-
-            <x-steps-navigation getStarted="Begain Onboarding Now" submit="Finished Onboarding" :totalSteps="$totalSteps" :currentStep="$currentStep"  :nextStepName="$nextStepName" :prevStepName="$prevStepName" />
+            <x-steps-navigation getStarted="Begain Onboarding Now" submit="Finished Onboarding" :totalSteps="$totalSteps"
+                :currentStep="$currentStep" :nextStepName="$nextStepName" :prevStepName="$prevStepName" />
 
             @if ($currentStep < 1)
                 <p class="mt-4 text-sm font-light text-gray-500 dark:text-gray-400">
-                    Not read to onboard? 
-                    <a href="#" wire:click.prevent="skipOnboarding" class="font-medium text-blue-600 hover:underline dark:text-blue-500">
+                    Not read to onboard?
+                    <a href="#" wire:click.prevent="skipOnboarding"
+                        class="font-medium text-blue-600 hover:underline dark:text-blue-500">
                         Skip the Onboarding Process
                     </a>.
                 </p>
             @endif
 
-            </form>
+        </div>
 
         <div class="items-center justify-center w-full absolute bottom-0 right-5 left-5 md:w-[38rem] ">
             {{-- Progress Indicator --}}

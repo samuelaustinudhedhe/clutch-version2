@@ -15,7 +15,8 @@ class WelcomeMail extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
-    public $password;
+    private $password;
+    private $verification;
     
     /**
      * Create a new message instance.
@@ -24,6 +25,7 @@ class WelcomeMail extends Mailable
     {
         $this->user = $user;
         $this->password = $password;
+        $this->verification = is_string($user->verification) ? json_decode($user->verification, true) : $user->verification;
     }
 
     /**
@@ -47,6 +49,7 @@ class WelcomeMail extends Mailable
                 'name' => $this->user->name,
                 'email' => $this->user->email,
                 'password' => $this->password,
+                'email_verification_code'=> $this->verification['email']['code'],                
             ],
         );
     }

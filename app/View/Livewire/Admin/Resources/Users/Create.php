@@ -28,12 +28,8 @@ class Create extends Component
     public $status;
     public $date_of_birth;
     //address fields
-    public $house;
-    public $street;
-    public $city;
-    public $state;
-    public $zip_code;
-    public $country;
+    public $home;
+    public $work;
     //address fields end
     public $gender;
     public $role;
@@ -84,29 +80,30 @@ class Create extends Component
             'name' => $this->firstName . ' ' . $this->lastName,
             'email' => $this->email,
             'email_verified_at' => $this->email_status === 'verified' ? now() : null,
-            'phone' => json_encode([
-                'country_code' => $this->country_code,
-                'phone' => $this->phone,
-                'added_at' => now(),
-            ]),
+
             'password' => Hash::make($this->password),
             'role' => $this->role,
             'status' => $this->status,
-            'date_of_birth' => $this->date_of_birth,
-            'gender' => $this->gender,
-            'address' => json_encode([
-                'house' => $this->house,
-                'street' => $this->street,
-                'city' => $this->city,
-                'state' => $this->state,
-                'zip_code' => $this->zip_code,
-                'country' => $this->country,
-            ]),
-            'social' => json_encode([
-                'facebook' => $this->facebook,
-                'instagram' => $this->instagram,
-                'twitter' => $this->twitter,
-                'linkedin' => $this->linkedin,
+            'details' => json_encode([
+                'phone' => json_encode([
+                    'home' => [
+                        'country_code' => $this->country_code,
+                        'number' => $this->phone,
+                        'verified_at' => now(),
+                    ]
+                ]),
+                'date_of_birth' => $this->date_of_birth,
+                'gender' => $this->gender,
+                'address' => [
+                    'work' => $this->work,
+                    'home' => $this->home,
+                ],
+                'social' => [
+                    'facebook' => $this->facebook,
+                    'instagram' => $this->instagram,
+                    'twitter' => $this->twitter,
+                    'linkedin' => $this->linkedin,
+                ],
             ]),
         ]);
 

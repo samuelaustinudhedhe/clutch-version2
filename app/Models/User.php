@@ -42,7 +42,7 @@ class User extends Authenticatable
         'role',
         'status',
         'rating',
-        'details'
+        'details',
     ];
 
     /**

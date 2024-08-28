@@ -11,7 +11,7 @@ trait HasDetails
      */
     public function getDetails()
     {
-        $details = json_decode($this->details);
+        $details = is_string($this->details) ? json_decode($this->details) : $this->details;
         return $details;
     }
 

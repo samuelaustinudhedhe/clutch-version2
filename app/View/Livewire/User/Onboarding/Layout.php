@@ -7,43 +7,15 @@ use App\Notifications\Onboarding\Skipped;
 use App\Traits\WithSteps;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use App\Http\Controllers\Attachments\AttachmentUploadController as Upload;
+
 
 class Layout extends Component
 {
-    use WithSteps;
+    use WithSteps, WithFileUploads;
 
-    public $role;
     public $user;
-    public $data = [];
-
-    protected $rules = [
-
-        // 'data.role' => '',
-        // 'data.address'=> '',
-        // 'data.address.home.street'=> '',
-        // 'data.address.home.unit'=> '',
-        // 'data.address.home.city'=> '',
-        // 'data.address.home.state'=> '',
-        // 'data.address.home.country'=> '',
-        // 'data.address.home.postal_code'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-        // 'data.'=> '',
-    ];
 
 
     /**
@@ -56,10 +28,10 @@ class Layout extends Component
      */
     public function mount()
     {        
-
         $this->user = getUser();
-        $this->data = $this->load();
+
     }
+
 
     public function defineSteps()
     {
@@ -76,22 +48,36 @@ class Layout extends Component
 
     public function defineStore()
     {
-        $this->rules['data.role'] = 'required|exists:roles,slug';
-
+        $this->storeData = $this->load();
         $this->storePath = "Users/".getUser()->id."/data/onboarding.json";
-        $this->storeData = $this->data;
     }
     /**
      * Check and update the current step based on the user's role.
      */
     public function checkSteps()
     {
-        if (getUser()->role !== 'subscriber' && ($this->currentStep == 0 || $this->currentStep == 1)) {
+        if ($this->user->role !== 'subscriber' && ($this->currentStep == 0 || $this->currentStep == 1)) {
             $this->currentStep = 2;
         }
     }
 
+    protected function submit(){
+        if ($this->storageData['profile_photo']) {
+            $this->storeProfilePicture($this->user);
+        }
 
+    }
+
+    protected function storeProfilePicture($user){
+        $folder = 'users/' . toSlug($user->name, '-') . '-' . $user->id . '/profile_photos';
+        $filename = 'profile-picture.webp';
+
+        $path = Upload::image($user, $this->storeData['profile_photo']->getRealPath(), $folder, $filename, 'resize', 200, 200);
+
+        // Update user profile picture path
+        $user->profile_photo_path = $path;
+        $user->save();
+    }
     /**
      * Complete the onboarding process.
      * 
@@ -150,9 +136,10 @@ class Layout extends Component
                 'prevStepName' => $this->getPrevStepName(),
                 'nextStepName' => $this->getNextStepName(),
                 'currentStepName' => $this->getStepName($this->currentStep),
-                'currentStep' => $this->currentStep,
+                'currentStep' => $this->updateCurrentStep(),
                 'nextPrefix' => 'next-',
                 'prevPrefix' => 'prev-',
+                'countries' => countries(),
             ]
         );
     }

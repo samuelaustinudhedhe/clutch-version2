@@ -1,4 +1,6 @@
-<div {{ $attributes->merge(['class' => 'rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 shadow-lg overflow-hidden sm:p-8 p-4 mt-10 sm:m-4 ']) }}>
+
+
+<div {{ $attributes->merge(['class' => 'space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6 my-4']) }}>
     {{ $slot }}
 </div>
 

@@ -23,14 +23,14 @@
                         <div class="w-2/3">
                             <x-label for="vin" class="mt-1">Name</x-label>
 
-                            <x-xinput id="vin" type="text" wire:model.lazy="vehicleData.name"
+                            <x-xinput id="vin" type="text" wire:model.lazy="storeData.name"
                                 placeholder="Enter your Identifcation Number" maxlength="17"
                                 title="Identification number of the vehicle" />
                         </div>
                         <div class="w-1/3">
                             <x-label for="vin" class="mt-1">Slug</x-label>
 
-                            <x-xinput id="vin" type="text" wire:model.lazy="vehicleData.slug"
+                            <x-xinput id="vin" type="text" wire:model.lazy="storeData.slug"
                                 placeholder="Enter your Identifcation Number" maxlength="17"
                                 title="Identification number of the vehicle" disabled />
                         </div>
@@ -38,7 +38,7 @@
 
                     <div class="sm:col-span-2">
                         <x-label for="location">Description</x-label>
-                        <x-xinput id="location" type="text" wire:model="vehicleData.description" />
+                        <x-xinput id="location" type="text" wire:model="storeData.description" />
                         <x-input-error for="location" />
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                                     <div class="tooltip-arrow" data-popper-arrow></div>
                                 </div>
                             </x-label>
-                            <x-select wire:model="vehicleData.vin_type" name="Vehicle Identification Type"
+                            <x-select wire:model="storeData.vin_type" name="Vehicle Identification Type"
                                 title="Vehicle Identification Type">
                                 @foreach ($vits as $vit => $description)
                                     <option title="{{ $description }}" value="{{ $vit }}">
@@ -87,7 +87,7 @@
                         {{-- IN --}}
                         <div class="w-2/3">
                             <x-label for="vin" class="mt-1">Identification number</x-label>
-                            <x-xinput id="vin" type="text" wire:model.lazy="vehicleData.vin_number"
+                            <x-xinput id="vin" type="text" wire:model.lazy="storeData.vin_number"
                                 placeholder="Enter your Identifcation Number" maxlength="17"
                                 title="Identification number of the vehicle" />
 
@@ -100,14 +100,14 @@
                     <div class="sm:col-span-2 flex gap-4">
                         <div class="w-2/4">
                             <x-label for="make">Make</x-label>
-                            <x-xinput id="make" type="text" wire:model="vehicleData.make"
+                            <x-xinput id="make" type="text" wire:model="storeData.make"
                                 value="{{ $vehicleDetails['make'] ?? '' }}" />
 
                             <x-input-error for="make" />
                         </div>
                         <div class="w-2/4">
                             <x-label for="manufacturer">Manufacturer</x-label>
-                            <x-xinput id="manufacturer" type="text" wire:model="vehicleData.manufacturer"
+                            <x-xinput id="manufacturer" type="text" wire:model="storeData.manufacturer"
                                 value="{{ $vehicleDetails['manufacturer_name'] ?? '' }}" />
 
                             <x-input-error for="manufacturer" />
@@ -116,7 +116,7 @@
                     <div class="sm:col-span-2 flex gap-4">
                         <div class="w-2/4">
                             <x-label for="model">Model</x-label>
-                            <x-xinput id="model" type="text" wire:model="vehicleData.model"
+                            <x-xinput id="model" type="text" wire:model="storeData.model"
                                 value="{{ $vehicleDetails['model'] ?? '' }}" />
 
                             <x-input-error for="model" />
@@ -146,15 +146,15 @@
             <!-- Step 2: Location Information -->
             <div class="mb-6">
                 <label for="location_city" class="block text-sm font-medium text-gray-700">City</label>
-                <x-input type="text" wire:model="vehicleData.location_city" id="location_city" />
+                <x-input type="text" wire:model="storeData.location_city" id="location_city" />
             </div>
             <div class="mb-6">
                 <label for="location_state" class="block text-sm font-medium text-gray-700">State</label>
-                <x-input type="text" wire:model="vehicleData.location_state" id="location_state" />
+                <x-input type="text" wire:model="storeData.location_state" id="location_state" />
             </div>
             <div class="mb-6">
                 <label for="location_country" class="block text-sm font-medium text-gray-700">Country</label>
-                <x-input type="text" wire:model="vehicleData.location_country" id="location_country" />
+                <x-input type="text" wire:model="storeData.location_country" id="location_country" />
             </div>
         @endif
 
@@ -162,23 +162,23 @@
             <!-- Step 3: Vehicle Details -->
             <div class="mb-6">
                 <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
-                <x-input type="text" wire:model="vehicleData.type" id="type" />
+                <x-input type="text" wire:model="storeData.type" id="type" />
             </div>
             <div class="mb-6">
                 <label for="make" class="block text-sm font-medium text-gray-700">Make</label>
-                <x-input type="text" wire:model="vehicleData.make" id="make" />
+                <x-input type="text" wire:model="storeData.make" id="make" />
             </div>
             <div class="mb-6">
                 <label for="manufacturer" class="block text-sm font-medium text-gray-700">Manufacturer</label>
-                <x-input type="text" wire:model="vehicleData.manufacturer" id="manufacturer" />
+                <x-input type="text" wire:model="storeData.manufacturer" id="manufacturer" />
             </div>
             <div class="mb-6">
                 <label for="model" class="block text-sm font-medium text-gray-700">Model</label>
-                <x-input type="text" wire:model="vehicleData.model" id="model" />
+                <x-input type="text" wire:model="storeData.model" id="model" />
             </div>
             <div class="mb-6">
                 <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-                <x-input type="text" wire:model="vehicleData.year" id="year" />
+                <x-input type="text" wire:model="storeData.year" id="year" />
             </div>
         @endif
 
@@ -187,40 +187,40 @@
             <div class="mb-6">
                 <label for="exterior_color" class="block text-sm font-medium text-gray-700">Exterior
                     Color</label>
-                <x-input type="text" wire:model="vehicleData.exterior_color" id="exterior_color" />
+                <x-input type="text" wire:model="storeData.exterior_color" id="exterior_color" />
             </div>
             <div class="mb-6">
                 <label for="exterior_type" class="block text-sm font-medium text-gray-700">Exterior
                     Type</label>
-                <x-input type="text" wire:model="vehicleData.exterior_type" id="exterior_type" />
+                <x-input type="text" wire:model="storeData.exterior_type" id="exterior_type" />
             </div>
             <div class="mb-6">
                 <label for="exterior_doors" class="block text-sm font-medium text-gray-700">Number of
                     Doors</label>
-                <x-input type="number" wire:model="vehicleData.exterior_doors" id="exterior_doors" />
+                <x-input type="number" wire:model="storeData.exterior_doors" id="exterior_doors" />
             </div>
             <div class="mb-6">
                 <label for="exterior_windows" class="block text-sm font-medium text-gray-700">Type of
                     Windows</label>
-                <x-input type="text" wire:model="vehicleData.exterior_windows" id="exterior_windows" />
+                <x-input type="text" wire:model="storeData.exterior_windows" id="exterior_windows" />
             </div>
             <div class="mb-6">
                 <label for="interior_seats" class="block text-sm font-medium text-gray-700">Interior
                     Seats</label>
-                <x-input type="number" wire:model="vehicleData.interior_seats" id="interior_seats" />
+                <x-input type="number" wire:model="storeData.interior_seats" id="interior_seats" />
             </div>
             <div class="mb-6">
                 <label for="interior_upholstery" class="block text-sm font-medium text-gray-700">Upholstery</label>
-                <x-input type="text" wire:model="vehicleData.interior_upholstery" id="interior_upholstery" />
+                <x-input type="text" wire:model="storeData.interior_upholstery" id="interior_upholstery" />
             </div>
             <div class="mb-6">
                 <label for="interior_ac" class="block text-sm font-medium text-gray-700">Air
                     Conditioning</label>
-                <x-input type="text" wire:model="vehicleData.interior_ac" id="interior_ac" />
+                <x-input type="text" wire:model="storeData.interior_ac" id="interior_ac" />
             </div>
             <div class="mb-6">
                 <label for="interior_heater" class="block text-sm font-medium text-gray-700">Heater</label>
-                <x-input type="text" wire:model="vehicleData.interior_heater" id="interior_heater" />
+                <x-input type="text" wire:model="storeData.interior_heater" id="interior_heater" />
             </div>
         @endif
 
@@ -260,13 +260,33 @@
                 <!-- You can add a summary of the entered data here for the user to review -->
             </div>
         @endif
-        
-        {{-- Steps Navigation --}}
 
-        <x-steps-navigation />
+        <div class="flex justify-between mt-8 space-x-3">
+            @if ($currentStep > 1)
+                <a href="#" wire:click.prevent="prevStep" wire:loading.attr="disabled" type="button"
+                    class="text-center items-center w-full py-2.5 sm:py-3.5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                    Prev: {{ $prevStepName ?? '' }}
+                </a>
+            @endif
+
+            @if ($currentStep < $totalSteps)
+                <button type="button" wire:click.prevent="nextStep" wire:loading.attr="disabled"
+                    class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 sm:py-3.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    @if ($currentStep < 1)
+                        Get started
+                    @else
+                        Next: {{ $nextStepName ?? '' }}
+                    @endif
+                </button>
+            @else
+                <button type="button" wire:click="submit" wire:loading.attr="disabled"
+                    class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 sm:py-3.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Submit
+                </button>
+            @endif
+        </div>
 
     </div>
-
     <div
         class="hidden relative w-full min-h-[750px] max-w-[340px] py-12 px-8 lg:block bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-2xl border border-gray-200 dark:border-gray-700">
 
