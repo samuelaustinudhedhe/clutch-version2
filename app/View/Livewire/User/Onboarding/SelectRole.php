@@ -3,10 +3,13 @@
 namespace App\View\Livewire\User\Onboarding;
 
 use App\Models\Role;
+use App\Traits\WithSteps;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
-class SelectRole extends Component
+class SelectRole extends Layout
 {
+    use WithSteps, WithFileUploads;
     // Public properties to hold the role and user data
     public $role;
     public $user;

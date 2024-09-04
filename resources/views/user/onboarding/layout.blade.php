@@ -147,9 +147,7 @@
     </div>
 
     {{-- Right Side --}}
-    <div class="grid relative items-center h-screen mx-auto md:w-[42rem] min-h-[650px] px-4 md:px-8 xl:px-0">
-
-
+    <div class="grid relative items-center h-screen mx-auto md:w-[46rem] min-h-[650px] px-4 md:px-8 xl:px-0">
 
         {{-- Logo --}}
         <div class="flex items-center justify-between absolute top-0 mb-8 mt-12 space-x-4 lg:hidden w-full">
@@ -160,36 +158,43 @@
             <a wire:click.prevent="skipOnboarding"
                 class="text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 hover:cursor-pointer">
                 < Back to Dashboard </a>
+
         </div>
 
-        <div class="grid mx-auto w-full mt-10 mb-40">
+        <div class="grid mx-auto w-full my-10">
+            <h1 class="mb-6 text-2xl font-extrabold tracking-tight text-gray-800 leding-tight dark:text-white">
+                {{ $stepNames[$currentStep] }}
+            </h1>
             {{-- Onboarding content --}}
-            @switch($currentStep)
-                @case(0)
-                    @include('user.onboarding.get-started')
-                @break
+            <div class="h-[640px] overflow-y-auto px-2">
 
-                @case(1)
-                    @include('user.onboarding.select-role')
-                @break
 
-                @case(2)
-                    @include('user.onboarding.personal-details')
-                @break
+                @switch($currentStep)
+                    @case(0)
+                        @livewire('user.onboarding.get-started')
+                    @break
 
-                @case(3)
-                    @include('user.onboarding.verification')
-                @break
+                    @case(1)
+                        @include('user.onboarding.select-role')
+                    @break
 
-                @case(4)
-                    @include('user.onboarding.kyc')
-                @break
+                    @case(2)
+                        @include('user.onboarding.personal-details')
+                    @break
 
-                @default
-                    @include('user.onboarding.completed')
-            @endswitch
-   
-   
+                    @case(3)
+                        @include('user.onboarding.verification')
+                    @break
+
+                    @case(4)
+                        @include('user.onboarding.kyc')
+                    @break
+
+                    @default
+                        @include('user.onboarding.completed')
+                @endswitch
+
+            </div>
 
             <x-steps-navigation getStarted="Begain Onboarding Now" submit="Finished Onboarding" :totalSteps="$totalSteps"
                 :currentStep="$currentStep" :nextStepName="$nextStepName" :prevStepName="$prevStepName" />
@@ -220,6 +225,9 @@
                 </div>
                 <div
                     class="flex-1 mx-1 h-1 {{ $currentStep >= 4 ? 'bg-blue-600 dark:bg-blue-800' : 'bg-gray-300 dark:bg-gray-500' }} rounded-full">
+                </div>
+                <div
+                    class="flex-1 mx-1 h-1 {{ $currentStep >= 5 ? 'bg-blue-600 dark:bg-blue-800' : 'bg-gray-300 dark:bg-gray-500' }} rounded-full">
                 </div>
             </div>
         </div>

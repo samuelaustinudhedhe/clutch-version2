@@ -4,7 +4,7 @@ namespace App\View\Livewire\User\Onboarding;
 
 use Livewire\Component;
 
-class Completed extends Component
+class Completed extends Layout
 {
     public function completeOnboarding(){
         

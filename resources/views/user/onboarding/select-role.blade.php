@@ -1,11 +1,6 @@
 {{-- Onboarding Select Roles --}}
 <div>
-
-    <h1 class="mb-4 text-2xl font-extrabold leading-tight tracking-tight text-gray-900 sm:mb-6 dark:text-white">Tell us
-        about your goal</h1>
-
     <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">What will you like to do on our platform</p>
-
     <div class="mb-6 space-y-4 sm:space-y-6">
         <x-radio id="driver" name="role" value="driver" wire:model="storeData.role" color="blue" class="space-x-6">
             <img src="https://cdn-icons-png.flaticon.com/512/11287/11287075.png" width="30" height="30"

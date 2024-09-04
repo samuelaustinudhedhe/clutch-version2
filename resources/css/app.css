@@ -1,5 +1,5 @@
-@import 'flowbite';
-@import 'map.css';
+@import "flowbite";
+@import "map.css";
 
 @tailwind base;
 @tailwind components;
@@ -7,4 +7,10 @@
 
 [x-cloak] {
     display: none;
+}
+
+/* Scrollbar */
+body {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray.600') theme('colors.transparent');
 }

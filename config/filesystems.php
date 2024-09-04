@@ -43,6 +43,14 @@ return [
             'visibility' => 'private',
             'throw' => false,
         ],
+        'admin' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/admins'),
+            'url' => env('APP_URL').'/storage/admins',
+            'visibility' => 'private',
+            'throw' => false,
+        ],
+
 
         'public' => [
             'driver' => 'local',

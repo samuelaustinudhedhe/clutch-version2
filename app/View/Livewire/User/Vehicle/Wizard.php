@@ -7,51 +7,183 @@ use App\Traits\WithSteps;
 use Illuminate\Support\Facades\Storage;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Wizard extends Component
 {
-    use WithSteps;
+    use WithSteps,  WithFileUploads;
 
+    public $user;
     public $vehicleTypes = [];
     public $vits = [];
-    public $vehicleImages = [];
-    public $vehicleDocuments = [];
+
+    public $images = [];
+    public $documents = [];
+
     public $insuranceDocuments = [];
 
-    protected $rules = [
-
-        'storeData.name' => 'required|string',
-
-    ];
 
     public function mount()
     {
+        $this->user = getUser();
+        $this->defineSteps();
+        $this->defineStore();
+
+
         // Load existing data if available (e.g., from JSON file)
-        $this->storeData = $this->load();
         $this->vehicleTypes = Vehicle::types(); // Fetch vehicle types
         $this->vits = Vehicle::$vits; // Fetch vehicle subtypes
+
+        // Load file details from the JSON file
+        $this->images['files'] = $this->getStoredData()['files']['images'] ?? null;
+    }
+
+    public function attachToNextStep()
+    {
+        $this->store();
+        $validationData = $this->rulesForStep();
+        if ($validationData['rules']) {
+            $this->validate($validationData['rules'], [], $validationData['customAttributes']);
+        }
+    }
+
+    protected function rulesForStep()
+    {
+        $rules = [];
+        $customAttributes = [];
+
+        switch ($this->currentStep) {
+            case 0:
+                // Validation rules for step 0
+                break;
+            case 1:
+                $rules = [
+                    'storeData.name' => 'min:3|max:50|required|string',
+                    // 'storeData.slug' => 'min:10|max:100|required|string',
+                    'storeData.description' => 'min:60|max:225|required|string',
+                    'storeData.vit' => 'required|string|in:' . implode(',', array_keys($this->vits)),
+                    'storeData.vin' => 'required|string|min:5|max:40',
+                    'storeData.make' => 'required|string',
+                    'storeData.manufacturer' => 'required|string',
+                    'storeData.model' => 'required|string',
+                    'storeData.year' => 'required|integer|min:1900|max:' . date('Y'),
+                    'storeData.location' => [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            // Custom validation logic to check if the location exists using Google Maps API
+                            $apiKey = config('services.google_maps.api_key'); // Ensure you have your API key stored in config/services.php
+                            $response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($value) . "&key=" . getGoogleMapKey());
+                            $response = json_decode($response, true);
+
+                            if (empty($response['results'])) {
+                                $fail('The ' . $attribute . ' is not a valid location.');
+                            }
+                        },
+                    ],
+                ];
+
+                $customAttributes = [
+                    'storeData.name' => 'name',
+                    'storeData.description' => 'description',
+                    'storeData.vit' => 'Identification Type',
+                    'storeData.vin' => 'Identification Number',
+                    'storeData.make' => 'make',
+                    'storeData.manufacturer' => 'manufacturer',
+                    'storeData.model' => 'model',
+                    'storeData.year' => 'year',
+                    'storeData.location' => 'location',
+                ];
+                break;
+            case 2:
+                // Validation rules for step 2
+                $rules = [
+                    'storeData.exterior.color' => 'required|string|max:50',
+                    'storeData.exterior.type' => 'required|string|max:50',
+                    'storeData.exterior.doors' => 'required|integer|min:0|max:6',
+                    'storeData.exterior.windows' => 'required|integer|min:0|max:6',                    
+                    'storeData.interior.color' => 'required|string|max:50',
+                    'storeData.interior.seats' => 'required|integer|min:1|max:10',
+                    'storeData.interior.upholstery' => 'required|string|in:leather,fabric,vinyl,suede,alcantara',
+                    'storeData.interior.ac' => 'required|string|in:yes,no',
+                    'storeData.interior.heater' => 'required|string|in:yes,no',
+                ];
+
+                $customAttributes = [
+                    'storeData.exterior.color' => 'Color',
+                    'storeData.exterior.type' => 'Type',
+                    'storeData.exterior.doors' => 'Doors',
+                    'storeData.exterior.windows' => 'Windows',
+                    'storeData.interior.color' => 'Color',
+                    'storeData.interior.seats' => 'Seats',
+                    'storeData.interior.upholstery' => 'Upholstery',
+                    'storeData.interior.ac' => 'AC',
+                    'storeData.interior.heater' => 'Heater',
+                ];
+                break;
+            case 3:
+                // Validation rules for step 3
+                $rules = [
+                    'nin.new' => 'required|file|max:1024',
+                ];
+
+                $customAttributes = [
+                    'nin.new' => 'NIN document',
+                ];
+                break;
+            case 4:
+                // Validation rules for step 4 (KYC)
+                $rules = [
+                    'internationalPassport.new' => 'required|file|max:1024',
+                    'driversLicense.new' => 'required|file|max:1024',
+                    'proofOfAddress.new' => 'required|file|max:1024',
+                ];
+
+                $customAttributes = [
+                    'internationalPassport.new' => 'international passport',
+                    'driversLicense.new' => 'driver\'s license',
+                    'proofOfAddress.new' => 'proof of address',
+                ];
+                break;
+            default:
+                break;
+        }
+
+        return ['rules' => $rules, 'customAttributes' => $customAttributes];
     }
 
 
-    public function defineSteps()
-    {
-        $this->stepNames = [
-            0 => 'Introduction',
-            1 => 'Vehicle Information',
-            2 => 'Vehicle Details',
-            3 => 'Upload Images',
-            4 => 'Upload Documents',
-            5 => 'Review & Submit',
-            6 => 'Review & Submit',
-            7 => 'Review & Submit',
-        ];
-        $this->totalSteps = count($this->stepNames) - 1;
-    }
 
-    public function defineStore()
+
+
+
+
+
+
+
+
+
+    /**
+     * Handle the upload and validation of multiple image files.
+     *
+     * @return void
+     */
+    public function updatedImages()
     {
-        $this->storeData = $this->load();
-        $this->storePath = "Users/".getUser()->id."/data/vehicle.json";
+        // Validate the files
+        $this->validate([
+            'images.*' => 'required|image|max:4024', // Adjust rules as needed
+        ]);
+
+        // Loop through the uploaded files and save them
+        foreach ($this->images['files'] as $index => $file) {
+            $path = $file['path'] ?? null;
+            $new = $file['new'] ?? null;
+
+            $this->images['files'][$index]['file'] = $this->uploadFile('images', $new, $path);
+            // Optionally reset file input
+            // $this->reset('images.' . $index);
+        }
     }
 
     public function submit()
@@ -169,10 +301,33 @@ class Wizard extends Component
         }
 
         // Clear the stored data after submission
-        Storage::delete("Users/".getUser()->id."/vehicle.json");
+        Storage::delete("Users/" . getUser()->id . "/vehicle.json");
 
         // Redirect or reset after successful submission
         return redirect()->route('vehicles.index');
+    }
+
+    public function defineSteps()
+    {
+        $this->stepNames = [
+            0 => 'Introduction',
+            1 => 'Vehicle Information',
+            2 => 'Vehicle Details',
+            3 => 'Engine & Transmission',
+            4 => 'Faults & Modifications',
+            5 => 'Safety, Security & Service',
+            6 => 'Vehicle Images',
+            7 => 'Vehicle Documents',
+            8 => 'Insurance',
+            9 => 'Review & Submit',
+        ];
+        $this->totalSteps = count($this->stepNames) - 1;
+    }
+
+    public function defineStore()
+    {
+        $this->storePath = getUserStorage('private') . "/data/vehicle.json";
+        $this->storeData = $this->getStoredData() ?? $this->storeData;
     }
 
     public function render()
@@ -180,9 +335,12 @@ class Wizard extends Component
         return view(
             'user.vehicle.wizard',
             [
-                'currentStepName' => $this->getCurrentStepName(),
                 'prevStepName' => $this->getPrevStepName(),
                 'nextStepName' => $this->getNextStepName(),
+                'currentStepName' => $this->getStepName($this->currentStep),
+                'currentStep' => $this->updateCurrentStep(),
+                'nextPrefix' => 'next-',
+                'prevPrefix' => 'prev-',
             ]
         )->layout('layouts.user');
     }

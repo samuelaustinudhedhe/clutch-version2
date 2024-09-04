@@ -4,7 +4,7 @@ namespace App\View\Livewire\User\Onboarding;
 
 use Livewire\Component;
 
-class GetStarted extends Component
+class GetStarted extends Layout
 {
     public function render()
     {

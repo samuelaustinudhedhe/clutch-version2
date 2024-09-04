@@ -56,18 +56,31 @@ class AttachmentController extends Controller
     }
 
     /**
-     * Stores a file on the specified disk at the given path.
+     * Stores a file on the specified disk at the given path and returns the full path to the file.
      *
      * @param string $path The path where the file will be stored on the disk.
      * @param mixed $file The file to be stored. This can be a file path, a stream resource, or an instance of UploadedFile.
      * @param string $disk The name of the disk where the file will be stored. Defaults to 'public'.
      *
-     * @return void
+     * @return string The full path to the stored file.
      */
-    public static function store(string $path, $file, string $disk = 'public')
+    public static function store(string $path, $file, $mimeType, $return = false)
     {
-        // Use Laravel's Storage facade to store the file at the specified path on the specified disk.
-        Storage::disk($disk)->put($path, $file);
+        // Ensure the path does not include "storage" at the beginning
+        $path = preg_replace('/^.*\/storage\//', '', $path);
+
+        // Check if the file is a PDF
+        if ($mimeType === 'application/pdf') {
+            // Store the PDF file and get the full path
+            Storage::put($path, file_get_contents($file));
+        } else {
+            // Store the file and get the full path
+            Storage::put($path, $file);
+        }
+
+        // Return the full path to the stored file
+        if ($return)
+            return Storage::path($path);
     }
 
 
@@ -83,28 +96,44 @@ class AttachmentController extends Controller
      *
      * @return void
      */
-    public static function create($name, $description, $file, $attachable, $authorable, $path, $is_featured = false)
+    public static function create($name, $description, $file, $is_featured = false, $attachable, $authorable, $path)
     {
-        // Set default values for is_featured and status
-        $active = 'active';
-
         // Get the MIME type of the file
-        $mime_type = mime_content_type($file->getRealPath());
+        $fileInfo =  getimagesize($file);
 
+        // $exif = null;
+        // if (!in_array($fileInfo['mime'], ['image/png', 'image/jpeg', 'image/gif'])) {
+        //     $exif = exif_read_data($file);
+        // }
+        $width = $fileInfo[0] ?? null;
+        $height = $fileInfo[1] ?? null;
+        $ratio = ($height > 0) ? ($width / $height) : null; // Add condition to check if height is not zero before performing division
+        $dimension = '';
+        if ($fileInfo)
+            $dimension = [
+                'width' => $width,
+                'height' => $height,
+                'ratio' => $ratio,
+            ];
         // Collect metadata about the file
         $metadata = [
-            'size' => $file->size(),
-            'dimensions' => [
-                'width' => $file->width(),
-                'height' => $file->height(),
-                'ratio' => $file->width() / $file->height(),
-                'exif' => $file->exif() ? $file->exif() : null,
-                'orientation' => $file->isPortrait() ? 'portrait' : 'landscape',
-            ],
+            'size' => filesize($file),
+            $dimension
+            // 'exif' => $exif ?: null,
         ];
 
         // Create the Attachment using the raw method
-        self::createRaw($name, $description, $active, $is_featured, $metadata, $mime_type, $attachable, $authorable, $path);
+        self::createRaw(
+            $name,
+            $description,
+            'active',
+            $is_featured,
+            $metadata,
+            $fileInfo['mime'] ?? mime_content_type($file),
+            $attachable,
+            $authorable,
+            $path
+        );
     }
 
     /**

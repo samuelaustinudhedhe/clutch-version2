@@ -34,6 +34,17 @@ function fetchJsonData($path = null, $associative = true)
     return $countries;
 }
 
+function getSortedCountries() {
+    $countries = countries();
+
+    // Sort the countries by their common name
+    usort($countries, function ($a, $b) {
+        return strcmp($a['name']['common'], $b['name']['common']);
+    });
+
+    return $countries;
+}
+
 if (!function_exists('countries')) {
     /**
      * Fetches the list of countries from a JSON file and returns it as an array.

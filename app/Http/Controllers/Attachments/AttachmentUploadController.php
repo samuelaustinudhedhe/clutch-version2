@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Attachments;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Attachments\AttachmentCompressController as Compress;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Encoders\AutoEncoder;
 
 class AttachmentUploadController extends AttachmentController
 {
@@ -23,7 +25,7 @@ class AttachmentUploadController extends AttachmentController
      *
      * @return string The path of the stored image file.
      */
-    public static function image(object $authorable, $image, $folder, $filename, $size = 'resize', ?int $width = null, ?int $height = null, $quality = 80, $attachable = null)
+    public static function image($image, $folder, $filename, $size = 'resize', ?int $width = null, ?int $height = null, $quality = 80, object $authorable, object $attachable = null)
     {
         // Get the file extension from the filename
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
@@ -75,15 +77,54 @@ class AttachmentUploadController extends AttachmentController
         return $path;
     }
 
-    public function video(Request $request)
+    /**
+     * Uploads and processes a file, compresses it if necessary, and stores it in the specified folder.
+     * It also creates a new attachment record in the database.
+     *
+     * @param object $authorable The user who is uploading the file.
+     * @param mixed $file The source of the file (e.g., file path, stream, or uploaded file).
+     * @param string $folder The folder where the file will be stored.
+     * @param string $filename The name of the file.
+     * @param int $quality The quality of the compressed file (default is 80).
+     *
+     * @return string The path of the stored file.
+     */
+    public static function file($name, $description, $file, $is_featured, $quality = 90, $authorable, $attachable, $path)
     {
+        // Get the file extension from the filename
+        $fileName = basename($file);
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+        $name = $name ?? $authorable->name . '\'s ' . ucwords(toSlug(pathinfo($fileName, PATHINFO_FILENAME), ' '));
+        $description = $description ?? 'File uploaded by ' . $authorable->name . ' and attached to ' . $attachable->name;
+        $mimeType = mime_content_type($file);
+        // Check if the file is an image
+        if (str_contains($mimeType, 'image')) {
+            // Read the file from the provided source
+            $file = (new parent)->read($file);
+            // Compress the file and get the encoded file
+            $file = Compress::image($file, 'jpg', $quality);
+            
+        }
+
+        // Store the file to the specified path
+        $file = self::store($path, $file, $mimeType, true);
+        
+        // Create a new attachment record in the database
+        return AttachmentController::create(
+            name: $name,
+            description: $description,
+            file: $file,
+            is_featured: $is_featured,
+            attachable: $attachable,
+            authorable: $authorable,
+            path: $path,
+        );
     }
 
-    public function audio(Request $request)
-    {
-    }
 
-    public function document(Request $request)
-    {
-    }
+    public function video(Request $request) {}
+
+    public function audio(Request $request) {}
+
+    public function document(Request $request) {}
 }

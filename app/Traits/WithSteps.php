@@ -134,10 +134,18 @@ trait WithSteps
         if (property_exists($this, 'rules') && !empty($this->rules)) {
             $this->validate();
         }
-        $this->currentStep++;
+        $this->attachToNextStep();
         $this->store();
+
+        $this->currentStep++;
+
     }
 
+    public function attachToNextStep()
+    {
+        return false;
+    }
+    
     /**
      * Moves back to the previous step in the process.
      *
@@ -153,8 +161,15 @@ trait WithSteps
      */
     public function prevStep()
     {
-        $this->currentStep--;
+        $this->attachToPrevStep();
         $this->store();
+        $this->currentStep--;
+
+    }
+
+    public function attachToPrevStep()
+    {
+        return false;
     }
 
     /**
@@ -213,9 +228,11 @@ trait WithSteps
      * $this->store();
      * ```
      */
-    public function store()
+    public function store($data = [])
     {
-        $data = $this->storeData ?? '';
+        if (empty($data)) {
+            $data = $this->storeData ?? '';
+        }
         $path = $this->storePath ?? '';
         if (!empty($path) && !empty($data)) {
             Storage::put($path, json_encode(array_merge($data, ['current_step' => $this->currentStep])));
@@ -242,17 +259,19 @@ trait WithSteps
      * print_r($data); // Outputs the data stored in the JSON file
      * ```
      */
-    public function load()
+    public function getStoredData()
     {
-        $path = $this->storePath ?? '';
-
-        if (Storage::exists($path)) {
-            return json_decode(Storage::get($path), true);
+        if (Storage::exists($this->storePath)) {
+            return  json_decode(Storage::get($this->storePath), true);
         }
-
-        return [];
     }
 
+    public function loadStoredData()
+    {
+        if (Storage::exists($this->storePath)) {
+            $this->storeData = json_decode(Storage::get($this->storePath), true);
+        }
+    }
     /**
      * Update the current step if the stored current step is greater than the current step.
      *
@@ -276,75 +295,139 @@ trait WithSteps
     }
 
     /**
-     * Define the steps for the multi-step process.
+     * Upload a file, handling the deletion of any existing file in storage.
      *
-     * This function should be implemented in the component that uses this trait.
-     *
-     * @return bool
-     *
-     * @example
-     * ```php
-     * public function defineSteps()
-     * {
-     *     $this->stepNames = [
-     *         0 => 'Intro',
-     *         1 => 'Details',
-     *         2 => 'Confirmation'
-     *     ];
-     *     $this->totalSteps = 2;
-     *     return true;
-     * }
-     * ```
+     * @param string $key The key to identify the file (e.g., 'photo', 'nin').
+     * @param \Illuminate\Http\UploadedFile $file The new file being uploaded.
+     * @param string|null $filePath The path to the existing file, if any.
+     * @return array The details of the uploaded file.
      */
-    public function defineSteps()
+    public function uploadFile($key, $file, $filePath)
     {
-        return false;
+        // Check if there's an existing file and delete it
+        if ($filePath && Storage::exists($filePath)) {
+            Storage::delete($filePath);
+        }
+
+        // Save the uploaded file and get the file path
+        $filePath = $file->store("tmp", 'public');
+
+        if (!isset($this->storeData['files'][$key])) {
+            $this->storeData['files'][$key] = [];
+        }
+
+        // Save file details to the JSON file
+        $this->storeData['files'][$key] = [
+            'path' => $filePath,
+            'mime_type' => $file->getMimeType(),
+            'size' => $file->getSize(),
+        ];
+        $this->deleteFile($file);
+        Storage::put($this->storePath, json_encode($this->storeData));
+
+        return $this->storeData['files'][$key];
     }
 
-    /**
-     * Define the store path and data for the multi-step process.
-     *
-     * This function should be implemented in the component that uses this trait.
-     *
-     * @return bool
-     *
-     * @example
-     * ```php
-     * public function defineStore()
-     * {
-     *     $this->storePath = 'path/to/store.json';
-     *     $this->storeData = ['key' => 'value'];
-     *     return true; #optional or return false to skip store definition
-     * }
-     * ```
-     */
-    public function defineStore()
-    {
-        return false;
-    }
 
     /**
-     * Constructor to initialize the steps and store definitions.
+     * Deletes a file from either temporary or permanent storage.
      *
-     * This function calls defineSteps() and defineStore() if they are present in the child component.
+     * This function checks if the file is in temporary storage and deletes it if found.
+     * If the file is not in temporary storage, it attempts to delete it from permanent storage.
      *
-     * @example
-     * ```php
-     * public function __construct()
-     * {
-     *     parent::__construct();
-     *     $this->defineSteps();
-     *     $this->defineStore();
-     * }
-     * ```
+     * @param mixed $file The file to be deleted. This can be an object with a method `getRealPath` for temporary files,
+     *                    or an object with a `path` property for files in permanent storage.
+     * @return void
      */
-    public function __construct()
+    protected function deleteFile($file)
     {
-        if (method_exists($this, 'defineSteps') && $this->defineSteps() !== false) {
-            $this->defineSteps();
-        }
-        if (method_exists($this, 'defineStore') && $this->defineStore() !== false) {
-            $this->defineStore();
+        // Check if the file is in temporary storage
+        if (method_exists($file, 'getRealPath')) {
+            $filePath = $file->getRealPath();
+
+            // Delete the file from the temporary storage
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        } else {
+            // Handle permanent storage deletion if the file is already saved
+            $filePath = $file->path; // Adjust based on how you store the file path
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
         }
     }
+
+    // /**
+    //  * Define the steps for the multi-step process.
+    //  *
+    //  * This function should be implemented in the component that uses this trait.
+    //  *
+    //  * @return bool
+    //  *
+    //  * @example
+    //  * ```php
+    //  * public function defineSteps()
+    //  * {
+    //  *     $this->stepNames = [
+    //  *         0 => 'Intro',
+    //  *         1 => 'Details',
+    //  *         2 => 'Confirmation'
+    //  *     ];
+    //  *     $this->totalSteps = 2;
+    //  *     return true;
+    //  * }
+    //  * ```
+    //  */
+    // public function defineSteps()
+    // {
+    //     return false;
+    // }
+
+    // /**
+    //  * Define the store path and data for the multi-step process.
+    //  *
+    //  * This function should be implemented in the component that uses this trait.
+    //  *
+    //  * @return bool
+    //  *
+    //  * @example
+    //  * ```php
+    //  * public function defineStore()
+    //  * {
+    //  *     $this->storePath = 'path/to/store.json';
+    //  *     $this->storeData = ['key' => 'value'];
+    //  *     return true; #optional or return false to skip store definition
+    //  * }
+    //  * ```
+    //  */
+    // public function defineStore()
+    // {
+    //     return false;
+    // }
+
+    // /**
+    //  * Constructor to initialize the steps and store definitions.
+    //  *
+    //  * This function calls defineSteps() and defineStore() if they are present in the child component.
+    //  *
+    //  * @example
+    //  * ```php
+    //  * public function __construct()
+    //  * {
+    //  *     parent::__construct();
+    //  *     $this->defineSteps();
+    //  *     $this->defineStore();
+    //  * }
+    //  * ```
+    //  */
+    // public function __construct()
+    // {
+    //     if (method_exists($this, 'defineSteps') && $this->defineSteps() !== false) {
+    //         $this->defineSteps();
+    //     }
+    //     if (method_exists($this, 'defineStore') && $this->defineStore() !== false) {
+    //         $this->defineStore();
+    //     }
+    // }
 }
