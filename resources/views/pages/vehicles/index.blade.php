@@ -5,7 +5,8 @@
             <div class="items-center justify-between pb-4 md:flex">
                 <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white md:mb-0">Vehicles
                     <span class="ms-2 text-lg font-medium text-gray-500 dark:text-gray-400">{{ $count }}
-                        </span></h2>
+                    </span>
+                </h2>
                 <button id="infoButton" data-modal-target="infoModal" data-modal-toggle="infoModal" type="button"
                     class="inline-flex items-center justify-center rounded-lg p-2 text-sm font-medium leading-none text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                     <span class="sr-only"> Info </span>
@@ -77,6 +78,11 @@
             <div class="items-center justify-between space-y-4 py-4 lg:flex lg:space-y-0">
                 <!--Dropdown Buttons -->
                 <div class="grid grid-cols-2 items-center gap-4 md:flex ">
+
+                        <x-search wire:model.live="search"/>
+
+                </div>
+                <div class="shrink-0 items-center gap-4 sm:flex">
                     <button id="brandsDropdownButton" data-dropdown-toggle="dropdownBrands" type="button"
                         class="flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">
                         <svg class="-ms-0.5 me-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +102,7 @@
                         class="z-50 hidden w-48 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700"
                         data-popper-placement="bottom">
                         <ul class="p-2 text-start text-sm font-medium text-gray-900 dark:text-white">
-                            
+
                             <li
                                 class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600">
                                 <input id="brand-checkbox-10" type="checkbox" value=""
@@ -112,7 +118,7 @@
                                 all 1,011 results</button>
                         </div> --}}
                     </div>
-                 
+
                     <button id="ratingDropdownButton" data-dropdown-toggle="dropdownRating" type="button"
                         class="flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">
                         <svg class="-ms-0.5 me-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -350,99 +356,6 @@
                                 all 100 results</button>
                         </div>
                     </div>
-                    <button id="shippingDropdownButton" data-dropdown-toggle="dropdownShipping" type="button"
-                        class="flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">
-                        <svg class="-ms-0.5 me-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                d="M18.796 4H5.204a1 1 0 0 0-.753 1.659l5.302 6.058a1 1 0 0 1 .247.659v4.874a.5.5 0 0 0 .2.4l3 2.25a.5.5 0 0 0 .8-.4v-7.124a1 1 0 0 1 .247-.659l5.302-6.059c.566-.646.106-1.658-.753-1.658Z" />
-                        </svg>
-                        Shipping <span class="ms-1 hidden md:flex">to: Americas</span>
-                        <svg class="-me-0.5 ms-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m19 9-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <!-- Dropdown -->
-                    <div id="dropdownShipping"
-                        class="z-50 hidden w-72 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700"
-                        data-popper-placement="bottom">
-                        <div class="space-y-3 p-2 text-start text-sm font-medium text-gray-900 dark:text-white">
-                            <label for="asia-1" class="relative block">
-                                <input type="checkbox" name="asia-1" id="asia-1"
-                                    class="peer absolute left-2 top-2 appearance-none" />
-                                <div
-                                    class="relative cursor-pointer space-y-1 overflow-hidden rounded-lg border border-gray-200 bg-white p-4 text-gray-500 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:peer-checked:border-blue-600 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-300">
-                                    <p class="text-sm font-medium">Asia</p>
-                                    <p class="text-sm font-normal">Delivery for Asia for <span
-                                            class="font-medium">$954</span></p>
-                                </div>
-                            </label>
-
-                            <label for="africa-1" class="relative block">
-                                <input type="checkbox" name="africa-1" id="africa-1"
-                                    class="peer absolute left-2 top-2 appearance-none" />
-                                <div
-                                    class="relative cursor-pointer space-y-1 overflow-hidden rounded-lg border border-gray-200 bg-white p-4 text-gray-500 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:peer-checked:border-blue-600 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-300">
-                                    <p class="text-sm font-medium">Africa</p>
-                                    <p class="text-sm font-normal">Delivery for Africa for <span
-                                            class="font-medium">$706,834</span></p>
-                                </div>
-                            </label>
-
-                            <label for="americas-1" class="relative block">
-                                <input type="checkbox" name="americas-1" id="americas-1"
-                                    class="peer absolute left-2 top-2 appearance-none" checked />
-                                <div
-                                    class="relative cursor-pointer space-y-1 overflow-hidden rounded-lg border border-gray-200 bg-white p-4 text-gray-500 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400 dark:peer-checked:border-blue-600 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-300">
-                                    <p class="text-sm font-medium">Americas</p>
-                                    <p class="text-sm font-normal">Delivery for USA for <span
-                                            class="font-medium">$365,35</span></p>
-                                </div>
-                            </label>
-
-                            <label for="australia-1" class="relative block">
-                                <input type="checkbox" name="australia-1" id="australia-1"
-                                    class="peer absolute left-2 top-2 appearance-none" checked />
-                                <div
-                                    class="relative cursor-pointer space-y-1 overflow-hidden rounded-lg border border-gray-200 bg-white p-4 text-gray-500 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:peer-checked:border-blue-600 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-300">
-                                    <p class="text-sm font-medium">Australia/Oceania</p>
-                                    <p class="text-sm font-normal">Delivery for Australia for <span
-                                            class="font-medium">$209,98</span></p>
-                                </div>
-                            </label>
-
-                            <label for="europe-1" class="relative block">
-                                <input type="checkbox" name="europe-1" id="europe-1"
-                                    class="peer absolute left-2 top-2 appearance-none" />
-                                <div
-                                    class="relative cursor-pointer space-y-1 overflow-hidden rounded-lg border border-gray-200 bg-white p-4 text-gray-500 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:peer-checked:border-blue-600 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-300">
-                                    <p class="text-sm font-medium">Europe</p>
-                                    <p class="text-sm font-normal">Delivery for Europe for <span
-                                            class="font-medium">$1,365,35</span></p>
-                                </div>
-                            </label>
-
-                            <label for="antarctica-1" class="relative block">
-                                <input type="checkbox" name="antarctica-1" id="antarctica-1"
-                                    class="peer absolute left-2 top-2 appearance-none" />
-                                <div
-                                    class="relative cursor-pointer space-y-1 overflow-hidden rounded-lg border border-gray-200 bg-white p-4 text-gray-500 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:peer-checked:border-blue-600 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-300">
-                                    <p class="text-sm font-medium">Antarctica</p>
-                                    <p class="text-sm font-normal">N/A</p>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="p-2">
-                            <button type="button"
-                                class="w-full rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">See
-                                all 100 results</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="shrink-0 items-center gap-4 sm:flex">
-                   
                 </div>
             </div>
             <div class="pt-4">
@@ -493,7 +406,8 @@
                     class="space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <div class="relative mb-4 max-h-72 overflow-hidden rounded-md">
                         <!-- Carousel wrapper -->
-                        <img src="{{ $vehicle->featuredImage('car.jpg') }}" class="h-72 object-cover rounded-md" alt="{{ $vehicle->name }}" />
+                        <img src="{{ $vehicle->featuredImage('car.jpg') }}" class="h-72 object-cover rounded-md"
+                            alt="{{ $vehicle->name }}" />
                         <div class="absolute right-0 top-0 p-1 z-50">
                             <button type="button" data-tooltip-target="tooltip-add-to-favorites-9"
                                 class="rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
