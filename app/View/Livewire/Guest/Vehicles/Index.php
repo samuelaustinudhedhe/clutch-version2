@@ -11,7 +11,7 @@ class Index extends Component
     use WithPagination;
 
     public $search = '';
-    public $perPage = 10;
+    public $perPage = 15;
 
     public function mount() {}
 

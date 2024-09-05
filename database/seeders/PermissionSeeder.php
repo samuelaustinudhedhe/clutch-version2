@@ -37,8 +37,8 @@ class PermissionSeeder extends Seeder
             ['name' => 'Delete Permissions', 'slug' => 'delete_permissions', 'roles' => ['superadmin']],
             ['name' => 'View Analytics', 'slug' => 'view_analytics', 'roles' => ['administrator', 'superadmin']],
             ['name' => 'Read Posts', 'slug' => 'read_posts', 'roles' => ['subscriber', 'administrator', 'author', 'owner', 'moderator', 'support', 'accountant', 'driver', 'superadmin']],
-            ['name' => 'Edit Own Posts', 'slug' => 'edit_own_posts', 'roles' => ['author', 'owner', 'administrator', 'superadmin']],
-            ['name' => 'Delete Own Posts', 'slug' => 'delete_own_posts', 'roles' => ['author', 'owner', 'administrator', 'superadmin']],
+            ['name' => 'Edit Own Posts', 'slug' => 'edit_own_posts', 'roles' => ['author', 'owner', 'driver', 'administrator', 'superadmin']],
+            ['name' => 'Delete Own Posts', 'slug' => 'delete_own_posts', 'roles' => ['author', 'owner', 'driver', 'administrator', 'superadmin']],
             ['name' => 'View Assigned Routes', 'slug' => 'view_assigned_routes', 'roles' => ['driver', 'administrator', 'superadmin']],
             ['name' => 'View Tickets', 'slug' => 'view_tickets', 'roles' => ['support', 'administrator', 'superadmin']],
             ['name' => 'Resolve Tickets', 'slug' => 'resolve_tickets', 'roles' => ['support', 'administrator', 'superadmin']],
@@ -46,13 +46,13 @@ class PermissionSeeder extends Seeder
             ['name' => 'Manage Invoices', 'slug' => 'manage_invoices', 'roles' => ['accountant', 'administrator', 'superadmin']],
             ['name' => 'View Financial Reports', 'slug' => 'view_financial_reports', 'roles' => ['accountant', 'administrator', 'superadmin']],
             //Vehicles and related permissions
-            ['name' => 'Add Vehicles', 'slug' => 'add_vehicles', 'roles' => ['administrator', 'superadmin', 'owner']],
-            ['name' => 'Delete Vehicles', 'slug' => 'delete_vehicles', 'roles' => ['administrator', 'superadmin', 'owner']],
-            ['name' => 'Edit Vehicles', 'slug' => 'edit_vehicles', 'roles' => ['administrator', 'superadmin', 'owner']],
-            ['name' => 'Manage Vehicles', 'slug' => 'manage_vehicles', 'roles' => ['administrator', 'superadmin', 'owner']],
+            ['name' => 'Add Vehicles', 'slug' => 'add_vehicles', 'roles' => ['administrator', 'superadmin', 'owner', 'driver']],
+            ['name' => 'Delete Vehicles', 'slug' => 'delete_vehicles', 'roles' => ['administrator', 'superadmin', 'owner', 'driver']],
+            ['name' => 'Edit Vehicles', 'slug' => 'edit_vehicles', 'roles' => ['administrator', 'superadmin', 'owner', 'driver']],
+            ['name' => 'Manage Vehicles', 'slug' => 'manage_vehicles', 'roles' => ['administrator', 'superadmin', 'owner', 'driver']],
             ['name' => 'Read Posts', 'slug' => 'read_posts', 'roles' => ['subscriber', 'administrator', 'author', 'owner', 'moderator', 'support', 'accountant', 'driver', 'superadmin']],
-            ['name' => 'Edit Own Posts', 'slug' => 'edit_own_posts', 'roles' => ['author', 'owner', 'administrator', 'superadmin']],
-            ['name' => 'Delete Own Posts', 'slug' => 'delete_own_posts', 'roles' => ['author', 'owner', 'administrator', 'superadmin']],
+            ['name' => 'Edit Own Posts', 'slug' => 'edit_own_posts', 'roles' => ['author', 'owner', 'driver', 'administrator', 'superadmin']],
+            ['name' => 'Delete Own Posts', 'slug' => 'delete_own_posts', 'roles' => ['author', 'owner', 'driver', 'administrator', 'superadmin']],
         ];
 
         // Iterate over each permission and process it

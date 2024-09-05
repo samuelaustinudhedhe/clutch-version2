@@ -2,78 +2,35 @@
     <div class="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased max-w-screen-xl px-4 mx-auto 2xl:px-0">
         <div class="grid lg:grid-cols-2 gap-8">
             <div class="max-w-md lg:max-w-lg mx-auto">
-                <div id="vehicle-1-tab-content">
-                    {{-- @foreach ($vehicle->images() as $image) --}}
-                        <div class="hidden p-4 rounded-lg bg-white dark:bg-gray-900" id="vehicle-1-image-1" role="tabpanel"
-                            aria-labelledby="vehicle-1-image-1-tab">
-                            <img class="w-full mx-auto dark:hidden"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
-                                alt="" />
-                            <img class="w-full mx-auto hidden dark:block"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
-                                alt="" />
-                        </div>
-                    {{-- @endforeach --}}
-
-
+                <div id="product-1-tab-content">
+                    @foreach ( $vehicle->images() as $image )
+                        <div class="hidden p-4 rounded-lg bg-white dark:bg-gray-900" id="product-1-{{'image'.$image->id}}" role="tabpanel"
+                        aria-labelledby="product-1-{{'image'.$image->id}}-tab">
+                        <img class="w-full mx-auto"
+                            src="{{ $image->file_path }}" alt="" />
+                       
+                    </div>
+                    @endforeach
                 </div>
 
-                <ul class="grid grid-cols-4 gap-4 mt-8" id="vehicle-1-tab" data-tabs-toggle="#vehicle-1-tab-content"
+                <ul class="grid grid-cols-4 gap-4 mt-8" id="product-1-tab" data-tabs-toggle="#product-1-tab-content"
                     data-tabs-active-classes="border-gray-200 dark:border-gray-700"
                     data-tabs-inactive-classes="border-transparent hover:border-gray-200 dark:hover:dark:border-gray-700 dark:border-transparent"
                     role="tablist">
+                    @foreach ($vehicle->images() as $image)
+                        
                     <li class="me-2" role="presentation">
                         <button
                             class="h-20 w-20 overflow-hidden border-2 rounded-lg sm:h-20 sm:w-20 md:h-24 md:w-24 p-2 cursor-pointer mx-auto"
-                            id="vehicle-1-image-1-tab" data-tabs-target="#vehicle-1-image-1" type="button"
-                            role="tab" aria-controls="vehicle-1-image-1" aria-selected="false">
-                            <img class="object-contain w-full h-full dark:hidden"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+                            id="product-1-{{'image'.$image->id}}-tab" data-tabs-target="#product-1-{{'image'.$image->id}}" type="button"
+                            role="tab" aria-controls="product-1-{{'image'.$image->id}}" aria-selected="false">
+                            <img class="object-contain w-full h-full"
+                                src="{{ $image->file_path }}"
                                 alt="" />
-                            <img class="object-contain w-full h-full hidden dark:block"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
-                                alt="" />
+                            
                         </button>
-                    </li>
-                    <li class="me-2" role="presentation">
-                        <button
-                            class="h-20 w-20 overflow-hidden border-2 rounded-lg sm:h-20 sm:w-20 md:h-24 md:w-24 p-2 cursor-pointer mx-auto"
-                            id="vehicle-1-image-2-tab" data-tabs-target="#vehicle-1-image-2" type="button"
-                            role="tab" aria-controls="vehicle-1-image-2" aria-selected="false">
-                            <img class="object-contain w-full h-full dark:hidden"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-back.svg"
-                                alt="" />
-                            <img class="object-contain w-full h-full hidden dark:block"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-back-dark.svg"
-                                alt="" />
-                        </button>
-                    </li>
-                    <li class="me-2" role="presentation">
-                        <button
-                            class="h-20 w-20 overflow-hidden border-2 rounded-lg sm:h-20 sm:w-20 md:h-24 md:w-24 p-2 cursor-pointer mx-auto"
-                            id="vehicle-1-image-3-tab" data-tabs-target="#vehicle-1-image-3" type="button"
-                            role="tab" aria-controls="vehicle-1-image-3" aria-selected="false">
-                            <img class="object-contain w-full h-full dark:hidden"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-components.svg"
-                                alt="" />
-                            <img class="object-contain w-full h-full hidden dark:block"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-components-dark.svg"
-                                alt="" />
-                        </button>
-                    </li>
-                    <li class="me-2" role="presentation">
-                        <button
-                            class="h-20 w-20 overflow-hidden border-2 rounded-lg sm:h-20 sm:w-20 md:h-24 md:w-24 p-2 cursor-pointer mx-auto"
-                            id="vehicle-1-image-4-tab" data-tabs-target="#vehicle-1-image-4" type="button"
-                            role="tab" aria-controls="vehicle-1-image-4" aria-selected="false">
-                            <img class="object-contain w-full h-full dark:hidden"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-side.svg"
-                                alt="" />
-                            <img class="object-contain w-full h-full hidden dark:block"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-side-dark.svg"
-                                alt="" />
-                        </button>
-                    </li>
+                    </li>                    
+                    @endforeach
                 </ul>
 
             </div>
@@ -81,22 +38,23 @@
             <div class="mt-6 md:mt-0">
                 <span
                     class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                    In stock
+                    SUV
                 </span>
                 <p class="mt-4 text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-                    Apple iMac 24" All-In-One Computer, Apple M1, 8GB RAM, 256GB SSD,
-                    Mac OS, Pink
+                    {{ $vehicle->name }}
                 </p>
                 <div class="mt-4 xl:items-center xl:gap-4 xl:flex">
                     <div class="flex items-center gap-2">
                         <div class="flex items-center gap-1">
-                            <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-yellow-300" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                viewBox="0 0 24 24">
                                 <path
                                     d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
                             </svg>
-                            <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-yellow-300" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                viewBox="0 0 24 24">
                                 <path
                                     d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
                             </svg>
@@ -146,7 +104,7 @@
 
                 <div class="flex items-center justify-between gap-4 mt-6 sm:mt-8">
                     <p class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
-                        $1,249.99
+                        {{ $vehicle->human_price }}
                     </p>
 
                     <form class="flex items-center gap-2 sm:hidden">
@@ -745,10 +703,10 @@
                                         <div class="mb-4 space-y-3">
                                             <p
                                                 class="text-xl font-semibold leading-none text-gray-900 dark:text-white">
-                                                Do you own or have you used the vehicle?</p>
+                                                Do you own or have you used the product?</p>
                                             <p
                                                 class="text-base font-normal leading-none text-gray-500 dark:text-gray-400">
-                                                Give your opinion by rating the vehicle</p>
+                                                Give your opinion by rating the product</p>
                                             <div class="flex items-center">
                                                 <svg class="me-1 h-6 w-6 text-gray-300 dark:text-gray-500"
                                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -800,8 +758,7 @@
 
                                 <div class="mt-6 sm:flex sm:items-end sm:justify-between">
                                     <p class="text-sm font-normal leading-tight text-gray-900 dark:text-white">Showing
-                                        <span class="font-semibold">5,768</span> Customer Reviews
-                                    </p>
+                                        <span class="font-semibold">5,768</span> Customer Reviews</p>
 
                                     <div
                                         class="mt-4 shrink-0 space-y-4 sm:mt-0 sm:flex sm:max-w-sm sm:items-center sm:gap-4 sm:space-y-0">
@@ -1218,7 +1175,7 @@
 
                                         <p class="mb-3 text-base font-normal text-gray-500 dark:text-gray-400">I
                                             replaced my 11 year old iMac with the new M1 Apple. I wanted to remain with
-                                            Apple as my old one is still working perfectly and all Apple vehicles are so
+                                            Apple as my old one is still working perfectly and all Apple products are so
                                             reliable. Setting up was simple and fast and transferring everything from my
                                             previous iMac worked perfectly.</p>
 
@@ -1263,14 +1220,14 @@
                             </div>
                         </div>
                         <div class="hidden" id="questions" role="tabpanel" aria-labelledby="questions-tab">
-                            <div class="mt-6 sm:mt-8" id="accordion-vehicle" data-accordion="open"
+                            <div class="mt-6 sm:mt-8" id="accordion-product" data-accordion="open"
                                 data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                                 data-inactive-classes="text-gray-500 dark:text-gray-400">
-                                <h2 id="accordion-vehicle-heading-11">
+                                <h2 id="accordion-product-heading-11">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-11" aria-expanded="true"
-                                        aria-controls="accordion-vehicle-body-11">
+                                        data-accordion-target="#accordion-product-body-11" aria-expanded="true"
+                                        aria-controls="accordion-product-body-11">
                                         <span> What is an iMac, and how does it differ from other computers? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1280,8 +1237,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-11" class=""
-                                    aria-labelledby="accordion-vehicle-heading-11">
+                                <div id="accordion-product-body-11" class=""
+                                    aria-labelledby="accordion-product-heading-11">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1317,11 +1274,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-12">
+                                <h2 id="accordion-product-heading-12">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-12" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-12">
+                                        data-accordion-target="#accordion-product-body-12" aria-expanded="false"
+                                        aria-controls="accordion-product-body-12">
                                         <span> What are the key features of the latest iMac models? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1331,8 +1288,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-12" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-12">
+                                <div id="accordion-product-body-12" class="hidden"
+                                    aria-labelledby="accordion-product-heading-12">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1351,7 +1308,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -1384,11 +1341,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-13">
+                                <h2 id="accordion-product-heading-13">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-13" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-13">
+                                        data-accordion-target="#accordion-product-body-13" aria-expanded="false"
+                                        aria-controls="accordion-product-body-13">
                                         <span> What is the Retina display on an iMac, and why is it significant? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1398,8 +1355,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-13" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-13">
+                                <div id="accordion-product-body-13" class="hidden"
+                                    aria-labelledby="accordion-product-heading-13">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1418,7 +1375,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -1451,11 +1408,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-4">
+                                <h2 id="accordion-product-heading-4">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-4" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-4">
+                                        data-accordion-target="#accordion-product-body-4" aria-expanded="false"
+                                        aria-controls="accordion-product-body-4">
                                         <span> How is the performance of an iMac for tasks like video editing, graphic
                                             design, and gaming? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
@@ -1466,8 +1423,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-4" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-4">
+                                <div id="accordion-product-body-4" class="hidden"
+                                    aria-labelledby="accordion-product-heading-4">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1486,7 +1443,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -1519,11 +1476,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-5">
+                                <h2 id="accordion-product-heading-5">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-5" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-5">
+                                        data-accordion-target="#accordion-product-body-5" aria-expanded="false"
+                                        aria-controls="accordion-product-body-5">
                                         <span> Can I upgrade the components of my iMac, such as RAM or storage? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1533,8 +1490,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-5" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-5">
+                                <div id="accordion-product-body-5" class="hidden"
+                                    aria-labelledby="accordion-product-heading-5">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1553,7 +1510,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -1586,11 +1543,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-6">
+                                <h2 id="accordion-product-heading-6">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-6" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-6">
+                                        data-accordion-target="#accordion-product-body-6" aria-expanded="false"
+                                        aria-controls="accordion-product-body-6">
                                         <span> What is the role of Thunderbolt ports on an iMac? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1600,8 +1557,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-6" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-6">
+                                <div id="accordion-product-body-6" class="hidden"
+                                    aria-labelledby="accordion-product-heading-6">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1620,7 +1577,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -1653,11 +1610,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-7">
+                                <h2 id="accordion-product-heading-7">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-7" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-7">
+                                        data-accordion-target="#accordion-product-body-7" aria-expanded="false"
+                                        aria-controls="accordion-product-body-7">
                                         <span> How does the macOS operating system differ from Windows? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1667,8 +1624,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-7" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-7">
+                                <div id="accordion-product-body-7" class="hidden"
+                                    aria-labelledby="accordion-product-heading-7">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1687,7 +1644,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -1720,11 +1677,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-8">
+                                <h2 id="accordion-product-heading-8">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-8" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-8">
+                                        data-accordion-target="#accordion-product-body-8" aria-expanded="false"
+                                        aria-controls="accordion-product-body-8">
                                         <span> What security features does the iMac offer? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1734,8 +1691,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-8" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-8">
+                                <div id="accordion-product-body-8" class="hidden"
+                                    aria-labelledby="accordion-product-heading-8">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1754,7 +1711,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -1787,11 +1744,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-9">
+                                <h2 id="accordion-product-heading-9">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-9" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-9">
+                                        data-accordion-target="#accordion-product-body-9" aria-expanded="false"
+                                        aria-controls="accordion-product-body-9">
                                         <span> Can I use my iMac with other Apple devices, such as iPhone and iPad?
                                         </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
@@ -1802,8 +1759,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-9" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-9">
+                                <div id="accordion-product-body-9" class="hidden"
+                                    aria-labelledby="accordion-product-heading-9">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1822,7 +1779,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -1855,11 +1812,11 @@
                                     </div>
                                 </div>
 
-                                <h2 id="accordion-vehicle-heading-10">
+                                <h2 id="accordion-product-heading-10">
                                     <button type="button"
                                         class="flex w-full items-center justify-between gap-3 border-b border-gray-200 py-5 text-left text-xl font-semibold text-gray-900 dark:border-gray-700 dark:text-white"
-                                        data-accordion-target="#accordion-vehicle-body-10" aria-expanded="false"
-                                        aria-controls="accordion-vehicle-body-10">
+                                        data-accordion-target="#accordion-product-body-10" aria-expanded="false"
+                                        aria-controls="accordion-product-body-10">
                                         <span> What support options are available for iMac users? </span>
                                         <svg data-accordion-icon class="h-5 w-5 shrink-0" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1869,8 +1826,8 @@
                                         </svg>
                                     </button>
                                 </h2>
-                                <div id="accordion-vehicle-body-10" class="hidden"
-                                    aria-labelledby="accordion-vehicle-heading-10">
+                                <div id="accordion-product-body-10" class="hidden"
+                                    aria-labelledby="accordion-product-heading-10">
                                     <div class="space-y-4 border-b border-gray-200 py-5 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <p class="text-base font-semibold text-gray-900 dark:text-white">Flowbite
@@ -1889,7 +1846,7 @@
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
                                             <span class="font-semibold text-gray-900 dark:text-white">Slimmer
                                                 Design:</span>
-                                            Apple often focuses on making its vehicles thinner and lighter. Recent iMac
+                                            Apple often focuses on making its products thinner and lighter. Recent iMac
                                             models might feature a slimmer profile compared to their predecessors.
                                         </p>
                                         <p class="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -2391,14 +2348,14 @@
                             <textarea id="description" rows="6"
                                 class="mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                                 required=""></textarea>
-                            <p class="ms-auto text-xs text-gray-500 dark:text-gray-400">Problems with the vehicle or
+                            <p class="ms-auto text-xs text-gray-500 dark:text-gray-400">Problems with the product or
                                 delivery? <a href="#"
                                     class="text-primary-600 hover:underline dark:text-primary-500">Send a report</a>.
                             </p>
                         </div>
                         <div class="col-span-2">
                             <p class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Add real photos of
-                                the vehicle to help other customers <span
+                                the product to help other customers <span
                                     class="text-gray-500 dark:text-gray-400">(Optional)</span></p>
                             <div class="flex w-full items-center justify-center">
                                 <label for="dropzone-file"

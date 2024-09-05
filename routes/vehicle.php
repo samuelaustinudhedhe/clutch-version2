@@ -6,5 +6,5 @@ use App\View\Livewire\Guest\Vehicles\Show;
 
 Route::prefix('vehicles')->name('vehicles.')->group(function () {
     Route::get('/', Index::class)->name('index');
-    Route::get('/{car}', Show::class)->name('show');
+    Route::get('/{vehicle}', Show::class)->name('show');
 });

@@ -10,7 +10,7 @@ class Show extends Component
     public $vehicle;
 
     public function mount(Vehicle $vehicle){
-        $this->vehicle = Vehicle::find($vehicle);    
+        $this->vehicle = Vehicle::where('id', $vehicle->id)->firstOrFail();;    
     }
     public function render()
     {
