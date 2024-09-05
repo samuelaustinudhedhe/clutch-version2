@@ -15,7 +15,13 @@ trait HasAttachments
      */
     public function attachments()
     {
-        return $this->morphMany(Attachment::class, 'attachable');
+        $attachments = $this->morphMany(Attachment::class, 'attachable');
+
+        if (is_string($attachments)) {
+            $attachments = json_decode($attachments, true);
+        }
+
+        return $attachments;
     }
 
     /**
@@ -43,10 +49,10 @@ trait HasAttachments
      *
      * @return \App\Models\Attachment|string
      */
-    public function image()
+    public function featuredImage($placeholder = 'car')
     {
         $image = $this->gallery()->where('is_featured', true)->first();
-        return $image->url ?? $this->placeHolder();
+        return $image->url ?? getPlaceHolder($placeholder);
     }
 
     /**
@@ -54,30 +60,20 @@ trait HasAttachments
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function gallery()
+    public function images($placeholder = 'car')
     {
-        return $this->attachments()->search('mime_type', 'image')->get();
+        $images = $this->attachments()->search('mime_type', 'image')->get();
+        return $images?? getPlaceHolder($placeholder) ;
     }
 
     /**
-     * Get the default image for the model.
+     * Fetch gallery associated with the model.
      *
-     * This function should return a default image URL or path when no specific image is associated with the model.
-     *
-     * @param int $placeholder (placeholder number)
-     * @param array $dimension = ['width'=>'200', 'height'=>'200']
-     * @return string The URL or path of the default image.
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function placeHolder($placeholder = 1, int $width = null, int $height = null)
+    public function gallery($placeholder = 'car')
     {
-        $dimension = '';
-
-        if (isset($width) && isset($height)) {
-            $dimension = "-{$width}x{$height}";
-        }
-        // Return the URL or path of the default image
-        $placeHolder = "images/placeholders/$placeholder$dimension.png";
-        return Storage::disk('public')->url($placeHolder);
+        return $this->images($placeholder);
     }
 
     /**
@@ -155,7 +151,8 @@ trait HasAttachments
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function authorable(){
+    public function authorable()
+    {
         return $this->morphMany(Attachment::class, 'authorable');
     }
 }

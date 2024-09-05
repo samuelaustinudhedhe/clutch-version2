@@ -32,6 +32,6 @@ class NotificationSeeder extends Seeder
             }
         });
 
-        NotificationFactory::new()->count(100)->create();
+        NotificationFactory::new()->count(10)->create();
     }
 }

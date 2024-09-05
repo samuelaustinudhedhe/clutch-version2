@@ -10,9 +10,8 @@ class Index extends Component
 {
     use WithPagination;
 
-    public $vehicles = [];
     public $search = '';
-    public $perPage = 12;
+    public $perPage = 10;
 
     public function mount() {}
 
@@ -24,7 +23,6 @@ class Index extends Component
         return view('pages.vehicles.index', [
             'vehicles' => $vehicles,
             'count' => $vehiclesCount,
-            'search' => $this->search
         ])->layout('layouts.guest');
     }
 }

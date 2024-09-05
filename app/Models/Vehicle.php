@@ -22,7 +22,7 @@ class Vehicle extends Model
         'details',
         'insurance',
         'chauffeur',
-        'owner',
+        'authorable'
     ];
 
     protected $casts = [
