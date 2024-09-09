@@ -193,29 +193,10 @@ class Vehicle extends Model
      */
     public function getOnSaleAttribute()
     {
-        return $this->get_price->on_sale ?? false;
+        $price = $this->getPrice();
+        return $price->on_sale ?? false;
     }
 
-    /**
-     * Get the price attribute as an object.
-     *
-     * This accessor method decodes the JSON-encoded price attribute and returns it
-     * as an object.
-     *
-     * @return object The decoded price object.
-     */
-    public function price()
-    {
-        $price = json_decode($this->price);
-        $sale = $price->sale ?? 0;
-        $on_sale = $price->on_sale ?? false;
-        $amount = $price->amount ?? 0;
-
-        if ($on_sale) {
-            return $sale;
-        }
-        return $amount;
-    }
 
     /**
      * Get the decoded details attribute.

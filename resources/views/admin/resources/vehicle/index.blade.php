@@ -509,16 +509,15 @@
                 <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0"
                     aria-label="Table navigation">
                     <div class="flex items-center space-x-3">
-                        <label for="rows" class="text-xs font-normal text-gray-500 dark:text-gray-400">Rows per
+                        <label for="rows" class="font-normal text-gray-500 dark:text-gray-400">Rows per
                             page</label>
                         <select id="rows" wire:model.lazy="perPage"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 pl-3.5 pr-6 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
+                            <option value="12">12</option>
+                            <option value="21">21</option>
+                            <option value="30">30</option>
                         </select>
-                        <div class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                        <div class="font-normal text-gray-500 dark:text-gray-400">
                             <span class="font-semibold text-gray-900 dark:text-white">{{ $vehicles->firstItem() }}</span>
                             -
                             <span class="font-semibold text-gray-900 dark:text-white">{{ $vehicles->lastItem() }}</span>

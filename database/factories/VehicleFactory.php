@@ -81,8 +81,22 @@ class VehicleFactory extends Factory
     protected function generateLocation()
     {
         return [
-            'pickup' => fake()->address,
-            'dropoff' => fake()->address,
+            'pickup' => [
+                'street' => fake()->streetAddress,
+                'unit' => fake()->buildingNumber,
+                'city' => fake()->city,
+                'state' => fake()->state,
+                'country' => fake()->country,
+                'postal_code' => fake()->postcode,
+            ],
+            'dropoff' => [
+                'street' => fake()->streetAddress,
+                'unit' => fake()->buildingNumber,
+                'city' => fake()->city,
+                'state' => fake()->state,
+                'country' => fake()->country,
+                'postal_code' => fake()->postcode,
+            ],
         ];
     }
 
