@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 function getPlaceHolder($placeholder = 'default')
 {
      // Return the URL or path of the default image
-    $placeHolder = "assets/images/placeholders/$placeholder";
+    $placeHolder = "/assets/images/placeholders/$placeholder";
     return $placeHolder;
 }
 

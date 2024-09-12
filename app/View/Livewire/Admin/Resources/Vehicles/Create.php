@@ -29,7 +29,7 @@ class Create extends Component
     public $vehicleSubTypes = [];
     public $selectedVehicleSubType;
     public $selectedVehicleType;
-    public $vehicleD = [];
+    public $vehicleDetails = [];
 
     // Basic Vehicle Information
     public $name = '';  // Name of the vehicle

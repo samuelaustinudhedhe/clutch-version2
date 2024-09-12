@@ -351,7 +351,6 @@
                                 <th scope="col" class="p-4">Type</th>
                                 <th scope="col" class="p-4">Status</th>
                                 <th scope="col" class="p-4">Price/Day</th>
-                                <th scope="col" class="p-4">Sales</th>
                                 <th scope="col" class="p-4">Rating</th>
                                 <th scope="col" class="p-4">Owner</th>
                                 <th scope="col" class="p-4">Promote</th>
@@ -373,7 +372,7 @@
                                     </td>
                                     <th scope="row" class="px-4 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <div class="flex items-center mr-3">
-                                            <img src="{{ $vehicle->image() }}" alt="iMac Front Image" class="h-12 w-16 object-cover mr-3 rounded-md">
+                                            <img src="{{ $vehicle->featuredImage('car.jpg')}}" alt="iMac Front Image" class="h-12 w-16 object-cover mr-3 rounded-md">
                                             {{ $vehicle->name }}
                                         </div>
                                     </th>
@@ -391,10 +390,10 @@
 
                                     {{-- Price --}}
                                     <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        @if ($vehicle->discount(false) > 0)
+                                        @if ($vehicle->on_sale)
                                             <x-tooltip id="{{ $vehicle->id }}" class=" text-{{ $vehicle->on_sale_status_color }}">
                                                 <x-slot name="trigger">
-                                                    {{ $vehicle->human_price }}
+                                                    {{ $vehicle->human_sale_price }}
                                                 </x-slot>
                                                 <x-slot name="content">
                                                     <span class="text-{{ $vehicle->on_sale_status_color }} ">{{ $vehicle->discount() }} </span> Daily discount 
@@ -404,10 +403,6 @@
                                             {{ $vehicle->human_price }}
                                         @endif
                                         
-                                    </td>
-
-                                    <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                       {{ $vehicle->human_price }} 
                                     </td>
                                     
                                     <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">

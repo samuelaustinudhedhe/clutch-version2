@@ -27,8 +27,7 @@
         @stack('modals')
         @livewireScripts
         {{-- Google Map --}}
-        <script async src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places&callback=initAddressAutocomplete"></script>
-  
+        <script async src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places&callback=initAddressAutocomplete&callback=initMap"></script>
         <script>
             function initAddressAutocomplete() {
                 const addressInputs = document.querySelectorAll('[address]');
