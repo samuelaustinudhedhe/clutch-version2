@@ -56,13 +56,23 @@
         <div class="sm:col-span-2 flex gap-4">
             <div class="w-full">
                 <x-label for="interior_seats">Number of Seats</x-label>
-                <x-xinput id="interior_seats" type="number" wire:model="storeData.interior.seats" />
-
+                <x-select name="interior_seats" wire:model="storeData.interior.seats" id="interior_seats">
+                    <option selected>--Select Seats--</option>
+                    <option value="1">1 Seat</option>
+                    <option value="2">2 Seats</option>
+                    <option value="3">3 Seats</option>
+                    <option value="4">4 Seats</option>
+                    <option value="5">5 Seats</option>
+                    <option value="6">6 Seats</option>
+                    <option value="7">7 Seats</option>
+                    <option value="8">8+ Seats</option>
+                </x-select>
                 <x-input-error for="storeData.interior.seats" />
             </div>
             <div class="w-full">
                 <x-label for="interior_upholstery">Upholstery Type</x-label>
                 <x-select id="interior_upholstery" wire:model="storeData.interior.upholstery">
+                    <option selected>--Select an option--</option>
                     <option value="leather" selected>Leather</option>
                     <option value="fabric">Fabric</option>
                     <option value="vinyl">Vinyl</option>
@@ -76,6 +86,7 @@
             <div class="w-full">
                 <x-label for="interior_ac">Air Conditioning</x-label>
                 <x-select id="interior_ac" wire:model="storeData.interior.ac">
+                    <option selected>--Select an option--</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                 </x-select>
@@ -84,6 +95,7 @@
             <div class="w-full">
                 <x-label for="interior_heater">Heater</x-label>
                 <x-select id="interior_heater" wire:model="storeData.interior.heater">
+                    <option selected>--Select an option--</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                 </x-select>

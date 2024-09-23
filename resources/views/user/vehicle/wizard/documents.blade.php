@@ -1,46 +1,162 @@
 <div>
-    <div class="grid grid-cols-3 gap-4 mb-4">
-        @foreach ($documents as $document)
-            <div
-                class="relative overflow-hidden rounded-lg sm:w-36 sm:h-36 dark:bg-gray-700 border-4 border-transparent">
-                @if (str_contains($document['mime_type'], 'pdf'))
-                    <embed src="{{ Storage::url($document['path']) }}" type="application/pdf"
-                        class="max-w-[156px] max-h-[156px] min-w-[156px] min-h-[156px] rounded-lg" width="156px"
-                        height="156px" />
-                @else
-                    <img src="{{ Storage::url($document['path']) }}" alt="PDF Document"
-                        class="max-w-[144px] max-h-[144px] min-w-[144px] min-h-[144px] object-cover" />
+
+    <x-div>
+        <div class=" mb-4">
+            <x-label for="registration"
+                class="!text-base dark:!text-gray-200 !text-gray-800 font-normal">Registration</x-label>
+            <div class="flex items-center gap-6">
+                <div class="w-full sm:w-1/2">
+                    <x-date wire:model="storeData.reigistration_issued_date" placeholder="issued date" />
+                    <x-input-error for="storeData.reigistration_issued_date" />
+                </div>
+                <div class="w-full sm:w-1/2">
+                    <x-date wire:model="storeData.reigistration_expiration_date" placeholder="expiration date" />
+                    <x-input-error for="storeData.reigistration_expiration_date" />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="items-center w-full sm:flex space-x-6 ">
+            @if ($registration['uploaded'])
+                <div
+                    class="overflow-hidden rounded-lg w-[84px] h-[84px] dark:bg-gray-700 border-4 border-green transition-transform duration-500 transform translate-x-0">
+                    @if (str_contains($registration['uploaded']['mime_type'], 'image'))
+                        <img class="min-w-20 min-h-20 max-w-20 max-h-20 rounded-lg object-cover"
+                            src="{{ $registration['uploaded'] ? Storage::url($registration['uploaded']['path']) : '' }}"
+                            alt="User Registration">
+                    @else
+                        <embed src="{{ Storage::url($registration['uploaded']['path']) }}" type="application/pdf"
+                            class="max-w-[98px] max-h-[98px] min-w-[98px] min-h-[98px] rounded-lg mt-[-2px] ml-[-2px]"
+                            width="98px" height="98px" />
+                    @endif
+                </div>
+            @endif
+
+            <div class="{{ $registration['uploaded'] ? 'sm:w-[calc(100%-120px)]' : 'w-full' }}">
+                <x-xinput id="registration" wire:model="registration.new" class="w-full text-sm cursor-pointer !p-0"
+                    type="file" accept=".jpg,.jpeg,.png,.pdf" />
+
+                <p class="mt-1 mx-2 text-2xs font-normal text-gray-500 dark:text-gray-300" id="registration_help">
+                    WEBP,
+                    PNG, JPG or PDF (MAX. 800x400px).</p>
+                <x-input-error for="registration.new" />
+            </div>
+        </div>
+    </x-div>
+
+
+    <x-div>
+        <x-label for="registration" class="!text-base dark:!text-gray-200 !text-gray-800 font-normal">Proof Of
+            Ownership</x-label>
+
+        <div class="items-center w-full sm:flex space-x-6">
+            @if ($proofOfOwnership['uploaded'])
+                <div
+                    class="overflow-hidden rounded-lg w-[84px] h-[84px] dark:bg-gray-700 border-4 border-green transition-transform duration-500 transform translate-x-0">
+                    @if (str_contains($proofOfOwnership['uploaded']['mime_type'], 'image'))
+                        <img class="min-w-20 min-h-20 max-w-20 max-h-20 rounded-lg object-cover"
+                            src="{{ $proofOfOwnership['uploaded'] ? Storage::url($proofOfOwnership['uploaded']['path']) : '' }}"
+                            alt="User Proof Of Ownership">
+                    @else
+                        <embed src="{{ Storage::url($proofOfOwnership['uploaded']['path']) }}" type="application/pdf"
+                            class="max-w-[98px] max-h-[98px] min-w-[98px] min-h-[98px] rounded-lg mt-[-2px] ml-[-2px]"
+                            width="98px" height="98px" />
+                    @endif
+                </div>
+            @endif
+
+            <div class="{{ $proofOfOwnership['uploaded'] ? 'sm:w-[calc(100%-120px)]' : 'w-full' }}">
+                <x-xinput id="proofOfOwnership" wire:model="proofOfOwnership.new"
+                    class="w-full text-sm cursor-pointer !p-0" type="file" accept=".jpg,.jpeg,.png,.pdf" />
+
+                <p class="mt-1 text-2xs font-normal text-gray-500 dark:text-gray-300" id="proofOfOwnership_help">
+                    WEBP,
+                    PNG, JPG or PDF (MAX. 800x400px).</p>
+                <x-input-error for="proofOfOwnership.new" />
+            </div>
+        </div>
+    </x-div>
+
+
+    {{-- Insurance --}}
+    <x-div>
+        <x-tooltip id="insurance-Question" icon=true class="mb-2" taClass="bg-gray-200 dark:bg-gray-700">
+            <x-slot name="trigger">
+                Insurance Coverage?
+            </x-slot>
+            <x-slot name="content">
+                Is your vehicle 🛡protected by an insurance company?
+            </x-slot>
+        </x-tooltip>
+
+        <div class="mb-2 gap-4 text-sm sm:grid-cols-2 grid">
+            <x-radio id="noInsurance" name="has_insurance" value="no" wire:model.live="storeData.has_insurance"
+                showIcon="false" class="!p-2">
+                <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                    height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span class="w-full">No i do not</span>
+            </x-radio>
+            <x-radio id="yesInsurance" name="has_insurance" value="yes" wire:model.live="storeData.has_insurance"
+                checked showIcon="false" class="!p-2">
+                <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                    height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span class="w-full">I have an insurance coverage</span>
+            </x-radio>
+            <x-input-error for="role" />
+        </div>
+
+
+        @if (isset($storeData['has_insurance']) && $storeData['has_insurance'] === 'yes')
+
+        <hr class="my-6 border-gray-300 dark:border-gray-600">
+            <div class="items-center w-full sm:flex space-x-6 mb-2 mt-6">
+                @if ($insurance['uploaded'])
+                    <div
+                        class="overflow-hidden rounded-lg w-[84px] h-[84px] dark:bg-gray-700 border-4 border-green transition-transform duration-500 transform translate-x-0">
+                        @if (str_contains($insurance['uploaded']['mime_type'], 'image'))
+                            <img class="min-w-20 min-h-20 max-w-20 max-h-20 rounded-lg object-cover"
+                                src="{{ $insurance['uploaded'] ? Storage::url($insurance['uploaded']['path']) : '' }}"
+                                alt="User Insurance">
+                        @else
+                            <embed src="{{ Storage::url($insurance['uploaded']['path']) }}" type="application/pdf"
+                                class="max-w-[98px] max-h-[98px] min-w-[98px] min-h-[98px] rounded-lg mt-[-2px] ml-[-2px]"
+                                width="98px" height="98px" />
+                        @endif
+                    </div>
                 @endif
 
-                <button type="button" wire:click="removeDocument({{ $loop->index }})"
-                    class="absolute text-rose-600 dark:text-rose-500 hover:text-rose-500 dark:hover:text-rose-400 bottom-1 left-1 p-1 bg-[#00000063] rounded-lg ">
-                    <svg aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <span class="sr-only">Remove document</span>
-                </button>
-            </div>
-        @endforeach
-    </div>
+                <div class="{{ $insurance['uploaded'] ? 'sm:w-[calc(100%-120px)]' : 'w-full' }}">
+                    <x-xinput id="insurance" wire:model="insurance.new" class="w-full text-sm cursor-pointer !p-0"
+                        type="file" accept=".jpg,.jpeg,.png,.pdf" />
 
-    <div class="flex items-center justify-center w-full">
-        <label for="dropzone-file"
-            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span class="font-semibold">Click to upload</span> or drag and drop
-                </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">PDF (MAX. 5MB)</p>
+                    <p class="mt-1 text-2xs font-normal text-gray-500 dark:text-gray-300" id="insurance_help">
+                        WEBP,
+                        PNG, JPG or PDF (MAX. 800x400px).</p>
+                    <x-input-error for="insurance.new" />
+                </div>
             </div>
-            <input id="dropzone-file" type="file" wire:model="newDocuments" multiple class="hidden">
-        </label>
-    </div>
+
+            <hr class="my-6 border-gray-300 dark:border-gray-600">
+            {{-- Insurance Note --}}
+            <div class="mt-6">
+                <x-label for="insurance">Insurance Note</x-label>
+                <x-textarea id="insurance_details" wire:model="storeData.insurance_details" height="150px"
+                    placeholder="Describe your insurace coverage" />
+            </div>
+        @else
+        <hr class="my-6 border-gray-300 dark:border-gray-600">
+
+            <div class="text-sm ">
+                We recommend all vehicles have a form of insurance.
+            </div>
+        @endif
+    </x-div>
+
 </div>

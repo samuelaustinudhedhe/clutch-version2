@@ -80,23 +80,12 @@
     </x-div>
 
 
-    <x-div>
-        <div class="mb-4">
-            <x-label for="home-address">Home Address</x-label>
-            <x-xinput type="text" wire:model="storeData.address.home" id="home-address" name="home-address" address
-                onclick="initAddressAutocomplete()" />
-            <x-input-error for="home-address" />
-        </div>
-
-        <div class="mb-4">
-            <x-label for="work-address">Work Address</x-label>
-            <x-xinput type="text" wire:model="storeData.address.work" id="work-address" address='establishment'
-                onclick="initAddressAutocomplete()" />
-            <x-input-error for="work-address" />
-        </div>
+    <x-div>        
+        <x-location label="Home Address" wire:model="storeData.address.home.full" address:save="storeData.address.home" loadJS="true"  />
+        <x-location label="Work Address" wire:model="storeData.address.work.full" address:save="storeData.address.work" loadJS="false"  />
     </x-div>
 
-    {{-- <x-div>
+    <x-div>
         <p class="text-sm text-gray-500 dark:text-gray-40 mt--4">Social Accounts</p>
         <div class="grid gap-6 sm:grid-cols-2">
             <div>
@@ -110,6 +99,6 @@
                 <x-input-error for="facebook" />
             </div>
         </div>
-    </x-div> --}}
+    </x-div>
 
 </div>

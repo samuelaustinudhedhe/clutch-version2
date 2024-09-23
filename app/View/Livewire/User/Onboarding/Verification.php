@@ -4,14 +4,16 @@ namespace App\View\Livewire\User\Onboarding;
 
 use Livewire\Component;
 
-class Verification extends Layout
+class Verification extends Main
 {
+
     public $preferences = [
         'notifications' => true,
     ];
 
     protected $rules = [
         'preferences.notifications' => 'boolean',
+
     ];
 
     public function nextStep()

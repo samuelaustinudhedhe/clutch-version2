@@ -9,7 +9,6 @@
                 <img class="w-10 h-10 mr-2" src="{{ app_logo() }}" />
                 <span class="text-xl font-semibold">{{ app_name() }}</span>
             </a>
-
             {{-- Darkmode Controls --}}
             @darkModeSwitch
         </div>
@@ -166,34 +165,33 @@
                 {{ $stepNames[$currentStep] }}
             </h1>
             {{-- Onboarding content --}}
-            <div class="h-[640px] overflow-y-auto px-2">
-
+            <div class="h-[440px] overflow-y-auto px-2">
 
                 @switch($currentStep)
                     @case(0)
-                        @livewire('user.onboarding.get-started')
+                        @livewire('user.onboarding.introduction')
                     @break
 
                     @case(1)
-                        @include('user.onboarding.select-role')
+                        @livewire('user.onboarding.select-role')
                     @break
 
                     @case(2)
-                        @include('user.onboarding.personal-details')
+                        @livewire('user.onboarding.personal-details')
                     @break
 
                     @case(3)
-                        @include('user.onboarding.verification')
+                        @livewire('user.onboarding.verification')
                     @break
 
                     @case(4)
-                        @include('user.onboarding.kyc')
+                        @livewire('user.onboarding.kyc')
                     @break
 
                     @default
-                        @include('user.onboarding.completed')
+                        @livewire('user.onboarding.completed')
                 @endswitch
-
+                <x-input-error for="storeData.role" />
             </div>
 
             <x-steps-navigation getStarted="Begain Onboarding Now" submit="Finished Onboarding" :totalSteps="$totalSteps"

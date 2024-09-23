@@ -10,11 +10,10 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class PersonalDetails extends Layout
+class PersonalDetails extends Main
 {
     use WithSteps, WithFileUploads;
 
-    /** @var array Holds the uploaded photo data. */
     public $photo = [];
 
 

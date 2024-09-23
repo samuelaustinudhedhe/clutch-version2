@@ -9,22 +9,22 @@ class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:b
 <div class="mb-4">
     {{-- fix responsiveness and implement drag and drop functionality --}}
     <div class="grid grid-cols-3 gap-4 mb-4">
-        @foreach ($images as $index => $image)
+        @foreach ($images['uploaded'] as $index => $image)
             @php
-                // Get image dimensions
-                $dimensions = getimagesize($image->getRealPath());
-
+                    // Get image dimensions
+                $filePath = Storage::path('public/'.$image['path']) ?? '';
+                $dimensions = file_exists($filePath) ? getimagesize($filePath) : ['NA','NA'];
                 // Get image file size in bytes
-                $fileSizeInBytes = filesize($image->getRealPath());
+                $fileSizeInBytes = file_exists($filePath) ? filesize($filePath) : 0;
 
                 // Convert size to a more readable format (KB)
-                $fileSize = number_format($fileSizeInBytes / 1024, 2) . ' KB'; // or use MB for larger sizes
+                $fileSize = $fileSizeInBytes > 0 ? number_format($fileSizeInBytes / 1024, 2) . ' KB' : 'Size not available';
             @endphp
 
-            <div class="relative rounded-lg sm:w-36 sm:h-36 dark:bg-gray-700 {{ $featuredImageIndex === $index ? 'border-4 border-blue-500' : 'border-4 border-transparent' }}"
-                title="{{ $featuredImageIndex === $index ? 'Featured Image' : 'Dimensions: ' . ($dimensions ? $dimensions[0] . ' x ' . $dimensions[1] . ' px' : 'Dimensions not available') . ', Size: ' . ($fileSize ? $fileSize : 'Size not available') }}"
+            <div class="relative rounded-lg sm:w-36 sm:h-36 dark:bg-gray-700 {{  $images['featuredIndex'] === $index ? 'border-4 border-blue-500' : 'border-4 border-transparent' }}"
+                title="{{ $images['featuredIndex'] === $index ? 'Featured Image' : 'Dimensions: ' . ($dimensions ? $dimensions[0] . ' x ' . $dimensions[1] . ' px' : 'Dimensions not available') . ', Size: ' . ($fileSize ? $fileSize : 'Size not available') }}"
                 wire:click="setFeaturedImage({{ $index }})">
-                <img src="{{ $image->temporaryUrl() }}"
+                <img src="{{ Storage::url($image['path']) ?? placeholder('car.png') }}"
                     alt="Vehicle Image {{ $index + 1 }}"
                     class="w-full  rounded-lg h-full object-cover">
 
@@ -58,7 +58,7 @@ class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:b
                 <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF
                     (MAX. 1MB)</p>
             </div>
-            <input id="dropzone-image" type="file" wire:model="newImages" multiple
+            <input id="dropzone-image" type="file" wire:model="images.newUploads" multiple
                 class="hidden">
         </label>
     </div>

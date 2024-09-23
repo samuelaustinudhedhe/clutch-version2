@@ -11,16 +11,24 @@ use Livewire\WithFileUploads;
 
 class Wizard extends Component
 {
-    use WithSteps,  WithFileUploads;
+    use WithSteps, WithFileUploads;
 
     public $user;
     public $vehicleTypes = [];
     public $vits = [];
 
-    public $images = [];
-    public $documents = [];
+    public $files = [];
 
-    public $insuranceDocuments = [];
+    public $images = [
+        'newUploads' => [],
+        'featuredIndex' => 0,
+        'uploaded' => [],
+        'errors' => [],
+    ];
+    
+    public $proofOfOwnership = [];
+    public $registration = [];
+    public $insurance = [];
 
 
     public function mount()
@@ -28,14 +36,22 @@ class Wizard extends Component
         $this->user = getUser();
         $this->defineSteps();
         $this->defineStore();
-
-
         // Load existing data if available (e.g., from JSON file)
         $this->vehicleTypes = Vehicle::types(); // Fetch vehicle types
         $this->vits = Vehicle::$vits; // Fetch vehicle subtypes
 
-        // Load file details from the JSON file
-        $this->images['files'] = $this->getStoredData()['files']['images'] ?? null;
+        // Load file details from the Stored Data file
+        $this->files = $this->getStoredData()['files'] ?? [];
+        $this->images['uploaded'] = $this->files['images'] ?? [];
+        $this->proofOfOwnership['uploaded'] = $this->files['proof_of_ownership'] ?? [];
+        $this->registration['uploaded'] = $this->files['registration'] ?? [];
+        $this->insurance['uploaded'] = $this->files['insurance'] ?? [];
+
+        if (!isset($this->storeData['featured_image_index'])) {
+            $this->storeData['featured_image_index'] = '';
+        }
+
+        $this->storeData['featured_image_index'] = $this->images['featuredIndex'];
     }
 
     public function attachToNextStep()
@@ -58,21 +74,18 @@ class Wizard extends Component
                 break;
             case 1:
                 $rules = [
-                    'storeData.name' => 'min:3|max:50|required|string',
-                    // 'storeData.slug' => 'min:10|max:100|required|string',
-                    'storeData.description' => 'min:60|max:225|required|string',
+                    'storeData.description' => 'min:60|max:900|required|string',
                     'storeData.vit' => 'required|string|in:' . implode(',', array_keys($this->vits)),
                     'storeData.vin' => 'required|string|min:5|max:40',
                     'storeData.make' => 'required|string',
                     'storeData.manufacturer' => 'required|string',
                     'storeData.model' => 'required|string',
                     'storeData.year' => 'required|integer|min:1900|max:' . date('Y'),
-                    'storeData.location' => [
+                    'storeData.location.full' => [
                         'required',
                         'string',
                         function ($attribute, $value, $fail) {
                             // Custom validation logic to check if the location exists using Google Maps API
-                            $apiKey = config('services.google_maps.api_key'); // Ensure you have your API key stored in config/services.php
                             $response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($value) . "&key=" . getGoogleMapKey());
                             $response = json_decode($response, true);
 
@@ -101,7 +114,7 @@ class Wizard extends Component
                     'storeData.exterior.color' => 'required|string|max:50',
                     'storeData.exterior.type' => 'required|string|max:50',
                     'storeData.exterior.doors' => 'required|integer|min:0|max:6',
-                    'storeData.exterior.windows' => 'required|integer|min:0|max:6',                    
+                    'storeData.exterior.windows' => 'required|integer|min:0|max:6',
                     'storeData.interior.color' => 'required|string|max:50',
                     'storeData.interior.seats' => 'required|integer|min:1|max:10',
                     'storeData.interior.upholstery' => 'required|string|in:leather,fabric,vinyl,suede,alcantara',
@@ -124,25 +137,77 @@ class Wizard extends Component
             case 3:
                 // Validation rules for step 3
                 $rules = [
-                    'nin.new' => 'required|file|max:1024',
+                    'storeData.engine.type' => 'required|string',
+                    'storeData.engine.size' => 'required|string',
+                    'storeData.engine.hp' => 'required|numeric',
+                    'storeData.fuel.type' => 'required|string',
+                    'storeData.fuel.economy' => 'required|string',
+                    'storeData.transmission.type' => 'required|string',
+                    'storeData.transmission.gears' => 'required|integer',
+                    'storeData.transmission.drivetrain' => 'required|string',
                 ];
 
                 $customAttributes = [
-                    'nin.new' => 'NIN document',
+                    'storeData.engine.type' => 'engine type',
+                    'storeData.engine.size' => 'engine size',
+                    'storeData.engine.hp' => 'engine horsepower',
+                    'storeData.fuel.type' => 'fuel type',
+                    'storeData.fuel.economy' => 'fuel economy',
+                    'storeData.transmission.type' => 'transmission',
+                    'storeData.transmission.gears' => 'gears',
+                    'storeData.transmission.drivetrain' => 'drivetrain',
                 ];
                 break;
             case 4:
                 // Validation rules for step 4 (KYC)
                 $rules = [
-                    'internationalPassport.new' => 'required|file|max:1024',
-                    'driversLicense.new' => 'required|file|max:1024',
-                    'proofOfAddress.new' => 'required|file|max:1024',
+                    // 'storeData.safety.abs' => 'required|string|in:yes,no',
+                    // 'storeData.safety.traction_control' => 'required|string|in:yes,no',
+                    // 'storeData.safety.stability_control' => 'required|string|in:yes,no',
+                    // 'storeData.safety.lane_departure_warning' => 'required|string|in:yes,no',
+                    // 'storeData.safety.lane_keeping_assist' => 'required|string|in:yes,no',
+                    // 'storeData.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
+                    // 'storeData.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
+                    // 'storeData.safety.forward_collision_warning' => 'required|string|in:yes,no',
+                    // 'storeData.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
+                    // 'storeData.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
+                    // 'storeData.safety.parking_sensors' => 'required|string|in:yes,no',
+                    // 'storeData.safety.camera_360' => 'required|string|in:yes,no',
+                    // 'storeData.safety.driver_attention_monitor' => 'required|string|in:yes,no',
+                    // 'storeData.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
+                    // 'storeData.safety.airbags' => 'required|string|in:front,front & sides,front, sides & curtain',
+                    // 'storeData.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
+                    // 'storeData.safety.crumple_zones' => 'required|string|in:yes,no',
+                    // 'storeData.safety.isofix_mounts' => 'required|string|in:yes,no',
+                    // 'storeData.security.alarm_system' => 'required|string|in:yes,no',
+                    // 'storeData.security.immobilizer' => 'required|string|in:yes,no',
+                    // 'storeData.security.remote_central_locking' => 'required|string|in:yes,no',
+                    // 'storeData.security.gps_tracking' => 'required|string|in:yes,no',
                 ];
 
                 $customAttributes = [
-                    'internationalPassport.new' => 'international passport',
-                    'driversLicense.new' => 'driver\'s license',
-                    'proofOfAddress.new' => 'proof of address',
+                    'storeData.safety.abs' => 'ABS',
+                    'storeData.safety.traction_control' => 'traction control',
+                    'storeData.safety.stability_control' => 'stability control',
+                    'storeData.safety.lane_departure_warning' => 'lane departure warning',
+                    'storeData.safety.lane_keeping_assist' => 'lane keeping assist',
+                    'storeData.safety.adaptive_cruise_control' => 'adaptive cruise control',
+                    'storeData.safety.blind_spot_monitoring' => 'blind spot monitoring',
+                    'storeData.safety.forward_collision_warning' => 'forward collision warning',
+                    'storeData.safety.automatic_emergency_braking' => 'automatic emergency braking',
+                    'storeData.safety.rear_cross_traffic_alert' => 'rear cross traffic alert',
+                    'storeData.safety.parking_sensors' => 'parking sensors',
+                    'storeData.safety.camera_360' => '360-degree camera',
+                    'storeData.safety.driver_attention_monitor' => 'driver attention monitor',
+                    'storeData.safety.tire_pressure_monitor' => 'tire pressure monitor',
+                    'storeData.safety.airbags' => 'airbags',
+                    'storeData.safety.seat_belt_pretensioners' => 'seat belt pretensioners',
+                    'storeData.safety.crumple_zones' => 'crumple zones',
+                    'storeData.safety.isofix_mounts' => 'ISOFIX mounts',
+                    'storeData.security.alarm_system' => 'alarm system',
+                    'storeData.security.immobilizer' => 'immobilizer',
+                    'storeData.security.remote_central_locking' => 'remote central locking',
+                    'storeData.security.gps_tracking' => 'GPS tracking',
                 ];
                 break;
             default:
@@ -153,16 +218,6 @@ class Wizard extends Component
     }
 
 
-
-
-
-
-
-
-
-
-
-
     /**
      * Handle the upload and validation of multiple image files.
      *
@@ -170,21 +225,164 @@ class Wizard extends Component
      */
     public function updatedImages()
     {
-        // Validate the files
+        // Validate each new image
+        foreach ($this->images['newUploads'] as $newImage) {
+            $fileName = $newImage->getClientOriginalName(); // Get original file name
+            $error = '';
+
+            // Validate if the file is a valid image
+            if (getimagesize($newImage->getRealPath()) === false) {
+                $error = "The file " . $fileName . " is not a valid image.";
+            }
+            // Validate the file size (1MB limit)
+            elseif ($newImage->getSize() > 1024 * 1024 * 4) {
+                $error = "The file " . $fileName . " exceeds the maximum size of 2MB.";
+            }
+            // Check if the image already exists
+            else {
+                $imageHash = md5_file($newImage->getRealPath()); // Generate image hash
+
+                $alreadyExists = false;
+                foreach ($this->images['uploaded'] as $image) {
+                    if ($image['hash'] === $imageHash) {
+                        $alreadyExists = true;
+                        break;
+                    }
+                }
+
+                if ($alreadyExists) {
+                    $error = "The image " . $fileName . " already exists.";
+                } else {
+
+                    $filePath = $newImage->store("tmp", 'public');
+
+                    if (!isset($this->storeData['files']['images'])) {
+                        $this->storeData['files']['images'] = [];
+                    }
+
+                    // Save file details to the JSON file
+                    $this->storeData['files']['images'][] = [
+                        'path' => $filePath,
+                        'mime_type' => $newImage->getMimeType(),
+                        'size' => $newImage->getSize(),
+                        'hash' => $imageHash
+                    ];
+
+                    $this->deleteFile($newImage);
+                    Storage::put($this->storePath, json_encode($this->storeData));
+
+                    $this->images['uploaded'] = $this->storeData['files']['images']; // Add image to the images array
+                }
+            }
+
+            // Add the error to the error message array if not already present
+            if ($error && !in_array($error, $this->images['errors'])) {
+                $this->images['errors'][] = $error;
+            }
+        }
+
+        // Dispatch a notification with all aggregated errors
+        $this->dispatch('notify', implode('<br>', $this->images['errors']), 'warning');
+
+        // Clear the temporary images['new'] property
+        $this->images['new'] = [];
+    }
+
+    /**
+     * Sets the featured image based on the provided index number.
+     *
+     * @param int $index The index of the image to be set as featured.
+     * @return void
+     */
+    public function setFeaturedImage($index)
+    {
+        $this->images['featuredIndex'] = $index;
+    }
+
+    /**
+     * Removes an image from the images array and deletes the file from storage.
+     *
+     * @param int $index The index of the image to be removed.
+     * @return void
+     */
+    public function removeImage($index)
+    {
+        $files = $this->images['uploaded']; // Get the images array
+        $filePath = Storage::path('public/' . $files[$index]['path']); // Get the file path
+
+        if (file_exists($filePath)) {
+            unlink($filePath); // Delete the file from storage
+        }
+        array_splice($files, $index, 1);
+        $this->images['uploaded'] = $files; // Update the images array in the storeData property
+        $this->storeData['files']['images'] = $this->images['uploaded']; // Update the images array in the storeData property
+        Storage::put($this->storePath, json_encode($this->storeData));
+    }
+
+
+
+    /**
+     * Handle the upload and validation of the National Identification Number (NIN) file.
+     *
+     * @return void
+     */
+    public function updatedRegistration()
+    {
+        // Validate the file
         $this->validate([
-            'images.*' => 'required|image|max:4024', // Adjust rules as needed
+            'registration.new' => 'required|file|max:3072', // Adjust rules as needed
         ]);
 
-        // Loop through the uploaded files and save them
-        foreach ($this->images['files'] as $index => $file) {
-            $path = $file['path'] ?? null;
-            $new = $file['new'] ?? null;
+        $path = $this->registration['path'] ?? null;
+        $new = $this->registration['new'] ?? null;
 
-            $this->images['files'][$index]['file'] = $this->uploadFile('images', $new, $path);
-            // Optionally reset file input
-            // $this->reset('images.' . $index);
-        }
+        $this->registration['uploaded'] = $this->uploadFile('registrationistration', $new, $path);
+        // Optionally reset file input
+        // $this->reset('nin');
     }
+
+    /**
+     * Handle the upload and validation of the international passport file.
+     *
+     * @return void
+     */
+    public function updatedInsurance()
+    {
+        // Validate the file
+        $this->validate([
+            'insurance.new' => 'required|file|max:3072', // Adjust rules as needed
+        ]);
+
+        $path = $this->insurance['path'] ?? null;
+        $new = $this->insurance['new'] ?? null;
+
+        $this->insurance['uploaded'] = $this->uploadFile('insurance', $new, $path);
+        // Optionally reset file input
+        // $this->reset('insurance');
+    }
+
+    /**
+     * Handle the upload and validation of the driver's license file.
+     *
+     * @return void
+     */
+    public function updatedProofOfOwnership()
+    {
+        // Validate the file
+        $this->validate([
+            'proofOfOwnership.new' => 'required|file|max:3072', // Adjust rules as needed
+        ]);
+
+        $path = $this->proofOfOwnership['path'] ?? null;
+        $new = $this->proofOfOwnership['new'] ?? null;
+
+        $this->proofOfOwnership['uploaded'] = $this->uploadFile('proof_of_ownership', $new, $path);
+        // Optionally reset file input
+        // $this->reset('proofOfOwnership');
+    }
+
+
+
 
     public function submit()
     {
@@ -314,11 +512,11 @@ class Wizard extends Component
             1 => 'Vehicle Information',
             2 => 'Vehicle Details',
             3 => 'Engine & Transmission',
-            4 => 'Faults & Modifications',
-            5 => 'Safety, Security & Service',
+            4 => 'Safety, Security & Service',
+            5 => 'Faults & Modifications',
             6 => 'Vehicle Images',
             7 => 'Vehicle Documents',
-            8 => 'Insurance',
+            8 => 'Price ',
             9 => 'Review & Submit',
         ];
         $this->totalSteps = count($this->stepNames) - 1;
@@ -337,7 +535,7 @@ class Wizard extends Component
             [
                 'prevStepName' => $this->getPrevStepName(),
                 'nextStepName' => $this->getNextStepName(),
-                'currentStepName' => $this->getStepName($this->currentStep),
+                'currentStepName' => $this->getStepName($this->getStoredData()['current_step']),
                 'currentStep' => $this->updateCurrentStep(),
                 'nextPrefix' => 'next-',
                 'prevPrefix' => 'prev-',

@@ -8,27 +8,20 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
-class KYC extends Layout
+class KYC extends main
 {
-    /** @var array Holds the uploaded National Identification Number (NIN) data. */
-    public $nin = [];
+    public $nin = [];    /** @var array Holds the uploaded National Identification Number (NIN) data. */
+    public $internationalPassport = [];    /** @var array Holds the uploaded international passport data. */
+    public $driversLicense = [];    /** @var array Holds the uploaded driver's license data. */
+    public $proofOfAddress = [];    /** @var array Holds the uploaded proof of address data. */
 
-    /** @var array Holds the uploaded international passport data. */
-    public $internationalPassport = [];
-
-    /** @var array Holds the uploaded driver's license data. */
-    public $driversLicense = [];
-
-    /** @var array Holds the uploaded proof of address data. */
-    public $proofOfAddress = [];
 
     public function mount()
     {
-        $this->user = getUser();
-        $this->nin['file'] = $this->files['nin'] ?? null;
-        $this->internationalPassport['file'] = $this->files['passport'] ?? null;
-        $this->driversLicense['file'] = $this->files['drivers_license'] ?? null;
-        $this->proofOfAddress['file'] = $this->files['proof_of_address'] ?? null;
+        $this->nin['file'] = $this->files['nin'] ?? [];
+        $this->internationalPassport['file'] = $this->files['passport'] ?? [];
+        $this->driversLicense['file'] = $this->files['drivers_license'] ?? [];
+        $this->proofOfAddress['file'] = $this->files['proof_of_address'] ?? [];
         // $this->prevStepName = $this->getPrevStepName();
     }
 
@@ -112,6 +105,27 @@ class KYC extends Layout
         // Optionally reset file input
         // $this->reset('proofOfAddress');
     }
+
+    /**
+     * Get the document name based on the document type.
+     *
+     * @param string $docType The type of the document.
+     * @return string The name of the document.
+     */
+    protected function getDocName(string $docType): string
+    {
+        $documentNames = [
+            'photo' => 'Profile Picture',
+            'nin' => 'National Identification Number',
+            'passport' => 'International Passport',
+            'drivers_license' => 'Driver\'s License',
+            'proof_of_address' => 'Proof of Address',
+            // Add more document types and their corresponding names as needed
+        ];
+
+        return $documentNames[$docType] ?? 'Unknown Document';
+    }
+
 
     /**
      * Save the uploaded files associated with the user.

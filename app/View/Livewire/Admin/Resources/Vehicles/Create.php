@@ -139,7 +139,7 @@ class Create extends Component
     public $owner;
     public $selectedUser;
 
-    // Search filters
+    // Search filters  
     public $userSearch = '';
     public $usersPerPage = 10;
 

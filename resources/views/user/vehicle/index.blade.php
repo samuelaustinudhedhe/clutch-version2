@@ -8,7 +8,7 @@
         </div>
 
         <div class="flex items-center justify-end space-x-8 ">
-            <a href="{{ route('user.vehicles.create') }}" type="button"
+            <a href="{{ route('user.vehicles.create.wizard') }}" type="button"
                 class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                 <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
                     aria-hidden="true">

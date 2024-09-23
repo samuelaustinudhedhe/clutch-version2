@@ -1,37 +1,6 @@
 <!-- Step 1: Basic Vehicle Information -->
 
-<div>
-    <x-div>
-        <div class="grid gap-4 sm:grid-cols-2">
-
-            <div class="sm:col-span-2 flex gap-4 items-start">
-
-                <div class="w-2/3">
-                    <x-label for="name" class="mt-1">Name</x-label>
-
-                    <x-xinput id="storeData.name" type="text" wire:model="storeData.name"
-                        placeholder="Enter your Identifcation Number" title="Identification number of the vehicle" />
-                </div>
-                <div class="w-1/3">
-                    <x-label for="slug" class="mt-1">Slug</x-label>
-
-                    <x-xinput id="slug" type="text" wire:model="storeData.slug"
-                        placeholder="Enter your Identifcation Number" title="Identification number of the vehicle"
-                        disabled />
-                </div>
-            </div>
-
-            <div class="sm:col-span-2">
-                <x-label for="description">Description</x-label>
-                <x-xinput id="description" type="text" wire:model="storeData.description" />
-                <x-input-error for="storeData.description" />
-            </div>
-        </div>
-    </x-div>
-    <p class=" text-gray-900 dark:text-white mx-4">
-        Vehicle Identification
-    </p>
-    <x-div>
+<div> <x-div>
         <div class="grid gap-4 sm:grid-cols-2">
             {{-- Vin and Vit --}}
             <div class="sm:col-span-2 flex gap-4 items-start">
@@ -40,8 +9,7 @@
                     <x-label for="vit" class="inline-flex items-center">
 
                         Identification type
-                        <button type="button" data-tooltip-target="tooltip-vit" data-tooltip-style="dark"
-                            class="ml-1">
+                        <button type="button" data-tooltip-target="tooltip-vit" data-tooltip-style="dark" class="ml-1">
                             <svg aria-hidden="true"
                                 class="ml-1 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white"
                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -113,11 +81,21 @@
 
             {{-- Location --}}
             <div class="sm:col-span-2">
-                <x-label for="location">Location</x-label>
-                <x-xinput type="text" wire:model="storeData.location" id="location" name="location" address
-                    onclick="initAddressAutocomplete()" />
-                <x-input-error for="storeData.location" />
+                <x-location id="location" name="Vehicle Location" label="Location" wire:model="storeData.location.full"
+                    address:save="storeData.location" loadJS=true />
             </div>
         </div>
     </x-div>
+    <x-div>
+        <div class="grid gap-4 sm:grid-cols-2">
+
+            <div class="sm:col-span-2">
+                <x-label for="description">Description</x-label>
+                <x-textarea id="description" height="100px" wire:model="storeData.description" />
+                <x-input-error for="storeData.description" />
+            </div>
+        </div>
+    </x-div>
+
+
 </div>

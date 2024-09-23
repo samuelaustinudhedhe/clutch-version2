@@ -14,47 +14,19 @@ use App\Models\Attachment;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * Class Layout
- *
- * This Livewire component handles the user onboarding process, including the uploading
- * and management of various user documents such as photos, identification documents, and proof of address.
- *
- * @package App\View\Livewire\User\Onboarding
- */
-class Layout extends Component
+class Main extends Component
 {
     use WithSteps, WithFileUploads;
 
-    /** @var User The user undergoing the onboarding process. */
     public $user;
-
-    /** @var array Holds the uploaded photo data. */
     public $photo = [];
-
-    /** @var array Holds the uploaded National Identification Number (NIN) data. */
     public $nin = [];
-
-    /** @var array Holds the uploaded international passport data. */
     public $internationalPassport = [];
-
-    /** @var array Holds the uploaded driver's license data. */
     public $driversLicense = [];
-
-    /** @var array Holds the uploaded proof of address data. */
     public $proofOfAddress = [];
-
-    /** @var array Stores details of all uploaded files. */
     public $files = [];
 
-    /**
-     * Initialize the component by setting the user property and loading stored file data.
-     * 
-     * This method is called when the component is mounted. It retrieves the current user
-     * and assigns it to the user property, then loads previously stored file details.
-     *
-     * @return void
-     */
+
     public function mount()
     {
         $this->user = getUser();
@@ -448,7 +420,7 @@ class Layout extends Component
     public function render()
     {
         return view(
-            'user.onboarding.layout',
+            'user.onboarding.main',
             [
                 'prevStepName' => $this->getPrevStepName(),
                 'nextStepName' => $this->getNextStepName(),

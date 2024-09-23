@@ -4,7 +4,7 @@ use App\Http\Controllers\User\Dashboard\UserDashboardController as Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Pages\DynamicPageController as DynamicPage;
 use App\Http\Kernel;
-use App\View\Livewire\User\Onboarding\Layout as OnboardingLayout;
+use App\View\Livewire\User\Onboarding\Main as OnboardingLayout;
 use Illuminate\Http\Request;
 
 Route::redirect('/dashboard', '/user/dashboard');
@@ -12,8 +12,4 @@ Route::prefix('user')->name('user.')->middleware(['auth:sanctum', config('jetstr
     Route::get('/',  [Dashboard::class, 'show']);
     Route::get('/dashboard',  [Dashboard::class, 'show'])->name('dashboard');
     Route::get('/onboarding', OnboardingLayout::class)->name('onboarding');
-    
-    // Route::get('/{slug}', function (Request $request, $slug) {
-    //     return DynamicPage::show($request, $slug, 'user.pages');
-    // })->where('slug', '.*');
 });

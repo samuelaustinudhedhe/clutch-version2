@@ -1,8 +1,8 @@
 <div x-data="{ role: @entangle('storeData.role') }">
     <p class="font-light text-gray-600 dark:text-gray-300">
         Please upload your ID card and or International Passport,
-        @if ($storeData['role'] === 'driver' || $user->role === 'driver')
-            Driver's license,
+        @if ((isset($storeData['role']) && $storeData['role'] === 'driver') || (isset($user) && $user->role === 'driver'))            
+         Driver's license,
         @endif
         and any Utility document that proves your address (not older than 2 months).
     </p>
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="mb-6 gap-4 text-sm sm:grid-cols-2 grid">
-            <x-radio id="driver" name="role" value="driver" wire:model="storeData.role" showIcon="false"
+            <x-radio id="driver" name="role" value="driver" wire:model.live="storeData.role" showIcon="false"
                 class="!p-2">
 
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
@@ -55,7 +55,7 @@
                 <span class="w-full">I want to drive it myself.</span>
             </x-radio>
 
-            <x-radio id="chauffeured" name="role" value="chauffeured" wire:model="storeData.role" checked
+            <x-radio id="chauffeured" name="role" value="chauffeured" wire:model.live="storeData.role" checked
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -70,8 +70,7 @@
 
     </x-div>
 
-    <x-div x-show="role === 'driver'" x-transition:enter="transition ease-out duration-300" class="grid gap-2"
-        x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100"
+    <x-div x-show="(isset($storeData['role']) && $storeData['role'] === 'driver') || (isset($user) && $user->role === 'driver')" x-transition:enter="transition ease-out duration-300" class="grid gap-2"        x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100"
         x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform scale-100"
         x-transition:leave-end="opacity-0 transform scale-90">
 

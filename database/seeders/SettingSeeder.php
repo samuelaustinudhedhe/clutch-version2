@@ -23,8 +23,8 @@ class SettingSeeder extends Seeder
          */
         DB::table('settings')->insert([
             ['key' => 'app_name', 'value' => 'Clutch', 'created_at' => now(), 'updated_at' => now()],
-            ['key' => 'app_url', 'value' => 'https://Clutch.com', 'created_at' => now(), 'updated_at' => now()],
-            ['key' => 'app_logo', 'value' => 'https://Clutch.com/images/logo.png', 'created_at' => now(), 'updated_at' => now()],
+            ['key' => 'app_url', 'value' => 'https://clutch.africa', 'created_at' => now(), 'updated_at' => now()],
+            ['key' => 'app_logo', 'value' => '/assets/images/logos/clutch.png', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }

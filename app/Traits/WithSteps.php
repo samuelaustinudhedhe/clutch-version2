@@ -3,14 +3,8 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 
-/**
- * Trait WithSteps
- *
- * This trait provides functionality for managing a multi-step process.
- * It includes methods for navigating between steps, retrieving step names,
- * and resetting the process to the introduction step.
- */
 trait WithSteps
 {
     /**
@@ -57,7 +51,8 @@ trait WithSteps
      */
     public function getCurrentStepName()
     {
-        return $this->getStepName($this->currentStep);
+        $step = $this->getStoredData()['current_step'] ?? $this->currentStep;
+        return $this->getStepName($step);
     }
 
     /**
@@ -73,8 +68,9 @@ trait WithSteps
      */
     public function getPrevStepName()
     {
-        if ($this->currentStep > 1) {
-            return $this->getStepName($this->currentStep - 1);
+        $step = $this->getStoredData()['current_step'] ?? $this->currentStep;
+        if ($step > 0) {
+            return $this->getStepName($step - 1);
         }
         return null;
     }
@@ -92,8 +88,9 @@ trait WithSteps
      */
     public function getNextStepName()
     {
-        if ($this->currentStep < $this->totalSteps) {
-            return $this->getStepName($this->currentStep + 1);
+        $step = $this->getStoredData()['current_step'] ?? $this->currentStep;
+        if ($step < $this->totalSteps) {
+            return $this->getStepName($step + 1);
         }
         return null;
     }
@@ -131,21 +128,17 @@ trait WithSteps
      */
     public function nextStep()
     {
-        if (property_exists($this, 'rules') && !empty($this->rules)) {
-            $this->validate();
-        }
+
         $this->attachToNextStep();
-        $this->store();
-
         $this->currentStep++;
-
+        $this->store();
     }
 
     public function attachToNextStep()
     {
         return false;
     }
-    
+
     /**
      * Moves back to the previous step in the process.
      *
@@ -162,9 +155,8 @@ trait WithSteps
     public function prevStep()
     {
         $this->attachToPrevStep();
-        $this->store();
         $this->currentStep--;
-
+        $this->store();
     }
 
     public function attachToPrevStep()
@@ -328,6 +320,37 @@ trait WithSteps
         return $this->storeData['files'][$key];
     }
 
+    // public function uploadFiles($key, $newFile, $files)
+    // {
+    //     $hash = md5_file($newFile->getRealPath()); // Generate image hash
+
+    //     $alreadyExists = false;
+    //     foreach ($files as $file) {
+    //         if ($file['hash'] === $hash) {
+    //             $alreadyExists = true;
+    //         }
+    //     }
+    //     if (!$alreadyExists) {
+    //         $filePath = $newFile->store("tmp", 'public');
+
+    //         if (!isset($this->storeData['files'][$key])) {
+    //             $this->storeData['files'][$key] = [];
+    //         }
+
+    //         // Save file details to the JSON file
+    //         $this->storeData['files'][$key][] = [
+    //             'path' => $filePath,
+    //             'mime_type' => $newFile->getMimeType(),
+    //             'size' => $newFile->getSize(),
+    //             'hash' => $hash
+    //         ];
+
+    //         $this->deleteFile($newFile);
+    //         Storage::put($this->storePath, json_encode($this->storeData));
+
+    //         return $this->storeData['files']['images']; // Add image to the images array
+    //     }
+    // }
 
     /**
      * Deletes a file from either temporary or permanent storage.
