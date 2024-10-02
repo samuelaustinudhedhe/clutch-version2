@@ -1,7 +1,7 @@
-@props(['href' => '', 'color' => 'blue', 'focus' => 'true'])
+@props(['href' => '', 'color' => 'blue', 'focus' => true])
 
 @php
-    if ($focus === 'true') {
+    if ($focus) {
         // $classes = "inline-flex items-center px-4 py-2 bg-$color-700 dark:bg-$color-200 border border-transparent rounded-md
     //             font-semibold text-xs text-white dark:text-$color-700 uppercase tracking-widest hover:bg-$color-600
     //             dark:hover:bg-white focus:bg-$color-600 dark:focus:bg-white active:bg-$color-900 dark:active:bg-$color-300
@@ -21,7 +21,7 @@
     }
 @endphp
 
-<button onclick="window.location.href='{{ $href }}'"
+<button @if($href) onclick="window.location.href='{{ $href }}'" @endif
     {{ $attributes->merge(['type' => 'submit', 'class' => $classes]) }}>
     {{ $slot }}
 </button>

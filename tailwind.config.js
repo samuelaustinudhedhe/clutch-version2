@@ -1,6 +1,5 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
-import typography from '@tailwindcss/typography';
 import aspectRatio from '@tailwindcss/aspect-ratio';
 import containerQueries from '@tailwindcss/container-queries';
 
@@ -82,7 +81,6 @@ export default {
 
     plugins: [
         forms,
-        typography,
         aspectRatio,
         containerQueries,
         require('flowbite/plugin'), // Add this line

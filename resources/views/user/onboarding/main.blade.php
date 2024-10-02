@@ -169,27 +169,27 @@
 
                 @switch($currentStep)
                     @case(0)
-                        @livewire('user.onboarding.introduction')
+                        @include('user.onboarding.introduction')
                     @break
 
                     @case(1)
-                        @livewire('user.onboarding.select-role')
+                        @include('user.onboarding.select-role')
                     @break
 
                     @case(2)
-                        @livewire('user.onboarding.personal-details')
+                        @include('user.onboarding.personal-details')
                     @break
 
                     @case(3)
-                        @livewire('user.onboarding.verification')
+                        @include('user.onboarding.verification')
                     @break
 
                     @case(4)
-                        @livewire('user.onboarding.kyc')
+                        @include('user.onboarding.kyc')
                     @break
 
                     @default
-                        @livewire('user.onboarding.completed')
+                        @include('user.onboarding.completed')
                 @endswitch
                 <x-input-error for="storeData.role" />
             </div>
@@ -211,7 +211,7 @@
 
         <div class="items-center justify-center w-full absolute bottom-0 right-5 left-5 md:w-[38rem] ">
             {{-- Progress Indicator --}}
-            <div class="flex justify-between mt-8 mb-12 w-full">
+            {{-- <div class="flex justify-between mt-8 mb-12 w-full">
                 <div
                     class="flex-1 mx-1 h-1 {{ $currentStep >= 1 ? 'bg-blue-600 dark:bg-blue-800' : 'bg-gray-300 dark:bg-gray-500' }} rounded-full">
                 </div>
@@ -227,7 +227,7 @@
                 <div
                     class="flex-1 mx-1 h-1 {{ $currentStep >= 5 ? 'bg-blue-600 dark:bg-blue-800' : 'bg-gray-300 dark:bg-gray-500' }} rounded-full">
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 

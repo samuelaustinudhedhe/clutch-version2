@@ -70,7 +70,7 @@ class AttachmentController extends Controller
         $path = preg_replace('/^.*\/storage\//', '', $path);
 
         // Check if the file is a PDF
-        if ($mimeType === 'application/pdf') {
+        if (str_contains($mimeType, 'pdf')) {
             // Store the PDF file and get the full path
             Storage::put($path, file_get_contents($file));
         } else {
@@ -79,8 +79,9 @@ class AttachmentController extends Controller
         }
 
         // Return the full path to the stored file
-        if ($return)
+        if ($return) {
             return Storage::path($path);
+        }
     }
 
 
@@ -96,7 +97,7 @@ class AttachmentController extends Controller
      *
      * @return void
      */
-    public static function create($name, $description, $file, $is_featured = false, $attachable, $authorable, $path)
+    public static function create($name, $description, $file, $mimeType, $is_featured = false, $attachable, $authorable, $path)
     {
         // Get the MIME type of the file
         $fileInfo =  getimagesize($file);
@@ -129,7 +130,7 @@ class AttachmentController extends Controller
             'active',
             $is_featured,
             $metadata,
-            $fileInfo['mime'] ?? mime_content_type($file),
+            $mimeType,
             $attachable,
             $authorable,
             $path
@@ -151,7 +152,7 @@ class AttachmentController extends Controller
      *
      * @return void
      */
-    public static function createRaw(string $name, string $description, string $active, bool $is_featured, array $metadata, string $mime_type, object $attachable, object $authorable, string $path)
+    public static function createRaw(string $name, string $description, string $active, bool $is_featured, array $metadata, string $mimeType, object $attachable, object $authorable, string $path)
     {
         // Create the Attachment record in the database
         Attachment::create([
@@ -160,7 +161,7 @@ class AttachmentController extends Controller
             'status' => $active,
             'is_featured' => $is_featured,
             'metadata' => json_encode($metadata),
-            'mime_type' => $mime_type,
+            'mime_type' => $mimeType,
             'attachable_id' => $attachable->id,
             'attachable_type' => get_class($attachable),
             'authorable_id' => $authorable->id,

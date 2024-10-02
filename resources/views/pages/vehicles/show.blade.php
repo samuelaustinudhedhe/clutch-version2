@@ -1,7 +1,7 @@
-<div>
+<div class="max-w-screen-xl m-auto">
 
     {{-- Gallery Section --}}
-    <section class="flex justify-center max-w-screen-lg m-auto">
+    <section class="flex justify-center">
 
         <div id="indicators-carousel" class="relative w-full" data-carousel="static">
             <!-- Carousel wrapper -->
@@ -53,7 +53,7 @@
 
     </section>
 
-    <section class="flex flex-wrap md:flex-nowrap max-w-screen-lg m-auto my-4 px-4 sm:px-8 lg:px-0 gap-x-6">
+    <section class="flex flex-wrap md:flex-nowrap items-start my-4 px-4 sm:px-8 lg:px-0 gap-x-6">
 
         {{-- Right --}}
         <x-div class="w-full md:w-3/5 order-1">
@@ -167,8 +167,6 @@
             </div>
         </x-div>
 
-
-
         {{-- Left --}}
         <x-div class="w-full md:w-2/5 order-first md:order-2">
             <div class="md:hidden">
@@ -198,38 +196,50 @@
             <p class="text-xs mt-4">$150 excl. taxes & fees</p>
 
             <x-devider />
-
-            <div class="grid grid-col-1 space-y-6">
-
+            <form wire:submit.prevent="bookTrip" class="grid grid-col-1 space-y-6">
                 <div class="grid">
                     <x-label for="start_time" class="text-sm">Pickup Date</x-label>
-                    <div class="flex space-x-4">
-                        <x-date wire:model="start_time" class="w-3/5" />
-                        <x-xinput type="time" min="08:00" max="18:00" class="!w-2/5 dark:text-gray-600"
-                            placeholder="Time" />
+                    <div class="flex w-full gap-4">
+                        <x-date id="start" wire:model="trip.start.date" class="w-2/3"
+                            datepicker-min-date="{{ now()->format('m/d/Y') }}" loadJS=true />
+                        <x-select class="!w-1/3" wire:model="trip.start.time">
+                            <option disabled Selected>Pickup Time</option>
+                            @foreach ($times as $time)
+                                <option value="{{ $time }}">{{ $time }}</option>
+                            @endforeach
+                        </x-select>
                     </div>
+                    <x-input-error for="trip.start.date" class=" mt-2" />
+                    <x-input-error for="trip.start.time" class=" mt-2" />
                 </div>
                 <div class="grid">
                     <x-label for="end_time" class="text-sm">Drop Off Date</x-label>
-                    <div class="flex space-x-4">
-                        <x-date wire:model="end_time" class="w-3/5" />
-                        <x-xinput type="time" min="08:00" max="18:00" class="!w-2/5 dark:text-gray-600"
-                            placeholder="Time" />
+                    <div class="flex w-full gap-4 mb-2">
+                        <x-date id="end" wire:model="trip.end.date" class="w-2/3"
+                            datepicker-min-date="{{ now()->addDay()->format('m/d/Y') }}" />
+                        <x-select class="!w-1/3" wire:model="trip.end.time">
+                            <option disabled Selected>Drop Off Time</option>
+                            @foreach ($times as $time)
+                                <option value="{{ $time }}">{{ $time }}</option>
+                            @endforeach
+                        </x-select>
                     </div>
+                    <x-input-error for="trip.end.date" class=" mt-2" />
+                    <x-input-error for="trip.end.time" class=" mt-2" />
                 </div>
 
-                <x-button wire:model="book" class="">
+                <x-button wire:click="bookTrip" class="flex justify-center !font-light">
                     Continue
                 </x-button>
-            </div>
-
+            </form>
         </x-div>
-
 
     </section>
 
-    <section class="max-w-screen-lg m-auto">
-        @include('pages.vehicles.show.discription')
+    <section class="m-auto">
+        <x-div class="!pt-2">
+            @include('pages.vehicles.show.discription')
+        </x-div>
     </section>
 
 </div>

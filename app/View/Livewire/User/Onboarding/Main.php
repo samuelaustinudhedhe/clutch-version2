@@ -25,6 +25,12 @@ class Main extends Component
     public $driversLicense = [];
     public $proofOfAddress = [];
     public $files = [];
+    /**
+     * Determine if the verification email was sent.
+     *
+     * @var bool
+     */
+    public $verificationLinkSent = false;
 
 
     public function mount()
@@ -33,6 +39,7 @@ class Main extends Component
 
         $this->defineSteps();
         $this->defineStore();
+        $this->checkSteps();
 
         // Load file details from the JSON file
         $this->files = $this->getStoredData()['files'] ?? null;
@@ -41,141 +48,7 @@ class Main extends Component
         $this->internationalPassport['file'] = $this->files['passport'] ?? null;
         $this->driversLicense['file'] = $this->files['drivers_license'] ?? null;
         $this->proofOfAddress['file'] = $this->files['proof_of_address'] ?? null;
-        $this->validateStep();
-    }
-
-    /**
-     * Handle the upload and validation of the photo file.
-     *
-     * @return void
-     */
-    public function updatedPhoto()
-    {
-        // Validate the file
-        $this->validate([
-            'photo.new' => 'required|image|max:1024', // Adjust rules as needed
-        ]);
-
-        $path = $this->photo['path'] ?? null;
-        $new = $this->photo['new'] ?? null;
-
-        $this->photo['file'] = $this->uploadFile('photo', $new, $path);
-        // Optionally reset file input
-        // $this->reset('photo');
-    }
-
-    /**
-     * Handle the upload and validation of the National Identification Number (NIN) file.
-     *
-     * @return void
-     */
-    public function updatedNin()
-    {
-        // Validate the file
-        $this->validate([
-            'nin.new' => 'required|file|max:1024', // Adjust rules as needed
-        ]);
-
-        $path = $this->nin['path'] ?? null;
-        $new = $this->nin['new'] ?? null;
-
-        $this->nin['file'] = $this->uploadFile('nin', $new, $path);
-        // Optionally reset file input
-        // $this->reset('nin');
-    }
-
-    /**
-     * Handle the upload and validation of the international passport file.
-     *
-     * @return void
-     */
-    public function updatedInternationalPassport()
-    {
-        // Validate the file
-        $this->validate([
-            'internationalPassport.new' => 'required|file|max:1024', // Adjust rules as needed
-        ]);
-
-        $path = $this->internationalPassport['path'] ?? null;
-        $new = $this->internationalPassport['new'] ?? null;
-
-        $this->internationalPassport['file'] = $this->uploadFile('passport', $new, $path);
-        // Optionally reset file input
-        // $this->reset('internationalPassport');
-    }
-
-    /**
-     * Handle the upload and validation of the driver's license file.
-     *
-     * @return void
-     */
-    public function updatedDriversLicense()
-    {
-        // Validate the file
-        $this->validate([
-            'driversLicense.new' => 'required|file|max:1024', // Adjust rules as needed
-        ]);
-
-        $path = $this->driversLicense['path'] ?? null;
-        $new = $this->driversLicense['new'] ?? null;
-
-        $this->driversLicense['file'] = $this->uploadFile('drivers_license', $new, $path);
-        // Optionally reset file input
-        // $this->reset('driversLicense');
-    }
-
-    /**
-     * Handle the upload and validation of the proof of address file.
-     *
-     * @return void
-     */
-    public function updatedProofOfAddress()
-    {
-        // Validate the file
-        $this->validate([
-            'proofOfAddress.new' => 'required|file|max:1024', // Adjust rules as needed
-        ]);
-
-        $path = $this->proofOfAddress['path'] ?? null;
-        $new = $this->proofOfAddress['new'] ?? null;
-
-        $this->proofOfAddress['file'] = $this->uploadFile('proof_of_address', $new, $path);
-        // Optionally reset file input
-        // $this->reset('proofOfAddress');
-    }
-
-    /**
-     * Upload a file, handling the deletion of any existing file in storage.
-     *
-     * @param string $key The key to identify the file (e.g., 'photo', 'nin').
-     * @param \Illuminate\Http\UploadedFile $file The new file being uploaded.
-     * @param string|null $filePath The path to the existing file, if any.
-     * @return array The details of the uploaded file.
-     */
-    public function uploadFile($key, $file, $filePath)
-    {
-        // Check if there's an existing file and delete it
-        if ($filePath && Storage::exists($filePath)) {
-            Storage::delete($filePath);
-        }
-
-        // Save the uploaded file and get the file path
-        $filePath = $file->store("tmp", 'public');
-
-        if (!isset($this->storeData['files'][$key])) {
-            $this->storeData['files'][$key] = [];
-        }
-
-        // Save file details to the JSON file
-        $this->storeData['files'][$key] = [
-            'path' => $filePath,
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize(),
-        ];
-        $this->deleteFile($file);
-        Storage::put($this->storePath, json_encode($this->storeData));
-
-        return $this->storeData['files'][$key];
+        //$this->validateStep();
     }
 
 
@@ -206,6 +79,7 @@ class Main extends Component
     {
         $this->storePath = getUserStorage('private') . "/data/onboarding.json";
         $this->storeData = $this->getStoredData() ?? $this->storeData;
+        $this->currentStep = $this->storeData['current_step'] ?? 0;
     }
 
     /**
@@ -215,7 +89,11 @@ class Main extends Component
      */
     public function checkSteps()
     {
+
         if ($this->user->role !== 'subscriber' && ($this->currentStep == 0 || $this->currentStep == 1)) {
+            if (!isset($this->storeData['role'])) {
+                $this->storeData['role'] = $this->user->role;
+            }
             $this->currentStep = 2;
         }
     }
@@ -273,14 +151,138 @@ class Main extends Component
     }
 
     /**
-     * Submit the onboarding form and save the uploaded files.
+     * Handle the upload and validation of the photo file.
      *
      * @return void
      */
-    public function submit()
+    public function updatedPhoto()
     {
-        $user = $this->user;
-        $this->saveFiles($user);
+        // Validate the file
+        $this->validate([
+            'photo.new' => 'required|image|max:1024', // Adjust rules as needed
+        ]);
+
+        $path = $this->photo['file']['path'] ?? null;
+        $new = $this->photo['new'] ?? null;
+
+        $this->photo['file'] = $this->uploadFile('photo', $new, $path);
+        // Optionally reset file input
+        // $this->reset('photo');
+    }
+
+    /**
+     * Handle the upload and validation of the National Identification Number (NIN) file.
+     *
+     * @return void
+     */
+    public function updatedNin()
+    {
+        // Validate the file
+        $this->validate([
+            'nin.new' => 'required|file|max:1024', // Adjust rules as needed
+        ]);
+
+        $path = $this->nin['file']['path'] ?? null;
+        $new = $this->nin['new'] ?? null;
+
+        $this->nin['file'] = $this->uploadFile('nin', $new, $path);
+        // Optionally reset file input
+        // $this->reset('nin');
+    }
+
+    /**
+     * Handle the upload and validation of the international passport file.
+     *
+     * @return void
+     */
+    public function updatedInternationalPassport()
+    {
+        // Validate the file
+        $this->validate([
+            'internationalPassport.new' => 'required|file|max:1024', // Adjust rules as needed
+        ]);
+
+        $path = $this->internationalPassport['file']['path'] ?? null;
+        $new = $this->internationalPassport['new'] ?? null;
+
+        $this->internationalPassport['file'] = $this->uploadFile('passport', $new, $path);
+        // Optionally reset file input
+        // $this->reset('internationalPassport');
+    }
+
+    /**
+     * Handle the upload and validation of the driver's license file.
+     *
+     * @return void
+     */
+    public function updatedDriversLicense()
+    {
+        // Validate the file
+        $this->validate([
+            'driversLicense.new' => 'required|file|max:1024', // Adjust rules as needed
+        ]);
+
+        $path = $this->driversLicense['file']['path'] ?? null;
+        $new = $this->driversLicense['new'] ?? null;
+
+        $this->driversLicense['file'] = $this->uploadFile('drivers_license', $new, $path);
+        // Optionally reset file input
+        // $this->reset('driversLicense');
+    }
+
+    /**
+     * Handle the upload and validation of the proof of address file.
+     *
+     * @return void
+     */
+    public function updatedProofOfAddress()
+    {
+        // Validate the file
+        $this->validate([
+            'proofOfAddress.new' => 'required|file|max:1024', // Adjust rules as needed
+        ]);
+
+        $path = $this->proofOfAddress['file']['path'] ?? null;
+        $new = $this->proofOfAddress['new'] ?? null;
+
+        $this->proofOfAddress['file'] = $this->uploadFile('proof_of_address', $new, $path);
+        // Optionally reset file input
+        // $this->reset('proofOfAddress');
+    }
+
+    /**
+     * Upload a file, handling the deletion of any existing file in storage.
+     *
+     * @param string $key The key to identify the file (e.g., 'photo', 'nin').
+     * @param \Illuminate\Http\UploadedFile $file The new file being uploaded.
+     * @param string|null $filePath The path to the existing file, if any.
+     * @return array The details of the uploaded file.
+     */
+    public function uploadFile($key, $file, $filePath)
+    {
+        // Check if there's an existing file and delete it
+        if ($filePath && Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        // Save the uploaded file and get the file path
+        $filePath = $file->store("tmp", 'public');
+
+        if (!isset($this->storeData['files'][$key])) {
+            $this->storeData['files'][$key] = [];
+        }
+
+        // Save file details to the JSON file
+        $this->storeData['files'][$key] = [
+            'path' => $filePath,
+            'mime_type' => $file->getMimeType(),
+            'size' => $file->getSize(),
+        ];
+        
+        $this->deleteFile($file);
+        Storage::put($this->storePath, json_encode($this->storeData));
+
+        return $this->storeData['files'][$key];
     }
 
     /**
@@ -293,6 +295,7 @@ class Main extends Component
     {
         if ($this->photo['file']['path']) {
             $image = Storage::path('public/' . $this->photo['file']['path']);
+            $mime_type = $this->photo['file']['mime_type'];
             $profilePath = getUserStorage() . 'profile/photo.webp';
             $photoName = $this->getDocName('photo');
             $photoDesc = $user->name . '\'s ' . $photoName;
@@ -302,6 +305,7 @@ class Main extends Component
                 name: $photoName,
                 description: $photoDesc,
                 file: $image,
+                mimeType: $mime_type,
                 is_featured: false,
                 quality: 90,
                 authorable: $user,
@@ -311,8 +315,9 @@ class Main extends Component
             $user->save();
 
             // Delete the uploaded photo after saving it to the storage
-            unset($this->storeData['files']['photo']);
-            $this->deleteFile($image);
+            Storage::delete('public/' . $this->photo['file']['path']);            
+            $this->storeData['files']['photo'] = [];
+
         }
 
         foreach ($this->files as $key => $file) {
@@ -330,17 +335,19 @@ class Main extends Component
                     name: $docName,
                     description: $docDesc,
                     file: $document,
+                    mimeType: $mime_type,
                     is_featured: true,
                     quality: 90,
                     authorable: $user,
                     attachable: $user,
                     path: $path,
                 );
-            }
 
-            // Delete the uploaded file after saving it to the storage
-            unset($this->storeData['files'][$key]);
-            $this->deleteFile($document);
+                // Delete the uploaded file after saving it to the storage
+                Storage::delete('public/' . $file['path']);
+                $this->storeData['files'][$key] = [];
+                
+            }
         }
     }
 
@@ -364,6 +371,42 @@ class Main extends Component
         return $documentNames[$docType] ?? 'Unknown Document';
     }
 
+
+    /**
+     * Sent the email verification.
+     *
+     * @return void
+     */
+    public function sendEmailVerification()
+    {
+        getUser()->sendEmailVerificationNotification();
+
+        $this->verificationLinkSent = true;
+    }
+
+    /**
+     * Submit the onboarding form and save the uploaded files.
+     *
+     * @return void
+     */
+    public function submit()
+    {
+        $user = $this->user;
+        $user->role = $this->storeData['role'];
+        // Update the details attribute using the updateDetails method
+        $user->updateDetails('phone', $this->storeData['phone']);
+        $user->updateDetails('date_of_birth', $this->storeData['date_of_birth']);
+        $user->updateDetails('gender', $this->storeData['gender']);
+        $user->updateDetails('address', $this->storeData['address']);
+        $user->updateDetails('social', $this->storeData['social']);
+        $user->updateDetails('nin', $this->storeData['nin']);
+        $user->updateDetails('self_drive', $this->storeData['drive']);
+
+        $user->save();
+
+        $this->saveFiles($user);
+    }
+
     /**
      * Complete the onboarding process.
      * 
@@ -372,14 +415,16 @@ class Main extends Component
     #[On('onboarding-completed')]
     public function completeOnboarding()
     {
-        $this->user->forceFill([
-            'boarding->status' => 'completed',
-            'boarding->step' => $this->currentStep,
-            'boarding->restart_at' => '',
-            'boarding->completed_at' => now(),
-        ])->save();
+        // Save any necessary data to the database
+        $this->submit();
 
-        $this->submit(); // Save any necessary data to the database
+        // Update the onboarding data.
+        $this->user->updateOnboarding([
+            'status' => 'completed',
+            'step' => $this->currentStep,
+            'restart_at' => '',
+            'completed_at' => now(),
+        ]);
 
         $this->user->notify(new Completed());
         // Redirect to the user dashboard after completing the onboarding process
@@ -397,7 +442,7 @@ class Main extends Component
         // Check if the user's onboarding status is already 'skipped'
         if ($this->user->onboarding->status !== 'skipped') {
             // Update the user's onboarding status
-            $this->user->forceFill([
+            $this->user->records->forceFill([
                 'boarding->status' => 'skipped',
                 'boarding->step' => $this->currentStep,
                 'boarding->restart_at' => now()->addDays(2),

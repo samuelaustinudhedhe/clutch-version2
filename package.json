@@ -19,6 +19,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@paystack/inline-js": "^2.20.3",
         "flowbite": "^2.3.0"
     }
 }

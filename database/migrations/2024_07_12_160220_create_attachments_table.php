@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attachments', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(11300400100023);
             $table->string('name');
             $table->string('description')->nullable(); //content of the post (usually empty for attachments).
             $table->string('status')->default('active'); //The status of the attachment (usually inherit from its parent).

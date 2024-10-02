@@ -84,11 +84,13 @@
                         longitude
                     };
 
-                    // Get the model name dynamically
-                    const modelName = input.getAttribute('address:save');
-
-                    // Pass the object directly to Livewire without stringifying it
-                    @this.set(modelName, address);
+                    // Get the model name dynamically and Pass the object directly to Livewire without stringifying it
+                    Array.from(input.attributes).forEach(attr => {
+                        if (attr.name.startsWith('wire:')) {
+                            const strippedValue = attr.value.replace('.full', '');
+                            @this.set(`${strippedValue}`, address);
+                        }
+                    });
 
                     // Trigger the input event to ensure the value is recognized
                     const event = new Event('input', {

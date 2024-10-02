@@ -16,6 +16,21 @@ trait HasDetails
     }
 
     /**
+     * Update a key in the details attribute.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function updateDetails(string $key, $value): void
+    {
+        $details = $this->getDetails();
+        $details->$key = $value;
+        $this->details = json_encode($details);
+        $this->save();
+    }
+
+    /**
      * Get the date of birth from the details attribute.
      *
      * @return string|null

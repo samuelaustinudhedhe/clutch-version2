@@ -89,14 +89,14 @@ class AttachmentUploadController extends AttachmentController
      *
      * @return string The path of the stored file.
      */
-    public static function file($name, $description, $file, $is_featured, $quality = 90, $authorable, $attachable, $path)
+    public static function file($name, $description, $file, $mimeType, $is_featured, $quality = 90, $authorable, $attachable, $path)
     {
         // Get the file extension from the filename
         $fileName = basename($file);
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
         $name = $name ?? $authorable->name . '\'s ' . ucwords(toSlug(pathinfo($fileName, PATHINFO_FILENAME), ' '));
         $description = $description ?? 'File uploaded by ' . $authorable->name . ' and attached to ' . $attachable->name;
-        $mimeType = mime_content_type($file);
+
         // Check if the file is an image
         if (str_contains($mimeType, 'image')) {
             // Read the file from the provided source
@@ -114,6 +114,7 @@ class AttachmentUploadController extends AttachmentController
             name: $name,
             description: $description,
             file: $file,
+            mimeType: $mimeType,
             is_featured: $is_featured,
             attachable: $attachable,
             authorable: $authorable,

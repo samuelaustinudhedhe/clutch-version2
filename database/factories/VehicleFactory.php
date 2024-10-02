@@ -17,8 +17,8 @@ class VehicleFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->word,
-            'slug' => fake()->slug,
+            'name' => fake()->sentence(4) . fake()->year($max = 'now', $min = 2006),
+            // 'slug' => fake()->slug,
             'vin' => $this->generateVin(),
             'description' => fake()->paragraph,
             'price' => $this->generatePrice(),

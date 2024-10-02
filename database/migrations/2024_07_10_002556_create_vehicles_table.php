@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vehicles', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(28450000051);
             $table->string('name');
-            $table->string('slug')->unique();
+            //$table->string('slug')->unique();
             $table->json('vin')->default(
                 json_encode([
                     'type' => '', // vehicle identification type VIN, HIN, TN, SN, UIC, PIN, VSN etc

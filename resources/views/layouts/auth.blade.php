@@ -26,7 +26,6 @@
         @livewireScripts
         @stack('scripts')
         <script async src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places&callback=initAddressAutocomplete&callback=initMap"></script>
-        <script async src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
     </body>
 
 </html>

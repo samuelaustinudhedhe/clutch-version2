@@ -1,4 +1,4 @@
-<div class="bg-white py-8 antialiased dark:bg-gray-900">
+<div class="antialiased">
     <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <div
             class="sm:border-b border-gray-200 text-center text-sm font-medium text-gray-500 dark:border-gray-700 dark:text-gray-400 sm:block">
@@ -248,7 +248,7 @@
                     <div class="hidden" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                         <div class="mx-auto max-w-screen-xl">
                             <div
-                                class="mt-6 flex flex-wrap gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
+                                class="mt-6 flex flex-wrap gap-4 rounded-lg border border-gray-200 p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
                                 <div class="flex-1 space-y-3">
                                     <p class="text-3xl font-bold leading-none text-gray-900 dark:text-white">5/5
                                     </p>
@@ -476,7 +476,7 @@
                                     <aside>
                                         <div class="mt-3 flex items-center">
                                             <a href="#"
-                                                class="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
+                                                class="rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
                                                 (2)</a>
 
                                             <button type="button" data-modal-target="report-modal"
@@ -557,7 +557,7 @@
                                     <aside>
                                         <div class="mt-3 flex items-center">
                                             <a href="#"
-                                                class="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
+                                                class="rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
                                                 (0)</a>
 
                                             <button type="button" data-modal-target="report-modal"
@@ -638,7 +638,7 @@
                                     <aside>
                                         <div class="mt-3 flex items-center">
                                             <a href="#"
-                                                class="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
+                                                class="rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
                                                 (13)</a>
 
                                             <button type="button" data-modal-toggle="report-modal"
@@ -724,7 +724,7 @@
                                     <aside>
                                         <div class="mt-3 flex items-center">
                                             <a href="#"
-                                                class="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
+                                                class="rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
                                                 (6)</a>
                                             <button type="button" data-modal-toggle="report-modal"
                                                 class="ms-4 inline-flex items-center gap-1.5 text-sm font-medium text-gray-900 hover:underline dark:text-white">
@@ -804,7 +804,7 @@
                                     <aside>
                                         <div class="mt-3 flex items-center">
                                             <a href="#"
-                                                class="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
+                                                class="rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Helpful
                                                 (2)</a>
                                             <button type="button" data-modal-toggle="report-modal"
                                                 class="ms-4 inline-flex items-center gap-1.5 text-sm font-medium text-gray-900 hover:underline dark:text-white">
@@ -843,7 +843,7 @@
                     </div>
                     <div class="hidden" id="features" role="tabpanel" aria-labelledby="features-tab">
                         <div class="mt-6 sm:mt-8" id="accordion-product" data-accordion="open"
-                            data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                            data-active-classes="text-gray-900 dark:text-white"
                             data-inactive-classes="text-gray-500 dark:text-gray-400">
                             <h2 id="accordion-product-heading-11">
                                 <button type="button"
@@ -1810,7 +1810,7 @@
     class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden antialiased md:inset-0">
     <div class="relative max-h-full w-full max-w-lg p-4">
         <!-- Modal content -->
-        <div class="relative rounded-lg bg-white shadow dark:bg-gray-800">
+        <div class="relative rounded-lg shadow dark:bg-gray-800">
             <!-- Modal header -->
             <div
                 class="flex items-center justify-between rounded-t border-b border-gray-200 p-4 dark:border-gray-700 md:p-5">
@@ -1889,7 +1889,7 @@
                         class="me-2 inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Send
                         report</button>
                     <button type="button" data-modal-toggle="report-modal"
-                        class="me-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Cancel</button>
+                        class="me-2 rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Cancel</button>
                 </div>
             </form>
         </div>
@@ -1901,7 +1901,7 @@
     class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden antialiased md:inset-0">
     <div class="relative max-h-full w-full max-w-2xl p-4">
         <!-- Modal content -->
-        <div class="relative rounded-lg bg-white shadow dark:bg-gray-800">
+        <div class="relative rounded-lg shadow dark:bg-gray-800">
             <!-- Modal header -->
             <div
                 class="flex items-center justify-between rounded-t border-b border-gray-200 p-4 dark:border-gray-700 md:p-5">
@@ -2016,7 +2016,7 @@
                         class="me-2 inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Add
                         review</button>
                     <button type="button" data-modal-toggle="review-modal"
-                        class="me-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Cancel</button>
+                        class="me-2 rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Cancel</button>
                 </div>
             </form>
         </div>

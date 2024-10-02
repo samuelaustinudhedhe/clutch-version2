@@ -12,14 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(1009007001);
             $table->json('details'); // Scalable JSON column for order details like notes, payment gateway, etc.
-            $table->json('price')->default([
-                'amount' => 0, // Total amount of the order
-                'currency' => 'USD', // Currency of the order
-                'taxes' => [], // Array of taxes applied to the order
-                'discounts' => [], // Array of discounts applied to the order
-            ]); // Total price of the order
+            $table->json('price'); // Total price of the order
             $table->morphs('orderable'); // Polymorphic relation to Trip, Refund, Insurance, etc.
             $table->morphs('authorable'); // Polymorphic relation to User, Admin, etc.
             $table->json('payment'); // Payment status

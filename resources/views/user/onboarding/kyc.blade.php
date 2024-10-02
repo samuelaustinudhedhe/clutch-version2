@@ -1,7 +1,7 @@
-<div x-data="{ role: @entangle('storeData.role') }">
+<div x-data="{ role: @entangle('storeData.drive') }">
     <p class="font-light text-gray-600 dark:text-gray-300">
         Please upload your ID card and or International Passport,
-        @if ((isset($storeData['role']) && $storeData['role'] === 'driver') || (isset($user) && $user->role === 'driver'))            
+        @if ((isset($storeData['drive']) && $storeData['drive'] === 'true'))            
          Driver's license,
         @endif
         and any Utility document that proves your address (not older than 2 months).
@@ -15,16 +15,16 @@
             </div>
             <div class="w-3/5">
                 <x-label for="nin">Upload Your NIN*</x-label>
-                <x-xinput type="file" wire:model="nin" id="nin_upload" name="nin_upload" title="Upload Your NIN"
+                <x-xinput type="file" wire:model="nin.new" id="nin_upload" name="nin_upload" title="Upload Your NIN"
                     accept=".jpg,.jpeg,.png,.pdf" class="!py-0" />
             </div>
-            <x-input-error for="nin" />
+            <x-input-error for="nin.new" />
             <x-input-error for="storeData.nin" />
 
         </div>
     </x-div>
 
-    <x-div>
+       <x-div>
         <div class="mb-2 flex items-center gap-1">
             <p class="text-gray-900 dark:text-white">
                 How would you like to use the vehicle?
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="mb-6 gap-4 text-sm sm:grid-cols-2 grid">
-            <x-radio id="driver" name="role" value="driver" wire:model.live="storeData.role" showIcon="false"
+            <x-radio id="driver" name="drive" value="true" wire:model.live="storeData.drive" showIcon="false"
                 class="!p-2">
 
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
@@ -55,7 +55,7 @@
                 <span class="w-full">I want to drive it myself.</span>
             </x-radio>
 
-            <x-radio id="chauffeured" name="role" value="chauffeured" wire:model.live="storeData.role" checked
+            <x-radio id="chauffeured" name="drive" value="false" wire:model.live="storeData.drive" checked
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -69,39 +69,44 @@
 
 
     </x-div>
+    
 
-    <x-div x-show="(isset($storeData['role']) && $storeData['role'] === 'driver') || (isset($user) && $user->role === 'driver')" x-transition:enter="transition ease-out duration-300" class="grid gap-2"        x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100"
-        x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform scale-100"
-        x-transition:leave-end="opacity-0 transform scale-90">
 
-        @foreach (['internationalPassport', 'driversLicense', 'proofOfAddress'] as $document)
-            <div class="items-center w-full sm:flex space-x-6 ">
-                @if ($$document['file'])
-                    <div class="overflow-hidden rounded-lg w-[84px] h-[84px] dark:bg-gray-700 border-4 border-green transition-transform duration-500 transform translate-x-0">
-                        @if (str_contains($$document['file']['mime_type'], 'image'))
-                            <img class="min-w-20 min-h-20 max-w-20 max-h-20 rounded-lg object-cover"
-                                src="{{ $$document['file'] ? Storage::url($$document['file']['path']) : '' }}"
-                                alt="User {{ ucfirst($document) }}">
-                        @else
-                            <embed src="{{ Storage::url($$document['file']['path']) }}" type="application/pdf"
-                                class="max-w-[98px] max-h-[98px] min-w-[98px] min-h-[98px] rounded-lg mt-[-2px] ml-[-2px]"
-                                width="98px" height="98px" />
-                        @endif
-                    </div>
-                @endif
+    <x-div x-show="role === 'true'" x-transition:enter="transition ease-out duration-300" class="grid gap-6"
+    x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100"
+    x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform scale-100"
+    x-transition:leave-end="opacity-0 transform scale-90" wire:ignore.self>
 
-                <div class="sm:{{ $$document['file'] ? 'w-[calc(100%-120px)]' : 'w-full' }}"> 
-                    <x-label for="{{ $document }}">Upload {{ ucfirst($document) }}</x-label>
-                    <x-xinput id="{{ $document }}" wire:model="{{ $document }}.new"
-                        class="w-full text-sm cursor-pointer !p-0" type="file" accept=".jpg,.jpeg,.png,.pdf" />
+    @foreach (['internationalPassport', 'driversLicense', 'proofOfAddress'] as $document)
+        <div class="items-center w-full sm:flex sm:gap-6 ">
+            <x-label class="sm:hidden" for="{{ $document }}">Upload {{ ucfirst($document) }}</x-label>
 
-                    <p class="mt-1 text-2xs font-normal text-gray-500 dark:text-gray-300"
-                        id="{{ $document }}_help">
-                        WEBP,
-                        PNG, JPG or PDF (MAX. 800x400px).</p>
-                    <x-input-error for="{{ $document }}.new" />
+            @if ($$document['file'])
+                <div class="overflow-hidden rounded-lg w-full sm:w-[84px] h-[84px] dark:bg-gray-700 border-4 border-green transition-transform duration-500 transform translate-x-0">
+                    @if (str_contains($$document['file']['mime_type'], 'image'))
+                        <img class="w-full min-w-20 min-h-20 sm:max-w-20 max-h-20 rounded-lg object-cover"
+                            src="{{ $$document['file'] ? Storage::url($$document['file']['path']) : '' }}"
+                            alt="User {{ ucfirst($document) }}">
+                    @else
+                        <embed src="{{ Storage::url($$document['file']['path']) }}" type="application/pdf"
+                            class="sm:max-w-[98px] max-h-[98px] min-w-[98px] min-h-[98px] rounded-lg mt-[-2px] ml-[-2px]"
+                            width="100%" height="98px" />
+                    @endif
                 </div>
+            @endif
+
+            <div class="{{ $$document['file'] ? 'sm:w-[calc(100%-100px)]' : 'w-full' }} mt-2 sm:mt-0"> 
+                <x-label class="hidden sm:block" for="{{ $document }}">Upload {{ ucfirst($document) }}</x-label>
+                <x-xinput id="{{ $document }}" wire:model="{{ $document }}.new" name="{{ $document }}" title="Upload {{ ucfirst($document)}}"
+                    class="w-full text-sm cursor-pointer !p-0" type="file" accept=".jpg,.jpeg,.png,.pdf" />
+
+                <p class="mt-1 text-2xs font-normal text-gray-500 dark:text-gray-300"
+                    id="{{ $document }}_help">
+                    WEBP,
+                    PNG, JPG or PDF (MAX. 800x400px).</p>
+                <x-input-error for="{{ $document }}.new" />
             </div>
-        @endforeach
-    </x-div>
+        </div>
+    @endforeach
+</x-div>
 </div>

@@ -37,7 +37,7 @@ class DynamicPageController extends PageController
      * based on URL slugs, allowing for flexible and scalable view management without
      * the need for explicit route definitions for each page.
      */
-    public static function show(Request $request, $slug, $basePath = null)
+    public static function show(Request $request, $slug, $basePath = '')
     {
         // Ensure the base path ends with a dot for proper namespacing
         if (substr($basePath, -1) !== '.') {

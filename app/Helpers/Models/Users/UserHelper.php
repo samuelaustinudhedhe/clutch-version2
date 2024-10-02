@@ -102,25 +102,74 @@ if (!function_exists('getUserPhone')) {
         // Get the user's phone metadata
         $phone = getUserMeta('phone');
 
+        return formatPhone($phone, $code, $format, $echo, $type);
+    }
+}
+
+
+if (!function_exists('formatPhone')) {
+
+    /**
+     * Retrieves the user's phone number based on the specified type.
+     *
+     * @param mixed $phone The phone data, which can be an array or an object.
+     * @param bool $code Whether to include the country code in the output. Default is true.
+     * @param bool $format Whether to format the phone number. Default is false.
+     * @param bool $echo Whether to echo the phone number or return it as a string. Default is false.
+     * @param string $type The type of phone number to retrieve (e.g., 'work', 'home'). Default is 'work'.
+     * @return string|null The formatted phone number as a string, or null if the phone number does not exist.
+     */
+    function formatPhone($phone, bool $code = true, bool $format = false, bool $echo = false, string $type = 'work')
+    {
         // Check if the specified phone type exists
-        if (!isset($phone->$type)) {
+        if (is_array($phone)) {
+            if (!isset($phone[$type])) {
+                return null;
+            }
+            $phoneType = $phone[$type];
+        } elseif (is_object($phone)) {
+            if (!isset($phone->$type)) {
+                return null;
+            }
+            $phoneType = $phone->$type;
+        } else {
             return null;
         }
 
-        // Retrieve the phone type details
-        $phoneType = $phone->$type;
         // Get the country code
-        $countryCode = $phoneType->country_code;
+        $countryCode = is_array($phoneType) ? ($phoneType['country_code'] ?? '') : ($phoneType->country_code ?? '');
+        $countryCode = str_replace('+', '', $countryCode);
         // Get the phone number
-        $number = $phoneType->number;
+        $number = is_array($phoneType) ? ($phoneType['number'] ?? '') : ($phoneType->number ?? '');
 
         // Construct the output by combining the country code and phone number
         $output = (empty($countryCode)) ? $number : '+' . $countryCode . $number;
 
         // If formatting is requested, format the phone number
         if ($format) {
-            // Format the number as XXXX XXX XXXX
-            $number = preg_replace('/(\d{4})(\d{3})(\d{4})/', '$1 $2 $3', $number);
+            switch (strlen($number)) {
+                case 6:
+                    $number = preg_replace('/(\d{3})(\d{3})/', '$1 $2', $number);
+                    break;
+                case 7:
+                    $number = preg_replace('/(\d{3})(\d{4})/', '$1 $2', $number);
+                    break;
+                case 8:
+                    $number = preg_replace('/(\d{3})(\d{2})(\d{3})/', '$1 $2 $3', $number);
+                    break;
+                case 9:
+                    $number = preg_replace('/(\d{3})(\d{3})(\d{3})/', '$1 $2 $3', $number);
+                    break;
+                case 10:
+                    $number = preg_replace('/(\d{3})(\d{3})(\d{4})/', '$1 $2 $3', $number);
+                    break;
+                case 11:
+                    $number = preg_replace('/(\d{4})(\d{3})(\d{4})/', '$1 $2 $3', $number);
+                    break;
+                default:
+                    // If the number length doesn't match any case, return it as is
+                    break;
+            }
             // Construct the output with formatted number
             $output = (empty($countryCode) || $code == false) ? $number : '+(' . $countryCode . ') ' . $number;
         }
@@ -135,13 +184,8 @@ if (!function_exists('getUserPhone')) {
     }
 }
 
+
 if (!function_exists('getUserAddress')) {
-    /**
-     * Retrieves the full address of the currently authenticated user.
-     *
-     * @param string $type The type of address to retrieve (e.g., 'home', 'work'). Default is 'home'.
-     * @return string|null The full address of the user, or null if the address details are not available.
-     */
     /**
      * Retrieves the full address of the currently authenticated user.
      *
@@ -186,6 +230,49 @@ if (!function_exists('getUserAddress')) {
         return $fullAddress;
     }
 }
+
+if (!function_exists('formatAddress')) {
+    /**
+     * Formats an address from an input array.
+     *
+     * @param array $address The address array containing the address details.
+     * @param string $format The format in which to return the address. Default is 'street, unit, city, state, country, postal_code'.
+     * @param array $exclude The parts of the address to exclude (e.g., ['unit', 'country']). Default is an empty array.
+     * @return string|null The formatted address, or null if the address array is empty.
+     */
+    function formatAddress(array $address, $format = 'street, unit, city, state, country, postal_code', $exclude = [])
+    {
+        // Check if the address array is empty
+        if (empty($address)) {
+            return null;
+        }
+
+        // Remove excluded parts from the address
+        foreach ($exclude as $part) {
+            if (isset($address[$part])) {
+                unset($address[$part]);
+            }
+        }
+
+        // Split the format string into parts
+        $formatParts = explode(', ', $format);
+
+        // Format the address
+        $formattedAddressParts = [];
+        foreach ($formatParts as $part) {
+            if (isset($address[$part])) {
+                $formattedAddressParts[] = $address[$part];
+            }
+        }
+
+        // Join the formatted address parts
+        $formattedAddress = implode(', ', $formattedAddressParts);
+
+        // Return the formatted address
+        return $formattedAddress;
+    }
+}
+
 /**
  * Retrieves the user with a specific role.
  *

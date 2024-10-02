@@ -294,31 +294,31 @@ trait WithSteps
      * @param string|null $filePath The path to the existing file, if any.
      * @return array The details of the uploaded file.
      */
-    public function uploadFile($key, $file, $filePath)
-    {
-        // Check if there's an existing file and delete it
-        if ($filePath && Storage::exists($filePath)) {
-            Storage::delete($filePath);
-        }
+    // public function uploadFile($key, $file, $filePath)
+    // {
+    //     // Check if there's an existing file and delete it
+    //     if ($filePath && Storage::exists($filePath)) {
+    //         Storage::delete($filePath);
+    //     }
 
-        // Save the uploaded file and get the file path
-        $filePath = $file->store("tmp", 'public');
+    //     // Save the uploaded file and get the file path
+    //     $filePath = $file->store("tmp", 'public');
 
-        if (!isset($this->storeData['files'][$key])) {
-            $this->storeData['files'][$key] = [];
-        }
+    //     if (!isset($this->storeData['files'][$key])) {
+    //         $this->storeData['files'][$key] = [];
+    //     }
 
-        // Save file details to the JSON file
-        $this->storeData['files'][$key] = [
-            'path' => $filePath,
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize(),
-        ];
-        $this->deleteFile($file);
-        Storage::put($this->storePath, json_encode($this->storeData));
+    //     // Save file details to the JSON file
+    //     $this->storeData['files'][$key] = [
+    //         'path' => $filePath,
+    //         'mime_type' => $file->getMimeType(),
+    //         'size' => $file->getSize(),
+    //     ];
+    //     $this->deleteFile($file);
+    //     Storage::put($this->storePath, json_encode($this->storeData));
 
-        return $this->storeData['files'][$key];
-    }
+    //     return $this->storeData['files'][$key];
+    // }
 
     // public function uploadFiles($key, $newFile, $files)
     // {

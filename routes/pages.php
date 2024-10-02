@@ -10,7 +10,7 @@ use App\Http\Controllers\Pages\PoliciesPageController as Policy;
  */
 Route::get('/', [PageController::class, 'homeShow'])->name('home');
 
-Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
+Route::prefix('policies')->group(function () {
 
     /**
      * Policy routes.
@@ -26,7 +26,6 @@ Route::group(['middleware' => config('jetstream.middleware', ['web'])], function
          */
         Route::get('/policy', [Policy::class, 'privacy'])->name('privacy.show');
     }
-
     /**
      * Route for the cookie page.
      */
@@ -36,5 +35,6 @@ Route::group(['middleware' => config('jetstream.middleware', ['web'])], function
 
 /**
  * Dynamic page routes.
+ * problematic as it doesn't handle well
  */
-Route::get('pages/{slug}', [DynamicPageController::class, 'show'])->where('slug', '.*');
+// Route::get('/{slug}', [DynamicPageController::class, 'show'])->where('slug', '.*');

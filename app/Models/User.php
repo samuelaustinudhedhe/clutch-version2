@@ -75,7 +75,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'details' => 'object',
-        'boarding' => 'object',
+        'records' => 'object',
         'verification' => 'object',
     ];
 

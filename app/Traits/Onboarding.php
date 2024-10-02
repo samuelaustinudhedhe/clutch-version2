@@ -12,12 +12,12 @@ trait Onboarding
     public function onboarding()
     {
         // Decode the JSON encoded onboarding data.
-        $onboarding = is_string($this->boarding) ? json_decode($this->boarding) : $this->boarding;
+        $onboarding = is_string($this->records->onboarding) ? json_decode($this->records->onboarding) : $this->records->onboarding;
         // Automatically assign onboarding keys if it's null or empty.
         if (is_null($onboarding) || empty($onboarding)) {
             // Fill the onboarding attribute with default values and save the model.
             $this->forceFill([
-                'boarding' => json_encode([
+                'onboarding' => json_encode([
                     'status' => 'start', // Initial status of onboarding.
                     'step' => 0, // Initial step of onboarding.
                     'restart_at' => '', // Placeholder for restart timestamp.
@@ -28,6 +28,28 @@ trait Onboarding
 
         // Return the decoded onboarding data.
         return $onboarding;
+    }
+
+    /**
+     * Updates the onboarding records.
+     * 
+     * @param array $data The data to update in the onboarding records.
+     * @return void
+     */
+    public function updateOnboarding(array $data)
+    {
+        // Decode the existing onboarding data.
+        $onboarding = $this->onboarding();
+
+        // Update the onboarding data with the provided data.
+        foreach ($data as $key => $value) {
+            $onboarding->$key = $value;
+        }
+
+        // Save the updated onboarding data.
+        $this->forceFill([
+            'onboarding' => json_encode($onboarding),
+        ])->save();
     }
 
     /**

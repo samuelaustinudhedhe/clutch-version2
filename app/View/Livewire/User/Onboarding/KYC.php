@@ -150,6 +150,7 @@ class KYC extends main
                     name: $docName,
                     description: $docDesc,
                     file: $document,
+                    mimeType: $mime_type,
                     is_featured: true,
                     quality: 90,
                     authorable: $user,

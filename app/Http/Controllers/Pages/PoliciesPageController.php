@@ -55,7 +55,7 @@ class PoliciesPageController extends PageController
      */
     public function terms(): View
     {
-        return $this->index('terms', 'pages.terms');
+        return $this->index('terms', 'pages.policies.terms');
     }
 
     /**
@@ -69,7 +69,7 @@ class PoliciesPageController extends PageController
      */
     public function privacy(): View
     {
-        return $this->index('privacy', 'pages.privacy');
+        return $this->index('privacy', 'pages.policies.privacy');
     }
 
     /**
@@ -83,7 +83,7 @@ class PoliciesPageController extends PageController
      */
     public function cookie(): View
     {
-        return $this->index('cookie', 'pages.cookie');
+        return $this->index('cookie', 'pages.policies.cookie');
     }
 
     /**

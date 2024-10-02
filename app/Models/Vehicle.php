@@ -115,7 +115,7 @@ class Vehicle extends Model
      */
     public function getPrice()
     {
-        return $this->price;
+        return $this->finalPrice();
     }
 
     /**
@@ -128,7 +128,7 @@ class Vehicle extends Model
      */
     public function getHumanPriceAttribute()
     {
-        return app_currency_symbol() . ' ' . number_format($this->getPrice()->amount);
+        return app_currency_symbol()  . number_format($this->getPrice()->amount, 2);
     }
 
     /**
@@ -141,7 +141,20 @@ class Vehicle extends Model
      */
     public function getHumanSalePriceAttribute()
     {
-        return app_currency_symbol() . ' ' . number_format($this->sale_price);
+        return app_currency_symbol()  . number_format($this->sale_price, 2);
+    }
+
+    /**
+     * Get the formatted human-readable sale price attribute.
+     *
+     * This accessor method formats the sale price into a human-readable string,
+     * including the currency symbol and amount with two decimal places.
+     *
+     * @return string The formatted sale price with the currency symbol.
+     */
+    public function getHumanDiscountedPriceAttribute()
+    {
+        return app_currency_symbol() . number_format($this->discountedPrice(), 2);
     }
 
     /**
@@ -166,7 +179,7 @@ class Vehicle extends Model
      *
      * @return float The discount percentage or 0 if not on sale.
      */
-    public function discount($symbol = true)
+    public function discount($symbol = false)
     {
         $price = $this->getPrice();
         $sale = $price->sale ?? 0;
@@ -182,7 +195,26 @@ class Vehicle extends Model
         }
         return $discount >= 0 ? $discount . $symbol : 0 . $symbol;
     }
+    /**
+     * Calculate the discounted price based on the sale and original price.
+     *
+     * This method calculates the discounted price if the vehicle is on sale.
+     * If not on sale, it returns the original price.
+     *
+     * @return float The discounted price or the original price if not on sale.
+     */
+    public function discountedPrice()
+    {
+        $price = $this->getPrice();
+        $sale = $price->sale ?? 0;
+        $on_sale = $price->on_sale ?? false;
+        $amount = $price->amount ?? 0;
 
+        if ($on_sale) {
+            return $amount - $sale;
+        }
+        return $amount;
+    }
 
     /**
      * Determine if the vehicle is on sale.
@@ -197,6 +229,82 @@ class Vehicle extends Model
         return $price->on_sale ?? false;
     }
 
+    /**
+     * Calculate and return the final price of the vehicle.
+     *
+     * This method checks if the vehicle is on sale and adjusts the price attributes accordingly.
+     * If the sale price is greater than the original amount, it swaps the values and saves the changes.
+     *
+     * @return object The final price object after any necessary adjustments.
+     */
+    public function finalPrice()
+    {
+        $price = $this->price;
+        $sale = $price->sale ?? 0;
+        $on_sale = $price->on_sale ?? false;
+        $amount = $price->amount ?? 0;
+
+        if ($on_sale && $sale > $amount) {
+            $price->sale = $amount;
+            $price->amount = $sale;
+            $this->price = $price;
+            $this->save();
+        }
+        return $this->price;
+    }
+
+    public function tax()
+    {
+        $price = $this->finalPrice();
+        $amount = $price->amount ?? 0;
+        $sale = $price->sale ?? 0;
+        $on_sale = $price->on_sale ?? false;
+        $basePrice = $on_sale ? $sale : $amount;
+        $taxRate = 0.07; // 7% tax rate
+        $taxAmount = $basePrice * $taxRate;
+        return $taxAmount;
+    }
+
+    public function calcTotalTax($multiplier, $human = true)
+    {
+        $taxAmount = $this->tax() * $multiplier;
+        if ($human) {
+            return app_currency_symbol() . number_format($taxAmount, 2);
+        }
+        return $taxAmount;
+    }
+
+    /**
+     * Calculate the total price of the vehicle.
+     *
+     * This method calculates the total price of the vehicle by multiplying the base price or sale price
+     * by a given multiplier. It can return the result as a human-readable string with a currency symbol
+     * or as a raw numeric value.
+     *
+     * @param int $multiplier The multiplier to apply to the base or sale price.
+     * @param bool $human Optional. Whether to return the price as a human-readable string with a currency symbol.
+     *                    Defaults to true.
+     * @return string|float The total price of the vehicle, either as a formatted string with a currency symbol
+     *                      or as a raw numeric value.
+     */
+    public function calcTotalPrice($multiplier, $tax = false, $human = true)
+    {
+        $price = $this->getPrice();
+        $sale = $price->sale ?? 0;
+        $on_sale = $price->on_sale ?? false;
+        $amount = $price->amount ?? 0;
+        $basePrice = $on_sale ? $sale : $amount;
+
+        if ($tax) {
+            $basePrice += $this->tax();
+        }
+
+        if (!$human) {
+            return $basePrice * $multiplier;
+        } else {
+            return app_currency_symbol() . number_format($basePrice * $multiplier, 2);
+        }
+    }
 
     /**
      * Get the decoded details attribute.
@@ -442,7 +550,7 @@ class Vehicle extends Model
      */
     public function getOnSaleStatusColorAttribute()
     {
-        return $this->discount(false) > 0 ? 'green-400' : 'white';
+        return $this->discount() > 0 ? 'green-400' : 'white';
     }
 
     /**

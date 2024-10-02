@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('trips', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(10061100044);
             $table->enum('status', [
                 'upcoming',      // The trip is booked but hasn't started yet
                 'ongoing',       // The trip is currently active
@@ -23,7 +23,7 @@ return new class extends Migration
                 'legal_issue',   // A legal complication such as kidnapping or other criminal activity
                 'under_investigation' // The trip is under investigation due to an incident
             ]);
-            $table->json('details')->default([
+            $table->json('details')->default(json_encode([
                 'start' => [
                     'location' => [
                         'latitude' => '',
@@ -54,7 +54,7 @@ return new class extends Migration
                 'price' => [],
                 'passengers' => [],
                 'insurance' => [],
-            ]); //Details about the trip, including details about the start and end locations, distance, price, passengers, insurance, etc.
+            ])); //Details about the trip, including details about the start and end locations, distance, price, passengers, insurance, etc.
             $table->morphs('traveler'); // Polymorphic fields for traveler (User or Admin)
             $table->foreignId('vehicle_id')->constrained('vehicles'); // The vehicle being booked
             $table->timestamps();
