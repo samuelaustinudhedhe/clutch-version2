@@ -79,7 +79,7 @@
         </x-aside-menu-dropdown>
 
         {{-- Referals --}}
-        <x-aside-menu-dropdown name="referals" href="/referal">
+        {{-- <x-aside-menu-dropdown name="referals" href="/referal">
             <svg aria-hidden="true"
                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -89,7 +89,7 @@
             </svg>
 
             Referal
-        </x-aside-menu-dropdown>
+        </x-aside-menu-dropdown> --}}
 
         {{-- Profile --}}
         <x-aside-menu-dropdown name="profile" href="{{ route('user.profile.show') }}">
@@ -113,7 +113,7 @@
     <x-aside-menu name="menu2" class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
 
         {{-- Doc --}}
-        <x-aside-menu-dropdown name="doc" href="/docs">
+        {{-- <x-aside-menu-dropdown name="doc" href="/docs">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -122,10 +122,10 @@
                     d="M5 10V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1v6M5 19v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1M10 3v4a1 1 0 0 1-1 1H5m14 9.006h-.335a1.647 1.647 0 0 1-1.647-1.647v-1.706a1.647 1.647 0 0 1 1.647-1.647L19 12M5 12v5h1.375A1.626 1.626 0 0 0 8 15.375v-1.75A1.626 1.626 0 0 0 6.375 12H5Zm9 1.5v2a1.5 1.5 0 0 1-1.5 1.5v0a1.5 1.5 0 0 1-1.5-1.5v-2a1.5 1.5 0 0 1 1.5-1.5v0a1.5 1.5 0 0 1 1.5 1.5Z" />
             </svg>
             Docs
-        </x-aside-menu-dropdown>
+        </x-aside-menu-dropdown> --}}
 
         {{-- Components --}}
-        <x-aside-menu-dropdown name="components" href="/faq">
+        {{-- <x-aside-menu-dropdown name="components" href="/faq">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -135,10 +135,10 @@
             </svg>
 
             FAQ
-        </x-aside-menu-dropdown>
+        </x-aside-menu-dropdown> --}}
 
         {{-- Help --}}
-        <x-aside-menu-dropdown name="help" href="/help">
+        {{-- <x-aside-menu-dropdown name="help" href="/help">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -149,7 +149,7 @@
 
             Help
 
-        </x-aside-menu-dropdown>
+        </x-aside-menu-dropdown> --}}
     </x-aside-menu>
 
 </x-aside>

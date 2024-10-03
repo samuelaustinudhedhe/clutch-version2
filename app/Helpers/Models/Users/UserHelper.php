@@ -207,12 +207,12 @@ if (!function_exists('getUserAddress')) {
         // Construct the full address
         $addressDetails = $address->$type;
         $addressParts = [
-            'street' => $addressDetails->street,
-            'unit' => $addressDetails->unit,
-            'city' => $addressDetails->city,
-            'state' => $addressDetails->state,
-            'country' => $addressDetails->country,
-            'postal_code' => $addressDetails->postal_code,
+            'street' => $addressDetails->street ?? '',
+            'unit' => $addressDetails->unit ?? '',
+            'city' => $addressDetails->city ?? '',
+            'state' => $addressDetails->state ?? '',
+            'country' => $addressDetails->country ?? '',
+            'postal_code' => $addressDetails->postal_code ?? '',
         ];
 
         // Remove excluded parts from the address
@@ -233,18 +233,23 @@ if (!function_exists('getUserAddress')) {
 
 if (!function_exists('formatAddress')) {
     /**
-     * Formats an address from an input array.
+     * Formats an address from an input array or stdClass object.
      *
-     * @param array $address The address array containing the address details.
+     * @param array|stdClass $address The address data, which can be an array or an object.
      * @param string $format The format in which to return the address. Default is 'street, unit, city, state, country, postal_code'.
      * @param array $exclude The parts of the address to exclude (e.g., ['unit', 'country']). Default is an empty array.
-     * @return string|null The formatted address, or null if the address array is empty.
+     * @return string|null The formatted address, or null if the address data is empty.
      */
-    function formatAddress(array $address, $format = 'street, unit, city, state, country, postal_code', $exclude = [])
+    function formatAddress($address, $format = 'street, unit, city, state, country, postal_code', $exclude = [])
     {
-        // Check if the address array is empty
+        // Check if the address data is empty
         if (empty($address)) {
             return null;
+        }
+
+        // Convert stdClass object to array if necessary
+        if (is_object($address)) {
+            $address = (array) $address;
         }
 
         // Remove excluded parts from the address
@@ -272,7 +277,6 @@ if (!function_exists('formatAddress')) {
         return $formattedAddress;
     }
 }
-
 /**
  * Retrieves the user with a specific role.
  *

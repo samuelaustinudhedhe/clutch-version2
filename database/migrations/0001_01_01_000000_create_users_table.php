@@ -60,12 +60,18 @@ return new class extends Migration
                     'completed_at' => '',
                 ],
             ]));
-
             $table->json('verification')->default(json_encode([
                 'account' => [
-                    'status' => false, // pending, approved, rejected
+                    'status' => 'pending', // pending, approved, rejected
                     'verified_at' => null,
-                    'verified_status' => 'pending',
+                ],
+                'owner'=> [
+                    'status' => 'pending', // pending, approved, rejected
+                    'verified_at' => null,
+                ],
+                'driver'=> [
+                    'status' => 'pending', // pending, approved, rejected
+                    'verified_at' => null,
                 ],
                 'email' => [
                     'code' => null,

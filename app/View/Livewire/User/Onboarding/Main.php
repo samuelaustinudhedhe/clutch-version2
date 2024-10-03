@@ -36,7 +36,7 @@ class Main extends Component
     public function mount()
     {
         $this->user = getUser();
-
+        $this->defineStoreData();
         $this->defineSteps();
         $this->defineStore();
         $this->checkSteps();
@@ -48,9 +48,20 @@ class Main extends Component
         $this->internationalPassport['file'] = $this->files['passport'] ?? null;
         $this->driversLicense['file'] = $this->files['drivers_license'] ?? null;
         $this->proofOfAddress['file'] = $this->files['proof_of_address'] ?? null;
-        //$this->validateStep();
     }
 
+    public function defineStoreData()
+    {
+        // $this->storeData['phone'] = (array) $this->user->phone;
+        $this->storeData['date_of_birth'] = $this->user->date_of_birth;
+        $this->storeData['gender'] = $this->user->gender;
+        // $this->storeData['address'] = (array) $this->user->address; causes error This synth doesn't support unsetting properties: Livewire\Mechanisms\HandleComponents\Synthesizers\StdClassSynth
+        $this->storeData['social'] = (array) $this->user->social;
+        $this->storeData['nin'] = $this->user->nin;
+        $this->storeData['drive'] = false;
+        $this->storeData['role'] = $this->user->role;
+        $this->storeData['status'] = $this->user->status;
+    }
 
     /**
      * Define the steps for the onboarding process.
@@ -97,58 +108,130 @@ class Main extends Component
             $this->currentStep = 2;
         }
     }
-
     /**
-     * Validate the data for a specific step in the onboarding process.
+     * Generate validation rules, messages, and attribute names for the current onboarding step.
      *
-     * This function validates the data for the current step or a specified step
-     * using predefined validation rules. Additional validation rules can be merged
-     * with the default rules for more specific validation requirements.
+     * This function defines the validation rules, custom messages, and attribute names
+     * for each step of the onboarding process based on the current step.
      *
-     * @param int|null $step The step number to validate. If null, the current step is used.
-     * @param array $additionalRules An array of additional validation rules to merge with the default rules.
-     * @return void
+     * @param array $rules An array to hold validation rules for the current step.
+     * @param array $messages An array to hold custom validation messages for the current step.
+     * @param array $names An array to hold custom attribute names for the current step.
+     * @param bool $validate A flag indicating whether to perform validation (default is true).
+     * @return array An associative array containing 'rules', 'messages', and 'names' for the current step.
      */
-    protected function validateStep($step = null, $additionalRules = [])
+    protected function rulesForStep($rules = [], $messages = [], $names = [], $validate = true): array
     {
-        // Use the current step if no specific step is provided
-        $step = $step ?? $this->currentStep;
+        $rules = [];
+        $names = [];
+        $messages = [];
 
-        // Define default rules for each step
-        $rules = [
-            0 => [
-                'photo.new' => 'required|image|max:1024',
-            ],
-            1 => [
-                'storeData.role' => 'required|string',
-            ],
-            2 => [
-                'storeData.phone.home.number' => 'required|numeric',
-                'storeData.date_of_birth' => 'required|date',
-                'storeData.gender' => 'required|string',
-                'storeData.address.home' => 'required|string',
-            ],
-            3 => [
-                'nin.new' => 'required|file|max:1024',
-            ],
-            4 => [
-                'internationalPassport.new' => 'required|file|max:1024',
-                'driversLicense.new' => 'required|file|max:1024',
-                'proofOfAddress.new' => 'required|file|max:1024',
-            ],
-        ];
+        switch ($this->currentStep) {
+            case 0:
+                // Validation rules for step 0
+                break;
+            case 1:
+                $rules = [
+                    'storeData.role' => 'required|string|exists:roles,name,guard,web',
+                ];
+                $messages = [
+                    'storeData.role.required' => 'Please select a role.',
+                    'storeData.role.string' => 'The selected role is invalid.',
+                    'storeData.role.exists' => 'The selected role does not exist.',
+                ];
+                $names = [
+                    'storeData.role' => 'Role',
+                ];
 
-        // Get the rules for the provided step (or current step)
-        $stepRules = $rules[$step] ?? [];
+                break;
+            case 2:
+                $rules = [
+                    'storeData.phone.*.country_code' => 'required|string|regex:/^\+\d+$/',
+                    'storeData.phone.*.number' => 'required|digits_between:4,11',
+                    'storeData.date_of_birth' => [
+                        'required',
+                        'string',
+                        'date_format:m/d/Y',
+                    ],
+                    'storeData.gender' => 'required|string|in:male,female',
 
-        // Merge with any additional rules provided
-        foreach ($additionalRules as $key => $rule) {
-            $stepRules[$key] = $rule;
+                    'storeData.address.*.full' => [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            // Custom validation logic to check if the location exists using Google Maps API
+                            $response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($value) . "&key=" . getGoogleMapKey());
+                            $response = json_decode($response, true);
+
+                            if (empty($response['results'])) {
+                                $fail('The ' . $attribute . ' is not a valid location.');
+                            }
+                        },
+                    ],
+                    'storeData.social.*' => [
+                        'required',
+                        'url',
+                        function ($attribute, $value, $fail) {
+                            $patterns = [
+                                'instagram' => '/^https:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._%+-]+$/',
+                                'facebook' => '/^https:\/\/(www\.)?facebook\.com\/[A-Za-z0-9._%+-]+$/',
+                                // 'linkedin' => '/^https:\/\/(www\.)?linkedin\.com\/in\/[A-Za-z0-9._%+-]+$/',
+                                // Add more patterns for other social media platforms if needed
+                            ];
+
+                            foreach ($patterns as $platform => $pattern) {
+                                if (strpos($attribute, $platform) !== false && !preg_match($pattern, $value)) {
+                                    $fail("The {$platform} URL is not valid.");
+                                }
+                            }
+                        },
+                    ],
+                ];
+
+                $messages = [
+                    'storeData.phone.*.country_code.required' => 'Please enter the country code for the phone number.',
+                    'storeData.phone.*.number.required' => 'Please enter the phone number.',
+                    'storeData.phone.*.number.numeric' => 'The phone number must be a numeric value.',
+                    //
+                    'storeData.date_of_birth.required' => 'Please enter your date of birth.',
+                    'storeData.date_of_birth.string' => 'The date of birth must be in the format MM/DD/YYYY.',
+                    //
+                    'storeData.gender.required' => 'Please select your gender.',
+                    'storeData.gender.string' => 'The selected gender is invalid.',
+                    'storeData.gender.in' => 'The selected gender is invalid.',
+                    'storeData.address.*.full.required' => 'Please enter the location.',
+                    'storeData.address.*.full.string' => 'The location must be a valid address.',
+                    'storeData.address.*.full.exists' => 'The location does not exist.',
+                ];
+
+                $names = [
+                    'storeData.phone.*' => 'Phone Number',
+                    'storeData.date_of_birth' => 'Date of Birth',
+                    'storeData.gender' => 'Gender',
+                    'storeData.address.*' => 'Location',
+                ];
+
+                break;
+
+            case 3:
+                // Validation rules for step 3
+                $rules = [];
+
+                $names = [];
+                break;
+            case 4:
+                // Validation rules for step 4 (KYC)
+                $rules = [];
+
+                $names = [];
+                break;
+            default:
+                break;
         }
 
-        // Validate the data against the rules for the current step
-        $this->validate($stepRules);
+        return ['rules' => $rules, 'messages' => $messages, 'names' => $names];
     }
+
 
     /**
      * Handle the upload and validation of the photo file.
@@ -158,16 +241,21 @@ class Main extends Component
     public function updatedPhoto()
     {
         // Validate the file
-        $this->validate([
-            'photo.new' => 'required|image|max:1024', // Adjust rules as needed
-        ]);
+        $this->validate(
+            ['photo.new' => 'required|image|max:1024',],
+            [],
+            ['photo.new' => 'profile photo']
+        );
 
         $path = $this->photo['file']['path'] ?? null;
         $new = $this->photo['new'] ?? null;
 
+        // Optionally reset file input        
+        $this->reset('photo');
+        $this->photo['new'] = [];
+
+        // Reinitialize the photo
         $this->photo['file'] = $this->uploadFile('photo', $new, $path);
-        // Optionally reset file input
-        // $this->reset('photo');
     }
 
     /**
@@ -178,16 +266,21 @@ class Main extends Component
     public function updatedNin()
     {
         // Validate the file
-        $this->validate([
-            'nin.new' => 'required|file|max:1024', // Adjust rules as needed
-        ]);
+        $this->validate(
+            ['nin.new' => 'required|file|max:1024'],
+            [],
+            ['nin.new' => 'NIN']
+        );
 
         $path = $this->nin['file']['path'] ?? null;
         $new = $this->nin['new'] ?? null;
 
-        $this->nin['file'] = $this->uploadFile('nin', $new, $path);
         // Optionally reset file input
-        // $this->reset('nin');
+        $this->reset('nin');
+        $this->nin['new'] = [];
+
+        // Reinitialize the NIN
+        $this->nin['file'] = $this->uploadFile('nin', $new, $path);
     }
 
     /**
@@ -198,16 +291,21 @@ class Main extends Component
     public function updatedInternationalPassport()
     {
         // Validate the file
-        $this->validate([
-            'internationalPassport.new' => 'required|file|max:1024', // Adjust rules as needed
-        ]);
+        $this->validate(
+            ['internationalPassport.new' => 'required|file|max:1024'],
+            [],
+            ['internationalPassport.new' => 'International Passport']
+        );
 
         $path = $this->internationalPassport['file']['path'] ?? null;
         $new = $this->internationalPassport['new'] ?? null;
 
-        $this->internationalPassport['file'] = $this->uploadFile('passport', $new, $path);
         // Optionally reset file input
-        // $this->reset('internationalPassport');
+        $this->reset('internationalPassport');
+        $this->internationalPassport['new'] = [];
+
+        // Reinitialize the International Passport
+        $this->internationalPassport['file'] = $this->uploadFile('passport', $new, $path);
     }
 
     /**
@@ -218,16 +316,21 @@ class Main extends Component
     public function updatedDriversLicense()
     {
         // Validate the file
-        $this->validate([
-            'driversLicense.new' => 'required|file|max:1024', // Adjust rules as needed
-        ]);
+        $this->validate(
+            ['driversLicense.new' => 'required|file|max:1024'],
+            [],
+            ['driversLicense.new' => 'Drivers License']
+        );
 
         $path = $this->driversLicense['file']['path'] ?? null;
         $new = $this->driversLicense['new'] ?? null;
 
-        $this->driversLicense['file'] = $this->uploadFile('drivers_license', $new, $path);
         // Optionally reset file input
-        // $this->reset('driversLicense');
+        $this->reset('driversLicense');
+        $this->driversLicense['new'] = [];
+
+        // Reinitialize the Driver's License
+        $this->driversLicense['file'] = $this->uploadFile('drivers_license', $new, $path);
     }
 
     /**
@@ -238,16 +341,21 @@ class Main extends Component
     public function updatedProofOfAddress()
     {
         // Validate the file
-        $this->validate([
-            'proofOfAddress.new' => 'required|file|max:1024', // Adjust rules as needed
-        ]);
+        $this->validate(
+            ['proofOfAddress.new' => 'required|file|max:1024'],
+            [],
+            ['proofOfAddress.new' => 'Proof Of Address']
+        );
 
         $path = $this->proofOfAddress['file']['path'] ?? null;
         $new = $this->proofOfAddress['new'] ?? null;
 
-        $this->proofOfAddress['file'] = $this->uploadFile('proof_of_address', $new, $path);
         // Optionally reset file input
-        // $this->reset('proofOfAddress');
+        $this->reset('proofOfAddress');
+        $this->proofOfAddress['new'] = [];
+
+        // Reinitialize the Proof of Address
+        $this->proofOfAddress['file'] = $this->uploadFile('proof_of_address', $new, $path);
     }
 
     /**
@@ -278,8 +386,10 @@ class Main extends Component
             'mime_type' => $file->getMimeType(),
             'size' => $file->getSize(),
         ];
-        
+
+
         $this->deleteFile($file);
+
         Storage::put($this->storePath, json_encode($this->storeData));
 
         return $this->storeData['files'][$key];
@@ -288,12 +398,13 @@ class Main extends Component
     /**
      * Save the uploaded files associated with the user.
      *
-     * @param User|Admin $user The user to associate the uploaded files with.
      * @return void
      */
-    protected function saveFiles(User|Admin $user)
+    protected function saveFiles()
     {
-        if ($this->photo['file']['path']) {
+        $user = $this->user;
+
+        if (isset($this->photo['file']['path'])) {
             $image = Storage::path('public/' . $this->photo['file']['path']);
             $mime_type = $this->photo['file']['mime_type'];
             $profilePath = getUserStorage() . 'profile/photo.webp';
@@ -315,14 +426,13 @@ class Main extends Component
             $user->save();
 
             // Delete the uploaded photo after saving it to the storage
-            Storage::delete('public/' . $this->photo['file']['path']);            
+            Storage::delete('public/' . $this->photo['file']['path']);
             $this->storeData['files']['photo'] = [];
-
         }
 
         foreach ($this->files as $key => $file) {
-            if ($key !== 'photo') {
-
+            // Save uploaded files to the storage and attach them with the user Via attachable
+            if ($key !== 'photo' && isset($file['path'])) {
                 $storagePath = getUserStorage('private') . 'documents/';
                 $document = Storage::path('public/' . $file['path']);
                 $mime_type = $file['mime_type'];
@@ -346,7 +456,6 @@ class Main extends Component
                 // Delete the uploaded file after saving it to the storage
                 Storage::delete('public/' . $file['path']);
                 $this->storeData['files'][$key] = [];
-                
             }
         }
     }
@@ -391,6 +500,7 @@ class Main extends Component
      */
     public function submit()
     {
+        // Save any necessary data to the database
         $user = $this->user;
         $user->role = $this->storeData['role'];
         // Update the details attribute using the updateDetails method
@@ -401,10 +511,10 @@ class Main extends Component
         $user->updateDetails('social', $this->storeData['social']);
         $user->updateDetails('nin', $this->storeData['nin']);
         $user->updateDetails('self_drive', $this->storeData['drive']);
-
+        $this->saveFiles();
         $user->save();
 
-        $this->saveFiles($user);
+        $this->completeOnboarding();
     }
 
     /**
@@ -415,20 +525,17 @@ class Main extends Component
     #[On('onboarding-completed')]
     public function completeOnboarding()
     {
-        // Save any necessary data to the database
-        $this->submit();
-
         // Update the onboarding data.
         $this->user->updateOnboarding([
             'status' => 'completed',
             'step' => $this->currentStep,
-            'restart_at' => '',
+            'restart_at' => null,
             'completed_at' => now(),
         ]);
 
         $this->user->notify(new Completed());
         // Redirect to the user dashboard after completing the onboarding process
-        return redirect()->route('user.dashboard')->with('message', 'You have completed the onboarding process. You have been updated to ' . ucfirst($this->role) . '.');
+        return redirect()->route('user.dashboard')->with('message', 'You have completed the onboarding process. You have been updated to ' . ucfirst($this->user->role) . '.');
     }
 
     /**
@@ -439,22 +546,32 @@ class Main extends Component
     #[On('onboarding-skip')]
     public function skipOnboarding()
     {
-        // Check if the user's onboarding status is already 'skipped'
-        if ($this->user->onboarding->status !== 'skipped') {
-            // Update the user's onboarding status
-            $this->user->records->forceFill([
-                'boarding->status' => 'skipped',
-                'boarding->step' => $this->currentStep,
-                'boarding->restart_at' => now()->addDays(2),
-                'boarding->completed_at' => '',
-            ])->save();
-
-            // Notify the user about the skipped onboarding process 
-            $this->user->notify(new Skipped());
-        }
+        // Increment the skip count
+        $skipCount = $this->user->onboarding->skip_count ?? 0;
+        $skipCount++;
 
         // Redirect to the user dashboard after skipping the onboarding process
-        return redirect()->route('user.dashboard')->with('info', 'You have skipped the onboarding process.');
+        if ($skipCount <= 3) {
+            redirect()->route('user.dashboard')->with('info', 'You have skipped the onboarding process ' . ($skipCount <= 1 ? '' : $skipCount . ' times') . '.');
+            // Check if the user's onboarding status is already 'skipped'
+            if ($this->user->onboarding->status !== 'skipped') {
+
+                // Update the user's onboarding status and skip count
+                $this->user->updateOnboarding([
+                    'status' => 'skipped',
+                    'step' => $this->currentStep,
+                    'restart_at' => now()->addDays(2),
+                    'completed_at' => null,
+                    'skip_count' => $skipCount,
+                ]);
+
+                // Notify the user about the skipped onboarding process
+                $this->user->notify(new Skipped());
+            }
+        } else {
+            // set notice saying you cannot skip the onboarding process any more
+            $this->dispatch('notify', 'You cannot skip the Onboarding process anymore', 'warning');
+        }
     }
 
     /**

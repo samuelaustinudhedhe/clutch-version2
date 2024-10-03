@@ -139,7 +139,7 @@
 
 
         <div class="flex justify-between items-center mt-8 mb-12 absolute bottom-0">
-            <a wire:click.prevent="skipOnboarding"
+            <a wire:click="skipOnboarding"
                 class="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 hover:cursor-pointer">&larr;
                 Back to Dashboard</a>
         </div>
@@ -154,7 +154,7 @@
                 <img class="w-10 h-10 mr-2" src="{{ app_logo() }}" />
                 <span class="text-gray-900 dark:text-white">{{ app_name() }}</span>
             </a>
-            <a wire:click.prevent="skipOnboarding"
+            <a wire:click="skipOnboarding"
                 class="text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 hover:cursor-pointer">
                 < Back to Dashboard </a>
 
@@ -191,7 +191,6 @@
                     @default
                         @include('user.onboarding.completed')
                 @endswitch
-                <x-input-error for="storeData.role" />
             </div>
 
             <x-steps-navigation getStarted="Begain Onboarding Now" submit="Finished Onboarding" :totalSteps="$totalSteps"
@@ -200,7 +199,7 @@
             @if ($currentStep < 1)
                 <p class="mt-4 text-sm font-light text-gray-500 dark:text-gray-400">
                     Not read to onboard?
-                    <a href="#" wire:click.prevent="skipOnboarding"
+                    <a href="#" wire:click="skipOnboarding"
                         class="font-medium text-blue-600 hover:underline dark:text-blue-500">
                         Skip the Onboarding Process
                     </a>.

@@ -236,7 +236,7 @@
 
                     <div>
                         <p>Meeting Location </p>
-                        <p>{{ $trip->location->pickup->full ?? '' }}</p>
+                        <p>{{ $trip->location->pickup->full ?? $vehicle->location->pickup->full }}</p>
 
                     </div>
 
@@ -246,7 +246,7 @@
                         @else
                             <span class="text-2xl ">{{ $vehicle->human_price }}</span>
                         @endif
-                        x 3 days
+                        x {{ ($trip->days > 1) ? $trip->days . ' days' : $trip->days . ' day' }}
                     </div>
 
                 </x-div>

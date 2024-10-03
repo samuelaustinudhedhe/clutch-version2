@@ -4,20 +4,22 @@ namespace App\Traits;
 
 trait Onboarding
 {
-    /**
-     * Retrieves and initializes the onboarding data if it is null or empty.
-     * 
+
+     /**
+     * Get and update the onboarding key within the records attribute.
+     *
      * @return object The decoded JSON object of the onboarding data.
      */
     public function onboarding()
     {
         // Decode the JSON encoded onboarding data.
         $onboarding = is_string($this->records->onboarding) ? json_decode($this->records->onboarding) : $this->records->onboarding;
+
         // Automatically assign onboarding keys if it's null or empty.
         if (is_null($onboarding) || empty($onboarding)) {
             // Fill the onboarding attribute with default values and save the model.
             $this->forceFill([
-                'onboarding' => json_encode([
+                'records->onboarding' => json_encode([
                     'status' => 'start', // Initial status of onboarding.
                     'step' => 0, // Initial step of onboarding.
                     'restart_at' => '', // Placeholder for restart timestamp.
@@ -29,6 +31,7 @@ trait Onboarding
         // Return the decoded onboarding data.
         return $onboarding;
     }
+
 
     /**
      * Updates the onboarding records.
@@ -48,7 +51,7 @@ trait Onboarding
 
         // Save the updated onboarding data.
         $this->forceFill([
-            'onboarding' => json_encode($onboarding),
+            'records->onboarding' => json_encode($onboarding),
         ])->save();
     }
 

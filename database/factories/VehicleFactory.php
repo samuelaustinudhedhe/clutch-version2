@@ -90,6 +90,7 @@ class VehicleFactory extends Factory
                 'postal_code' => fake()->postcode,
                 'latitude' => fake()->latitude,
                 'longitude' => fake()->longitude,
+                'full' => fake()->address,
             ],
             'dropoff' => [
                 'street' => fake()->streetAddress,
@@ -100,6 +101,7 @@ class VehicleFactory extends Factory
                 'postal_code' => fake()->postcode,
                 'latitude' => fake()->latitude,
                 'longitude' => fake()->longitude,
+                'full' => fake()->address,
             ],
         ];
     }

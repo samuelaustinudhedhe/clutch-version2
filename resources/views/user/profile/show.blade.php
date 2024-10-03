@@ -40,7 +40,7 @@
         </p>
 
         {{-- main --}}
-        <a href="{{ route('user.profile.photo') }}"
+        <a href="#"
             class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Profile picture
@@ -51,7 +51,7 @@
             </div>
             {{ getUserPP(true, ' rounded-full border-4 border-white h-14 w-14 object-cover') }}
         </a>
-        <a href="{{ route('user.profile.name') }}"
+        <a href="#"
             class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Name</div>
@@ -63,7 +63,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
         </a>
-        <a href="{{ route('user.profile.birthday') }}"
+        <a href="#"
             class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Birthday</div>
@@ -97,7 +97,7 @@
         <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 sm:pr-8 pr-4">Contact info</h3>
 
         {{-- main --}}
-        <a href="{{ route('user.profile.email') }}"
+        <a href="#"
             class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Email</div>
@@ -109,7 +109,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
         </a>
-        <a href="{{ route('user.profile.phone') }}"
+        <a href="#"
             class="flex items-center justify-between border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Phone</div>
@@ -135,7 +135,7 @@
         </p>
 
         {{-- add user addresses in db and update helper function  --}}
-        <a href="{{ route('user.profile.address') }}"
+        <a href="#"
             class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Work</div>
@@ -147,7 +147,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
         </a>
-        <a href="{{ route('user.profile.address') }}"
+        <a href="#"
             class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Home</div>
@@ -159,7 +159,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
         </a>
-        <a href="{{ route('user.profile.address') }}"
+        <a href="#"
             class="flex items-center justify-between border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Other</div>
@@ -185,7 +185,7 @@
 
         {{-- check later for bugs on Authentication enable and disable --}}
 
-        <a href="{{ route('user.profile.password') }}"
+        <a href="#"
             class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
             <div class=" w-5/6 ">
                 <div class="w-full font-semibold mb-1">••••••••</div>
@@ -199,7 +199,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
         </a>
-        <a href="{{ route('user.profile.2af') }}"
+        <a href="#"
             class="flex items-center justify-between border-inherit py-4 sm:pr-8 pr-4">
             <div class="lg:flex w-5/6 lg:w-2/3">
                 <div class="w-full lg:w-2/5 text-xs font-medium text-gray-600 dark:text-gray-400">Authentication

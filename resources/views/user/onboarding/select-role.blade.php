@@ -8,7 +8,7 @@
             <span class="w-full">Rent a vehicle</span>
         </x-radio>
 
-        <x-radio id="owner" name="role" value="owner" wire:model="storeData.role" color="blue" class="space-x-6">
+        <x-radio id="suparadmin" name="role" value="suparadmin" wire:model="storeData.role" color="blue" class="space-x-6">
             <img src="https://cdn-icons-png.flaticon.com/512/3418/3418139.png" width="30" height="30"
                 alt="" title="" class="img-small">
 

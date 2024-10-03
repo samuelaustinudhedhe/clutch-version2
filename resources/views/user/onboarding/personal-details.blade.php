@@ -37,14 +37,14 @@
                         <?php }?>
                     @endforeach
                 </x-select>
-                <x-input-error for="country_code" />
+                <x-input-error for="storeData.phone.home.country_code" />
             </div>
 
             <div class="w-3/5">
                 <x-label for="phone">Phone</x-label>
                 <x-xinput id="phone" type="number" wire:model="storeData.phone.home.number" />
 
-                <x-input-error for="phone" />
+                <x-input-error for="storeData.phone.home.number" />
 
             </div>
         </div>
@@ -54,16 +54,9 @@
                 <x-label for="date-of-birth">Date of Birth</x-label>
 
                 <div class="relative w-full">
-                    <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                        </svg>
-                    </div>
                     <x-date id="date-of-birth" class="pl-10" datepicker-max-date="{{ now()->subYears(14)->format('D/M/Y') }}"
                         wire:model="storeData.date_of_birth" placeholder="Select date" loadJS=true />
-                    <x-input-error for="date_of_birth" />
+                    <x-input-error for="storeData.date_of_birth" />
                 </div>
             </div>
             <div>
@@ -73,7 +66,7 @@
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </x-select>
-                <x-input-error for="gender" />
+                <x-input-error for="storeData.gender" />
             </div>
         </div>
 
@@ -81,8 +74,8 @@
 
     {{-- Address --}}
     <x-div>        
-        <x-location label="Home Address" wire:model="storeData.address.home.full" loadJS="true"  />
-        <x-location label="Work Address" wire:model="storeData.address.work.full" loadJS="false"  />
+        <x-location label="Home Address" wire:model="storeData.address.home.full" loadJS="true" id="storeData.address.home.full" />
+        <x-location label="Work Address" wire:model="storeData.address.work.full" loadJS="false" id="storeData.address.work.full"  />
     </x-div>
 
     <x-div>
@@ -91,12 +84,12 @@
             <div>
                 <x-label for="date-of-birth">Instagram</x-label>
                 <x-xinput type="text" wire:model="storeData.social.instagram" id="instagram" name="instagram" class="w-3/4" placeholder="https://instagram.com/username" />
-                <x-input-error for="date_of_birth" />
+                <x-input-error for="storeData.social.instagram" />
             </div>
             <div>
                 <x-label for="facebook">Facebook</x-label>
                 <x-xinput type="text" wire:model="storeData.social.facebook" id="facebook" name="facebook" class="w-3/4" placeholder="https://facebook.com/username" />
-                <x-input-error for="facebook" />
+                <x-input-error for="storeData.social.facebook" />
             </div>
         </div>
     </x-div>

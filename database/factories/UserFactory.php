@@ -112,6 +112,9 @@ class UserFactory extends Factory
                 'state' => fake()->state,
                 'country' => fake()->country,
                 'postal_code' => fake()->postcode,
+                'latitude' => fake()->latitude,
+                'longitude' => fake()->longitude,
+                'full' => fake()->address,
             ],
             'work' => [
                 'street' => fake()->streetAddress,
@@ -120,6 +123,9 @@ class UserFactory extends Factory
                 'state' => fake()->state,
                 'country' => fake()->country,
                 'postal_code' => fake()->postcode,
+                'latitude' => fake()->latitude,
+                'longitude' => fake()->longitude,
+                'full' => fake()->address,
             ],
             // Add others as needed
         ];

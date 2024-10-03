@@ -79,4 +79,14 @@ trait HasDetails
     {
         return $this->getDetails()->phone ?? null;
     }
+    
+    /**
+     * Get the phone numbers from the details attribute.
+     *
+     * @return object|null
+     */
+    public function getNINAttribute()
+    {
+        return $this->getDetails()->nin ?? null;
+    }
 }

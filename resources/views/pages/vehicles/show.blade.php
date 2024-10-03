@@ -216,7 +216,7 @@
                     <x-label for="end_time" class="text-sm">Drop Off Date</x-label>
                     <div class="flex w-full gap-4 mb-2">
                         <x-date id="end" wire:model="trip.end.date" class="w-2/3"
-                            datepicker-min-date="{{ now()->addDay()->format('m/d/Y') }}" />
+                            datepicker-min-date="{{ now()->addDay()->format('m/d/Y') }}" loadJS=true />
                         <x-select class="!w-1/3" wire:model="trip.end.time">
                             <option disabled Selected>Drop Off Time</option>
                             @foreach ($times as $time)

@@ -38,6 +38,9 @@ trait WithSteps
      */
     public $storeData = [];
 
+    //Abstract Step Rules function
+    abstract public function rulesForStep();
+
     /**
      * Get the name of the current step.
      *
@@ -112,6 +115,15 @@ trait WithSteps
         return $this->stepNames[$step] ?? 'Unknown Step';
     }
 
+
+    private function stepValidate()
+    {
+        $step = $this->rulesForStep();
+        if (!empty($step['rules'])) {
+            $this->validate($step['rules'], $step['messages'], $step['names']);
+        }
+    }
+
     /**
      * Advances to the next step in the process.
      *
@@ -128,8 +140,10 @@ trait WithSteps
      */
     public function nextStep()
     {
-
         $this->attachToNextStep();
+
+        // Call the abstract function rulesForStep() to perform step-specific validations
+        $this->stepValidate();
         $this->currentStep++;
         $this->store();
     }
@@ -155,6 +169,7 @@ trait WithSteps
     public function prevStep()
     {
         $this->attachToPrevStep();
+
         $this->currentStep--;
         $this->store();
     }
