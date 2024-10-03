@@ -5,15 +5,15 @@
     <x-div
         class="rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 overflow-hidden dark:border-gray-600 pt-4 sm:pt-6 pb-2 sm:pl-8 pl-4 sm:mx-4 my-8 ">
 
-        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 sm:pr-8 pr-4">Basic info</h3>
-        <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 sm:pr-8 pr-4">
+        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Basic info</h3>
+        <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
             Some info may be visible to other people using our services.
             <a href="#" class="text-blue-500">Learn more</a>
         </p>
 
         {{-- main --}}
-        <div class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
-            <div class="lg:flex w-5/6 lg:w-2/3">
+        <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+            <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Profile picture
                 </div>
                 <div class="w-full lg:w-3/5 text-sm">
@@ -25,38 +25,29 @@
                 alt="User Profile Picture">
         </div>
 
-        <div class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
-            <div class="lg:flex w-5/6 lg:w-2/3">
+        <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+            <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Name</div>
-                <div class="w-full lg:w-3/5">{{ $storeData['name'] ?? $this->user->name }}</div>
+                <div class="w-full lg:w-3/5 text-right ">{{ $storeData['name'] ?? $this->user->name }}</div>
             </div>
 
-            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            
         </div>
-        <div class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
-            <div class="lg:flex w-5/6 lg:w-2/3">
+        <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+            <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Birthday</div>
-                <div class="w-full lg:w-3/5">{{ $storeData['date_of_birth'] ?? $this->user->date_of_birth }}</div>
+                <div class="w-full lg:w-3/5  text-right ">{{ $storeData['date_of_birth'] ?? $this->user->date_of_birth }}</div>
             </div>
 
-            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            
         </div>
-        <div class="flex items-center justify-between border-inherit py-4 sm:pr-8 pr-4">
-            <div class="lg:flex w-5/6 lg:w-2/3">
+        <div class="flex items-center justify-between border-inherit py-4 px-4">
+            <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Gender</div>
-                <div class="w-full lg:w-3/5 capitalize">{{ $storeData['gender'] ?? $this->user->gender }}</div>
+                <div class="w-full lg:w-3/5 capitalize  text-right ">{{ $storeData['gender'] ?? $this->user->gender }}</div>
             </div>
 
-            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            
         </div>
 
     </x-div>
@@ -65,26 +56,23 @@
     <x-div
         class="rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 overflow-hidden dark:border-gray-600 pt-4 sm:pt-6 pb-2 sm:pl-8 pl-4 sm:mx-4 my-8 ">
 
-        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 sm:pr-8 pr-4">Contact info</h3>
+        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Contact info</h3>
 
         {{-- main --}}
-        <div class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
-            <div class="lg:flex w-5/6 lg:w-2/3">
+        <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+            <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Email</div>
-                <div class="w-full lg:w-3/5 {{ $this->user->hasVerifiedEmail() ? 'text-green-300' : 'text-red-300' }}"
+                <div class="w-full lg:w-3/5 text-right {{ $this->user->hasVerifiedEmail() ? 'text-green-300' : 'text-red-300' }}"
                     title="{{ $this->user->hasVerifiedEmail() ? 'Verified' : 'Unverified Email' }}">
                     {{ $this->user->email }}</div>
             </div>
 
-            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            
         </div>
-        <div class="flex items-center justify-between border-inherit py-4 sm:pr-8 pr-4">
-            <div class="lg:flex w-5/6 lg:w-2/3">
+        <div class="flex items-center justify-between border-inherit py-4 px-4">
+            <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Phone</div>
-                <div class="grid w-full lg:w-3/5">
+                <div class="grid w-full lg:w-3/5 text-right ">
                     <a
                         href="tel:{{ formatPhone($storeData['phone'], type: 'home') }}">{{ formatPhone($storeData['phone'], type: 'home', format: true) }}</a>
                     @isset($storeData['phone']['work'])
@@ -94,10 +82,6 @@
                 </div>
             </div>
 
-            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
         </div>
 
     </x-div>
@@ -106,37 +90,31 @@
     <x-div
         class="rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 overflow-hidden dark:border-gray-600 pt-4 sm:pt-6 pb-2 sm:pl-8 pl-4 sm:mx-4 my-8 ">
 
-        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 sm:pr-8 pr-4">Address</h3>
-        <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 sm:pr-8 pr-4">
+        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Address</h3>
+        <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
             Manage your addresses associated with your Account.
             <a href="#" class="text-blue-500">Learn more about addresses saved to your account</a>
         </p>
 
         {{-- add user addresses in db and update helper function  --}}
-        <div class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
-            <div class="lg:flex w-5/6 lg:w-2/3">
+        <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+            <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Work</div>
-                <div class="w-full lg:w-3/5">
+                <div class="w-full lg:w-3/5 text-right ">
                     {{ formatAddress($storeData['address']['home'], 'street, city, state,') }}</div>
             </div>
 
-            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            
         </div>
 
-        <div class="flex items-center justify-between border-inherit py-4 sm:pr-8 pr-4">
-            <div class="lg:flex w-5/6 lg:w-2/3">
+        <div class="flex items-center justify-between border-inherit py-4 px-4">
+            <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Home</div>
-                <div class="w-full lg:w-3/5">
+                <div class="w-full lg:w-3/5 text-right ">
                     {{ formatAddress($storeData['address']['work'], 'street, city, state,') }}</div>
             </div>
 
-            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            
         </div>
 
     </x-div>
@@ -149,15 +127,15 @@
         <div
             class="rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 overflow-hidden dark:border-gray-600 pt-4 sm:pt-6 pb-2 sm:pl-8 pl-4 sm:mx-4 my-8 ">
 
-            <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 sm:pr-8 pr-4">Uploaded Documents</h3>
-            <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 sm:pr-8 pr-4">
+            <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Uploaded Documents</h3>
+            <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
                 Personal documents you recently uploaded
             </p>
 
             {{-- Documents --}}
             @isset($this->nin['file'])
-                <div class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
-                    <div class="lg:flex w-5/6 lg:w-2/3">
+                <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+                    <div class="lg:flex w-full">
                         <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">NIN
                         </div>
                         <div class="w-full lg:w-3/5 text-sm font-bold">
@@ -184,8 +162,8 @@
 
             {{-- Passport --}}
             @isset($this->internationalPassport['file'])
-                <div class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
-                    <div class="lg:flex w-5/6 lg:w-2/3">
+                <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+                    <div class="lg:flex w-full">
                         <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">International
                             Passport
                         </div>
@@ -212,8 +190,8 @@
 
             {{-- Drivers License --}}
             @isset($this->driversLicense['file'])
-                <div class="flex items-center justify-between border-b border-inherit py-4 sm:pr-8 pr-4">
-                    <div class="lg:flex w-5/6 lg:w-2/3">
+                <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+                    <div class="lg:flex w-full">
                         <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Drivers License
                         </div>
                         <div class="w-full lg:w-3/5 text-xs">
@@ -238,8 +216,8 @@
 
             {{-- Proof Of Address --}}
             @isset($this->proofOfAddress['file'])
-                <div class="flex items-center justify-between py-4 sm:pr-8 pr-4">
-                    <div class="lg:flex w-5/6 lg:w-2/3">
+                <div class="flex items-center justify-between py-4 px-4">
+                    <div class="lg:flex w-full">
                         <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Proof Of Address
                         </div>
                         <div class="w-full lg:w-3/5 text-xs">

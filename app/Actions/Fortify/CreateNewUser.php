@@ -75,6 +75,5 @@ class CreateNewUser implements CreatesNewUsers
                 ],
             ],
         ];
-        {"verified":false,"verified_at":null,"verified_status":"pending"}
     }
 }

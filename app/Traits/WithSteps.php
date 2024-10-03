@@ -249,7 +249,7 @@ trait WithSteps
     public function putData($data)
     {
         $path = $this->storePath ?? '';
-        if (!empty($path) && !empty($data)) {
+        if (!empty($path)) {
             Storage::put($path, json_encode($data));
         }
     }

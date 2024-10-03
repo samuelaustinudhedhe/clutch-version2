@@ -5,23 +5,29 @@
         <p class="mb-2 text-lg font-extrabold tracking-tight text-gray-900 leding-tight dark:text-white">Verify your
             email
             address</p>
-        <p class="text-sm font-light text-gray-500 dark:text-gray-400">We emailed you a verification link to <span
-                class="font-medium text-gray-900 dark:text-white">{{ $user->email ?? 'your email' }}</span>.
-            click on it to confirm your email address.</p>
-            @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::emailVerification()) && ! $this->user->hasVerifiedEmail())
-            <p class="text-sm mt-2 dark:text-white">
-                {{ __('Your email address is unverified.') }}
+        @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::emailVerification()) && !$this->user->hasVerifiedEmail())
+            <p class="text-sm font-light text-gray-500 dark:text-gray-400">We emailed you a verification link to <span
+                    class="font-medium text-gray-900 dark:text-white">{{ $user->email ?? 'your email' }}</span>.
+                click on it to confirm your email address.</p>
+                <p class="text-sm mt-2 dark:text-white">
+                    {{ __('Your email address is unverified.') }}
 
-                <button type="button" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" wire:click.prevent="sendEmailVerification">
-                    {{ __('Click here to re-send the verification email.') }}
-                </button>
-            </p>
-
-            @if ($this->verificationLinkSent)
-                <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
-                    {{ __('A new verification link has been sent to your email address.') }}
+                    <button type="button"
+                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                        wire:click.prevent="sendEmailVerification">
+                        {{ __('Click here to re-send the verification email.') }}
+                    </button>
                 </p>
-            @endif
+
+                @if ($this->verificationLinkSent)
+                    <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
+                        {{ __('A new verification link has been sent to your email address.') }}
+                    </p>
+                @endif        
+                {{-- <p class="text-sm mt-4 text-gray-500 dark:text-gray-400">To update your email address or phone number, go to your profile settings.</p> --}}
+        @else
+        <p class="text-sm font-light text-gray-500 dark:text-gray-400">Your email address <span
+            class="font-medium text-green-800 dark:text-green-100">{{ $user->email ?? '' }}</span> is verified.</p>
         @endif
     </x-div>
     {{-- @if (!$user->phone->home->verified_at && $user->phone->home->country_code && $user->phone->home->number)

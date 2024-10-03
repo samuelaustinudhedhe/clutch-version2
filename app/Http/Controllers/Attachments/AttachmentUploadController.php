@@ -110,7 +110,7 @@ class AttachmentUploadController extends AttachmentController
         $file = self::store($path, $file, $mimeType, true);
         
         // Create a new attachment record in the database
-        return AttachmentController::create(
+        AttachmentController::create(
             name: $name,
             description: $description,
             file: $file,
@@ -120,6 +120,7 @@ class AttachmentUploadController extends AttachmentController
             authorable: $authorable,
             path: $path,
         );
+        
     }
 
 

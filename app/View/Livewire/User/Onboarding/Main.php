@@ -12,6 +12,7 @@ use App\Http\Controllers\Attachments\AttachmentUploadController as Upload;
 use App\Models\Admin;
 use App\Models\Attachment;
 use App\Models\User;
+use App\Rules\CheckNIN;
 use Illuminate\Support\Facades\Storage;
 
 class Main extends Component
@@ -135,9 +136,9 @@ class Main extends Component
                     'storeData.role' => 'required|string|exists:roles,name,guard,web',
                 ];
                 $messages = [
-                    'storeData.role.required' => 'Please select a role.',
-                    'storeData.role.string' => 'The selected role is invalid.',
-                    'storeData.role.exists' => 'The selected role does not exist.',
+                    'storeData.role.required' => 'Please select a goal.',
+                    'storeData.role.string' => 'The selected goal is invalid.',
+                    'storeData.role.exists' => 'The selected goal does not exist.',
                 ];
                 $names = [
                     'storeData.role' => 'Role',
@@ -221,9 +222,71 @@ class Main extends Component
                 break;
             case 4:
                 // Validation rules for step 4 (KYC)
-                $rules = [];
+                $rules = [
+                    'storeData.nin' => [
+                        'required',
+                        'digits_between:9,13',
+                        new CheckNIN($this->storeData['nin']),
+                    ],
+                    'nin.file.path' => [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            }
+                        },
+                    ],
+                    'internationalPassport.file.path' => [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            }
+                        },
+                    ],
+                    'proofOfAddress.file.path' => [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            }
+                        },
+                    ],
+                    'driversLicense.file.path' => [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            }
+                        },
+                    ],
 
-                $names = [];
+                ];
+
+                $messages = [
+                    'driversLicense.file.path.required' => 'Please upload your Driver\'s License.',
+                    'proofOfAddress.file.path.required' => 'Please upload your Proof of Address.',
+                    'passport.file.path.required' => 'Please upload your International Passport.',
+                    'nin.file.path.required' => 'Please upload your NIN document.',
+                    'nin.required' => 'Please enter your National Identification Number (NIN).',
+                    'nin.digits_between' => 'The National Identification Number (NIN) must be between 9 and 13 digits.',
+                ];
+                
+                $names = [
+                    'storeData.nin' => 'National Identification Number (NIN)',
+                    'nin.file.path' => 'NIN Document',
+                    'internationalPassport.file.path' => 'International Passport',
+                    'proofOfAddress.file.path' => 'Proof of Address',
+                    'driversLicense.file.path' => 'Driver\'s License',
+                ];
                 break;
             default:
                 break;
@@ -400,10 +463,8 @@ class Main extends Component
      *
      * @return void
      */
-    protected function saveFiles()
+    protected function saveFiles(User|Admin $user)
     {
-        $user = $this->user;
-
         if (isset($this->photo['file']['path'])) {
             $image = Storage::path('public/' . $this->photo['file']['path']);
             $mime_type = $this->photo['file']['mime_type'];
@@ -412,7 +473,7 @@ class Main extends Component
             $photoDesc = $user->name . '\'s ' . $photoName;
 
             // Save the photo to the storage, update the user profile photo and attach it with the user Via attachable
-            $user->profile_photo_path = Upload::file(
+             Upload::file(
                 name: $photoName,
                 description: $photoDesc,
                 file: $image,
@@ -423,17 +484,17 @@ class Main extends Component
                 attachable: $user,
                 path: $profilePath,
             );
-            $user->save();
-
+            $user->profile_photo_path = getUserStorage('') . 'profile/photo.webp';
+            
             // Delete the uploaded photo after saving it to the storage
             Storage::delete('public/' . $this->photo['file']['path']);
             $this->storeData['files']['photo'] = [];
         }
 
-        foreach ($this->files as $key => $file) {
+        foreach ( $this->getStoredData()['files'] as $key => $file) {
             // Save uploaded files to the storage and attach them with the user Via attachable
             if ($key !== 'photo' && isset($file['path'])) {
-                $storagePath = getUserStorage('private') . 'documents/';
+                $storagePath = getUserStorage('private', $this->user->id) . 'documents/';
                 $document = Storage::path('public/' . $file['path']);
                 $mime_type = $file['mime_type'];
                 $path = str_contains($mime_type, 'image') ? $storagePath . $key . '.webp' : $storagePath . $key . '.pdf';
@@ -511,9 +572,10 @@ class Main extends Component
         $user->updateDetails('social', $this->storeData['social']);
         $user->updateDetails('nin', $this->storeData['nin']);
         $user->updateDetails('self_drive', $this->storeData['drive']);
-        $this->saveFiles();
+        $this->saveFiles($user);
         $user->save();
-
+        //delete the onboarding json file after saving the data
+        $this->putData('');
         $this->completeOnboarding();
     }
 

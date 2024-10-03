@@ -10,16 +10,17 @@
         <div class="sm:col-span-2 flex gap-6">
             <div class="w-2/5">
                 <x-label for="nin">NIN*</x-label>
-                <x-xinput type="text" wire:model="storeData.nin" id="nin" name="nin" />
+                <x-xinput type="text" wire:model="storeData.nin" id="nin" name="nin" />        
+                <x-input-error for="storeData.nin" class="mt-2"/>
+
             </div>
             <div class="w-3/5">
                 <x-label for="nin">Upload Your NIN*</x-label>
                 <x-xinput type="file" wire:model="nin.new" id="nin_upload" name="nin_upload" title="Upload Your NIN"
-                    accept=".jpg,.jpeg,.png,.pdf" class="!py-0" />
+                    accept=".jpg,.jpeg,.png,.pdf" class="!py-0" />        
+                    <x-input-error for="nin.file.path" class="mt-2"/>
             </div>
-            <x-input-error for="nin.new" />
-            <x-input-error for="storeData.nin" />
-        </div>
+        </div>           
     </x-div>
 
     <x-div>
@@ -91,6 +92,8 @@
                         WEBP, PNG, JPG or PDF (MAX. 800x400px).
                     </p>
                     <x-input-error for="{{ $document }}.new" />
+                    <x-input-error for="{{ $document }}.file.path" class="mt-2"/>
+
                 </div>
             </div>
         @endforeach
