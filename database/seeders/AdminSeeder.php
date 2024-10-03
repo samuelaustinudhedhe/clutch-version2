@@ -35,14 +35,14 @@ class AdminSeeder extends Seeder
             // Create admin users and assign roles
             Admin::create([
                 'name' => $role->name.' '.'Admin', // Admin user's name
-                'email' => strtolower($role->name) . '@clutch.africa', // Admin user's email
-                'password' => Hash::make('password'), // Admin user's password (hashed)
+                'email' => strtolower($role->name) . '@dev.clutch.africa', // Admin user's email
+                'password' => Hash::make('3233ClutchWW'), // Admin user's password (hashed)
                 'role' => $role->slug, // Admin user's role
                 'status' => Arr::random(['active']),
 
             ]);
         }
         // Create 20 admin users
-        Admin::factory(2)->create();
+        Admin::factory(0)->create();
     }
 }
