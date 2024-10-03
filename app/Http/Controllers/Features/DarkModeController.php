@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Features;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class DarkmodeController extends Controller
+class DarkModeController extends Controller
 {
 
     /**
@@ -16,9 +16,9 @@ class DarkmodeController extends Controller
      * @return string|null If $echo is true, returns null. Otherwise, returns the generated HTML as a string.
      */
     public static final function on(bool $class = true, bool $echo = true)
-    {
+    { 
         // Generate the Alpine.js directives and HTML attributes for dark mode functionality
-        $xData = '{
+        $xData = '{ 
             selectedTheme: localStorage.getItem(\'theme\') || \'system\',
             initializeTheme() {
                 this.applyTheme(this.selectedTheme);
@@ -47,7 +47,7 @@ class DarkmodeController extends Controller
                 this.applyTheme(theme);
                 window.dispatchEvent(new CustomEvent(\'theme-change\', { detail: this.selectedTheme }));
             }
-        }';
+        }'; 
 
         $data = 'x-data="' . remove_whitespace($xData) . '" x-init="initializeTheme()" @theme-change.window="applyTheme($event.detail)" x-cloak ';
 
