@@ -6,9 +6,9 @@
     <div class="max-w-screen-xl px-4 py-8 mx-auto lg:grid lg:gap-20 lg:py-16 lg:grid-cols-12">
         <div class="flex-col justify-between hidden mr-auto lg:flex lg:col-span-5 xl:col-span-6 xl:mb-0">
             <div>
-
+            
                 <div class="flex">
-                    <svg class="w-5 h-5 mr-2 text-blue-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                    <svg class="w-8 h-8 mr-2 text-blue-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -16,36 +16,31 @@
                     </svg>
                     <div>
                         <h3 class="mb-2 text-xl font-bold leading-none text-gray-900 dark:text-white">Become a Host</h3>
-                        <p class="mb-2 font-light text-gray-500 dark:text-gray-400">Register and list your car to start
-                            earning passive income.</p>
+                        <p class="mb-2 font-light text-gray-500 dark:text-gray-400">Register today to list your vehicle and start generating passive income. Join our community of hosts who are leveraging their assets for financial growth.</p>
                     </div>
                 </div>
                 <div class="flex pt-8">
-                    <svg class="w-5 h-5 mr-2 text-blue-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                    <svg class="w-8 h-8 mr-2 text-blue-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                             clip-rule="evenodd"></path>
                     </svg>
                     <div>
-                        <h3 class="mb-2 text-xl font-bold leading-none text-gray-900 dark:text-white">Drive yourself
-                        </h3>
-                        <p class="mb-2 font-light text-gray-500 dark:text-gray-400">Choose from hundreds of cars in your
-                            area, shared by local owners.</p>
+                        <h3 class="mb-2 text-xl font-bold leading-none text-gray-900 dark:text-white">Drive with Freedom</h3>
+                        <p class="mb-2 font-light text-gray-500 dark:text-gray-400">Explore a wide selection of vehicles available in your vicinity, shared by local owners. Experience the convenience and flexibility of self-driven journeys.</p>
                     </div>
                 </div>
                 <div class="flex pt-8">
-                    <svg class="w-5 h-5 mr-2 text-blue-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                    <svg class="w-8 h-8 mr-2 text-blue-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                             clip-rule="evenodd"></path>
                     </svg>
                     <div>
-                        <h3 class="mb-2 text-xl font-bold leading-none text-gray-900 dark:text-white">Join Hundreds of
-                            Users</h3>
-                        <p class="mb-2 font-light text-gray-500 dark:text-gray-400">Clutch is trusted by ambitious
-                            entrepreneurs and car owners alike, offering a variety of vehicles.</p>
+                        <h3 class="mb-2 text-xl font-bold leading-none text-gray-900 dark:text-white">Join a Trusted Network</h3>
+                        <p class="mb-2 font-light text-gray-500 dark:text-gray-400">Become part of a trusted network of drivers and vehicle owners. Clutch is the preferred choice for entrepreneurs and car enthusiasts, offering a diverse range of vehicles to meet your needs.</p>
                     </div>
                 </div>
             </div>
@@ -76,9 +71,10 @@
                         class="text-xl font-bold leading-tight tracking-tight text-gray-900 sm:text-2xl dark:text-white">
                         Create your Account
                     </h1>
-                    <p class="mt-2 text-sm">
-                        become a driver or host in minutes and start earning money.
-                    </p>
+    
+                    <div class="mt-2 mb-4 text-sm text-gray-600 dark:text-gray-400">
+                        {{ __('Join us today to become a driver or host and begin your journey towards earning income effortlessly.') }}
+                    </div>
                 </div>
                 {{-- Registration form --}}
                 <x-validation-errors class="mb-4" />
@@ -89,18 +85,18 @@
                         <div class="w-full mt-4">
                             <x-label for="firstName" value="{{ __('First Name') }}" />
                             <x-input id="firstName" class="block mt-1 w-full" type="text" name="firstName"
-                                x-model="firstName" required autofocus autocomplete="firstname" />
+                                x-model="firstName" required autofocus autocomplete="given-name" />
                         </div>
                         <div class="w-full mt-4">
-                            <x-label for="lastName" value="{{ __('Last Name (optional)') }}" />
+                            <x-label for="lastName" value="{{ __('Last Name') }}" />
                             <x-input id="lastName" class="block mt-1 w-full" type="text" name="lastName"
-                                x-model="lastName" autocomplete="lastname" />
+                                x-model="lastName" autocomplete="family-name" />
                         </div>
                     </div>
                     <div class="mt-4">
                         <x-label for="email" value="{{ __('Email') }}" />
                         <x-input id="email" class="block mt-1 w-full" type="email" name="email"
-                            :value="old('email')" required autocomplete="username" />
+                            :value="old('email')" required autocomplete="email" />
                     </div>
                 
                     <div class="mt-4">
@@ -161,7 +157,7 @@
                 <div class="items-center space-y-3 sm:space-x-4 sm:space-y-0 sm:flex">
                     <a href="#"
                         class="w-full inline-flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                        <svg class="w-5 h-5 mr-2" viewBox="0 0 21 20" fill="none"
+                        <svg class="w-8 h-8 mr-2" viewBox="0 0 21 20" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_13183_10121)">
                                 <path
@@ -187,7 +183,7 @@
                     </a>
                     <a href="#"
                         class="w-full inline-flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                        <svg class="w-5 h-5 mr-2 text-gray-900 dark:text-white" viewBox="0 0 21 20" fill="none"
+                        <svg class="w-8 h-8 mr-2 text-gray-900 dark:text-white" viewBox="0 0 21 20" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_13183_29163)">
                                 <path

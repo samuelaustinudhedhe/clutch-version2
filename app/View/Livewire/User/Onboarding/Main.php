@@ -37,9 +37,9 @@ class Main extends Component
     public function mount()
     {
         $this->user = getUser();
-        $this->defineStoreData();
         $this->defineSteps();
         $this->defineStore();
+        $this->defineStoreData();
         $this->checkSteps();
 
         // Load file details from the JSON file
@@ -53,15 +53,33 @@ class Main extends Component
 
     public function defineStoreData()
     {
-        // $this->storeData['phone'] = (array) $this->user->phone;
-        $this->storeData['date_of_birth'] = $this->user->date_of_birth;
-        $this->storeData['gender'] = $this->user->gender;
-        // $this->storeData['address'] = (array) $this->user->address; causes error This synth doesn't support unsetting properties: Livewire\Mechanisms\HandleComponents\Synthesizers\StdClassSynth
-        $this->storeData['social'] = (array) $this->user->social;
-        $this->storeData['nin'] = $this->user->nin;
-        $this->storeData['drive'] = false;
-        $this->storeData['role'] = $this->user->role;
-        $this->storeData['status'] = $this->user->status;
+        if (empty($this->storeData['phone'])) {
+            $this->storeData['phone'] = (array) $this->user->phone;
+        }
+        if (empty($this->storeData['date_of_birth'])) {
+            $this->storeData['date_of_birth'] = $this->user->date_of_birth;
+        }
+        if (empty($this->storeData['gender'])) {
+            $this->storeData['gender'] = $this->user->gender;
+        }
+        if (empty($this->storeData['address'])) {
+            $this->storeData['address'] = (array) $this->user->address;
+        }
+        if (empty($this->storeData['social'])) {
+            $this->storeData['social'] = (array) $this->user->social;
+        }
+        if (empty($this->storeData['nin'])) {
+            $this->storeData['nin'] = $this->user->nin;
+        }
+        if (empty($this->storeData['drive'])) {
+            $this->storeData['drive'] = false;
+        }
+        if (empty($this->storeData['role'])) {
+            $this->storeData['role'] = $this->user->role;
+        }
+        if (empty($this->storeData['status'])) {
+            $this->storeData['status'] = $this->user->status;
+        }
     }
 
     /**
@@ -104,9 +122,9 @@ class Main extends Component
 
         if ($this->user->role !== 'subscriber' && ($this->currentStep == 0 || $this->currentStep == 1)) {
             if (!isset($this->storeData['role'])) {
-                $this->storeData['role'] = $this->user->role;
+                $this->storeData['role'] = $this->user->role ?? '';
             }
-            $this->currentStep = 2;
+            //$this->currentStep = 2;
         }
     }
     /**
@@ -238,38 +256,41 @@ class Main extends Component
                             }
                         },
                     ],
-                    'internationalPassport.file.path' => [
-                        'required',
-                        'string',
-                        function ($attribute, $value, $fail) {
-                            $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
-                            }
-                        },
-                    ],
-                    'proofOfAddress.file.path' => [
-                        'required',
-                        'string',
-                        function ($attribute, $value, $fail) {
-                            $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
-                            }
-                        },
-                    ],
-                    'driversLicense.file.path' => [
-                        'required',
-                        'string',
-                        function ($attribute, $value, $fail) {
-                            $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
-                            }
-                        },
-                    ],
-
                 ];
+
+                // Conditionally add rules based on the 'drive' value
+                if ($this->storeData['drive'] === 'true') {
+                    $rules['internationalPassport.file.path'] = [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            }
+                        },
+                    ];
+                    $rules['proofOfAddress.file.path'] = [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            }
+                        },
+                    ];
+                    $rules['driversLicense.file.path'] = [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            }
+                        },
+                    ];
+                }
 
                 $messages = [
                     'driversLicense.file.path.required' => 'Please upload your Driver\'s License.',
@@ -279,7 +300,7 @@ class Main extends Component
                     'nin.required' => 'Please enter your National Identification Number (NIN).',
                     'nin.digits_between' => 'The National Identification Number (NIN) must be between 9 and 13 digits.',
                 ];
-                
+
                 $names = [
                     'storeData.nin' => 'National Identification Number (NIN)',
                     'nin.file.path' => 'NIN Document',
@@ -473,7 +494,7 @@ class Main extends Component
             $photoDesc = $user->name . '\'s ' . $photoName;
 
             // Save the photo to the storage, update the user profile photo and attach it with the user Via attachable
-             Upload::file(
+            Upload::file(
                 name: $photoName,
                 description: $photoDesc,
                 file: $image,
@@ -484,14 +505,13 @@ class Main extends Component
                 attachable: $user,
                 path: $profilePath,
             );
-            $user->profile_photo_path = getUserStorage('') . 'profile/photo.webp';
-            
+
             // Delete the uploaded photo after saving it to the storage
             Storage::delete('public/' . $this->photo['file']['path']);
             $this->storeData['files']['photo'] = [];
         }
 
-        foreach ( $this->getStoredData()['files'] as $key => $file) {
+        foreach ($this->getStoredData()['files'] as $key => $file) {
             // Save uploaded files to the storage and attach them with the user Via attachable
             if ($key !== 'photo' && isset($file['path'])) {
                 $storagePath = getUserStorage('private', $this->user->id) . 'documents/';
@@ -561,24 +581,50 @@ class Main extends Component
      */
     public function submit()
     {
-        // Save any necessary data to the database
-        $user = $this->user;
-        $user->role = $this->storeData['role'];
-        // Update the details attribute using the updateDetails method
-        $user->updateDetails('phone', $this->storeData['phone']);
-        $user->updateDetails('date_of_birth', $this->storeData['date_of_birth']);
-        $user->updateDetails('gender', $this->storeData['gender']);
-        $user->updateDetails('address', $this->storeData['address']);
-        $user->updateDetails('social', $this->storeData['social']);
-        $user->updateDetails('nin', $this->storeData['nin']);
-        $user->updateDetails('self_drive', $this->storeData['drive']);
-        $this->saveFiles($user);
-        $user->save();
-        //delete the onboarding json file after saving the data
-        $this->putData('');
-        $this->completeOnboarding();
+        // Redirect to the user dashboard after completing the onboarding process
+        redirect()->route('user.dashboard')->with('message', 'You have completed the onboarding process. You have been updated to ' . ucfirst($this->user->role) . '.');
+
+        // Decode the verification data JSON string into an associative array
+        $verificationData = json_decode($this->user->verification, true) ?? [];
+        
+        // Update the verification data
+        $verificationData['account']['status'] = 'pending';
+
+        // Prepare the onboarding data
+        $onboardingData = [
+            'status' => 'completed',
+            'step' => $this->currentStep,
+            'restart_at' => null,
+            'completed_at' => now(),
+        ];
+
+        // Use forceFill to update all user attributes at once
+        $this->user->forceFill([
+            'records->onboarding' => json_encode($onboardingData),
+            'status' => 'active',
+            'verification' => json_encode($verificationData), // Re-encode the verification data
+            'role' => $this->storeData['role'],
+            'details->phone' => $this->storeData['phone'],
+            'details->date_of_birth' => $this->storeData['date_of_birth'],
+            'details->gender' => $this->storeData['gender'],
+            'details->address' => $this->storeData['address'],
+            'details->social' => $this->storeData['social'],
+            'details->nin' => $this->storeData['nin'],
+            'details->self_drive' => $this->storeData['drive'],
+            'profile_photo_path' => getUserStorage('') . 'profile/photo.webp',
+        ])->save();
+
+        // Save the uploaded files
+        $this->saveFiles($this->user);
+
+        // Delete the onboarding JSON file
+        Storage::delete($this->storePath);
+
+        // Notify the user about the completion
+        $this->user->notify(new Completed());
     }
 
+    
     /**
      * Complete the onboarding process.
      * 

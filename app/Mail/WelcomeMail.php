@@ -16,7 +16,7 @@ class WelcomeMail extends Mailable
 
     public $user;
     private $password;
-    private $verification;
+    private  $verification;
     
     /**
      * Create a new message instance.
@@ -34,7 +34,7 @@ class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to'. app_name(),
+            subject: 'Welcome to ' . app_name(false),
         );
     }
 

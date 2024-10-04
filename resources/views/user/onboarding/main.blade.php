@@ -165,7 +165,7 @@
                 {{ $stepNames[$currentStep] }}
             </h1>
             {{-- Onboarding content --}}
-            <div class="h-[440px] overflow-y-auto px-2">
+            <div class="h-[640px] overflow-y-auto px-2">
 
                 @switch($currentStep)
                     @case(0)

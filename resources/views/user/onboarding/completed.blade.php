@@ -2,8 +2,7 @@
 
 
     {{-- Basic info --}}
-    <x-div
-        class="rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 overflow-hidden dark:border-gray-600 pt-4 sm:pt-6 pb-2 sm:pl-8 pl-4 sm:mx-4 my-8 ">
+    <x-div class="rounded-xl !px-2 !pb-2">
 
         <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Basic info</h3>
         <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
@@ -20,7 +19,7 @@
                     {{ $photo['file'] ? 'Your personalized profile picture' : 'Add a profile picture to personalize your account' }}
                 </div>
             </div>
-            <img class="mb-4 min-w-14 min-h-14 max-w-14 max-h-14 rounded-full border-2 border-gray-200 dark:border-white sm:mr-4 sm:mb-0 object-cover"
+            <img class="mb-4 min-w-14 min-h-14 max-w-14 max-h-14 rounded-full border-2 border-gray-200 dark:border-white sm:ml-4 sm:mb-0 object-cover"
                 src="{{ $photo['file'] ? Storage::url($photo['file']['path']) : $user->profile_photo_url }}"
                 alt="User Profile Picture">
         </div>
@@ -53,8 +52,7 @@
     </x-div>
 
     {{-- Contact info --}}
-    <x-div
-        class="rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 overflow-hidden dark:border-gray-600 pt-4 sm:pt-6 pb-2 sm:pl-8 pl-4 sm:mx-4 my-8 ">
+    <x-div class="rounded-xl !px-2 !pb-2">
 
         <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Contact info</h3>
 
@@ -87,8 +85,7 @@
     </x-div>
 
     {{-- Addresses --}}
-    <x-div
-        class="rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 overflow-hidden dark:border-gray-600 pt-4 sm:pt-6 pb-2 sm:pl-8 pl-4 sm:mx-4 my-8 ">
+    <x-div class="rounded-xl !px-2 !pb-2">
 
         <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Address</h3>
         <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
@@ -124,8 +121,7 @@
             null !== ($this->driversLicense['file'] ?? null) ||
             null !== ($this->internationalPassport['file'] ?? null) ||
             null !== ($this->nin['file'] ?? null))
-        <div
-            class="rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 overflow-hidden dark:border-gray-600 pt-4 sm:pt-6 pb-2 sm:pl-8 pl-4 sm:mx-4 my-8 ">
+      <x-div class="rounded-xl !px-2 !pb-2">
 
             <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Uploaded Documents</h3>
             <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
@@ -134,7 +130,7 @@
 
             {{-- Documents --}}
             @isset($this->nin['file'])
-                <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+                <div class="flex items-center justify-between py-4 px-4">
                     <div class="lg:flex w-full">
                         <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">NIN
                         </div>
@@ -162,7 +158,7 @@
 
             {{-- Passport --}}
             @isset($this->internationalPassport['file'])
-                <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+                <div class="flex items-center justify-between border-t border-inherit py-4 px-4">
                     <div class="lg:flex w-full">
                         <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">International
                             Passport
@@ -190,7 +186,7 @@
 
             {{-- Drivers License --}}
             @isset($this->driversLicense['file'])
-                <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+                <div class="flex items-center justify-between border-t border-inherit py-4 px-4">
                     <div class="lg:flex w-full">
                         <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Drivers License
                         </div>
@@ -216,7 +212,7 @@
 
             {{-- Proof Of Address --}}
             @isset($this->proofOfAddress['file'])
-                <div class="flex items-center justify-between py-4 px-4">
+                <div class="flex items-center justify-between border-t border-inherit py-4 px-4">
                     <div class="lg:flex w-full">
                         <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Proof Of Address
                         </div>
@@ -239,7 +235,7 @@
                     @endif
                 </div>
             @endisset
-        </div>
+        </x-div>
     @endif
 
 

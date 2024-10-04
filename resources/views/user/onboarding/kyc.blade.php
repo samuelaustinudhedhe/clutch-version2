@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="mb-6 gap-4 text-sm sm:grid-cols-2 grid">
-            <x-radio id="driver" name="drive" value="true" wire:model.live="storeData.drive" showIcon="false"
+            <x-radio id="driver" name="drive" value="true" wire:model.lazy="storeData.drive" showIcon="false"
                 class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@
                 <span class="w-full">I want to drive it myself.</span>
             </x-radio>
 
-            <x-radio id="chauffeured" name="drive" value="false" wire:model.live="storeData.drive" checked
+            <x-radio id="chauffeured" name="drive" value="false" wire:model.lazy="storeData.drive" checked
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">

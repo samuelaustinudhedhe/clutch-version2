@@ -1,5 +1,4 @@
 <x-auth-layout>
-
     <div class=" bg-white dark:bg-gray-900 flex min-h-full">
         <div class="relative flex w-2/5 flex-1 flex-col justify-center px-4 py-12  lg:flex-none lg:px-20 xl:px-24">
 
@@ -26,11 +25,6 @@
 
                     <div>
                         <form method="POST" action="{{ route('login') }}" class="space-y-6">
-                            {{-- @php 
-                            if (!@csrf ){
-                                abort();
-                            }
-                            @endphp --}}
                             @csrf
 
                             <div>

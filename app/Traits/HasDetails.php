@@ -27,7 +27,6 @@ trait HasDetails
         $details = $this->getDetails();
         $details->$key = $value;
         $this->details = json_encode($details);
-        $this->save();
     }
 
     /**
