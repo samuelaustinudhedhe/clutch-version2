@@ -6,18 +6,17 @@
                 class="!text-base dark:!text-gray-200 !text-gray-800 font-normal">Registration</x-label>
             <div class="flex items-center gap-6">
                 <div class="w-full sm:w-1/2">
-                    <x-date wire:model="storeData.reigistration_issued_date" placeholder="issued date" />
-                    <x-input-error for="storeData.reigistration_issued_date" />
+                    <x-date id="issued_date" wire:model="storeData.details.reigistration.issued_date" placeholder="issued date" max="{{ date('m/d/Y', strtotime('+1 year')) }}" min="{{ date('m/d/Y', strtotime('-1 year')) }}" />
+                    <x-input-error for="storeData.details.reigistration.issued_date" />
                 </div>
                 <div class="w-full sm:w-1/2">
-                    <x-date wire:model="storeData.reigistration_expiration_date" placeholder="expiration date" />
-                    <x-input-error for="storeData.reigistration_expiration_date" />
+                    <x-date id="expiration_date" wire:model="storeData.details.reigistration.expiration_date" placeholder="expiration date" max="{{ date('m/d/Y', strtotime('+1 year')) }}" min="{{ date('m/d/Y', strtotime('-1 year')) }}" />
+                    <x-input-error for="storeData.details.reigistration.expiration_date" />
                 </div>
             </div>
-
         </div>
 
-        <div class="items-center w-full sm:flex space-x-6 ">
+        <div class="items-center w-full sm:flex space-x-6">
             @if ($registration['uploaded'])
                 <div
                     class="overflow-hidden rounded-lg w-[84px] h-[84px] dark:bg-gray-700 border-4 border-green transition-transform duration-500 transform translate-x-0">
@@ -91,7 +90,7 @@
         </x-tooltip>
 
         <div class="mb-2 gap-4 text-sm sm:grid-cols-2 grid">
-            <x-radio id="noInsurance" name="has_insurance" value="no" wire:model.live="storeData.has_insurance"
+            <x-radio id="noInsurance" name="has_insurance" value="invalid" wire:model.live="storeData.insurance.status"
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -100,7 +99,7 @@
                 </svg>
                 <span class="w-full">No i do not</span>
             </x-radio>
-            <x-radio id="yesInsurance" name="has_insurance" value="yes" wire:model.live="storeData.has_insurance"
+            <x-radio id="yesInsurance" name="has_insurance" value="valid" wire:model.live="storeData.insurance.status"
                 checked showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -113,7 +112,7 @@
         </div>
 
 
-        @if (isset($storeData['has_insurance']) && $storeData['has_insurance'] === 'yes')
+        @if (isset($storeData['insurance']['status']) && $storeData['insurance']['status'] === 'valid')
 
         <hr class="my-6 border-gray-300 dark:border-gray-600">
             <div class="items-center w-full sm:flex space-x-6 mb-2 mt-6">
@@ -147,7 +146,7 @@
             {{-- Insurance Note --}}
             <div class="mt-6">
                 <x-label for="insurance">Insurance Note</x-label>
-                <x-textarea id="insurance_details" wire:model="storeData.insurance_details" height="150px"
+                <x-textarea id="insurance_details" wire:model="storeData.insurance.note" height="150px"
                     placeholder="Describe your insurace coverage" />
             </div>
         @else

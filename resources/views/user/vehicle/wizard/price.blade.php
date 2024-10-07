@@ -21,7 +21,7 @@
         </div>
 
         <div class="mb-2 gap-4 text-sm sm:grid-cols-2 grid">
-            <x-radio id="nosale" name="on_sale" selected value="0" wire:model.live="storeData.price.on_sale"
+            <x-radio id="nosale" name="on_sale" selected value="false" wire:model.live="storeData.price.on_sale"
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@
                 </svg>
                 <span class="w-full">No sale</span>
             </x-radio>
-            <x-radio id="onsale" name="on_sale" value="1" wire:model.live="storeData.price.on_sale" checked
+            <x-radio id="onsale" name="on_sale" value="true" wire:model.live="storeData.price.on_sale" checked
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -39,10 +39,10 @@
                 </svg>
                 <span class="w-full">On sale</span>
             </x-radio>
-            <x-input-error for="role" />
+            <x-input-error for="storeData.price.on_sale" />
         </div>
 
-        @if (isset($storeData['price']['on_sale']) && $storeData['price']['on_sale'])
+        @if (isset($storeData['price']['on_sale']) && $storeData['price']['on_sale'] === 'true')
             <hr class="my-6 border-gray-300 dark:border-gray-600">
 
             <div class="mb-4 mt-4">
@@ -99,7 +99,7 @@
                     wire:model.live="storeData.price.discount.days" checked showIcon="false" class="!p-2">
                     1 week
                 </x-radio>
-                <x-input-error for="role" />
+                <x-input-error for="storeData.price.discount.days" />
             </div>
 
         @endif

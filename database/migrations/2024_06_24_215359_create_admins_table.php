@@ -12,19 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(16213);
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->json('phone')->nullable();
             $table->string('password');
-            $table->rememberToken();            
-            $table->string('status')->default('inactive'); // (active or inactive or suspended)
-            $table->date('date_of_birth')->nullable(); // user status (active or inactive or suspended)
-            $table->string('gender')->nullable();
-            $table->json('address')->nullable();
-            $table->json('social')->nullable();
-            $table->integer('rating')->default(0); // (active or inactive or suspended)
+            $table->rememberToken();
+            $table->json('details')->nullable();
+            $table->json('records')->nullable();
+            $table->json('verification')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
         });

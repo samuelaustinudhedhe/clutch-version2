@@ -120,7 +120,9 @@ trait WithSteps
     {
         $step = $this->rulesForStep();
         if (!empty($step['rules'])) {
-            $this->validate($step['rules'], $step['messages'], $step['names']);
+            $messages = $steps['messages']?? [];
+            $names = $steps['names']?? [];
+            $this->validate($step['rules'], $messages, $names);
         }
     }
 
@@ -266,10 +268,10 @@ trait WithSteps
      * print_r($data); // Outputs the data stored in the JSON file
      * ```
      */
-    public function getStoredData()
+    public function getStoredData($associative = true)
     {
         if (Storage::exists($this->storePath)) {
-            return  json_decode(Storage::get($this->storePath), true);
+            return  json_decode(Storage::get($this->storePath), $associative);
         }
     }
 
@@ -309,6 +311,44 @@ trait WithSteps
      * @param string|null $filePath The path to the existing file, if any.
      * @return array The details of the uploaded file.
      */
+    public function uploadFile($key, $file, $filePath)
+    {
+        // Check if there's an existing file and delete it
+        if ($filePath && Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        // Save the uploaded file and get the file path
+        $filePath = $file->store("tmp", 'public');
+
+        if (!isset($this->storeData['files'][$key])) {
+            $this->storeData['files'][$key] = [];
+        }
+
+        // Save file details to the JSON file
+        $this->storeData['files'][$key] = [
+            'path' => $filePath,
+            'mime_type' => $file->getMimeType(),
+            'size' => $file->getSize(),
+        ];
+
+        // Delete livewire Uploaded file
+        $this->deleteFile($file);
+
+        // Update StoreData file 
+        Storage::put($this->storePath, json_encode($this->storeData));
+        // Return the file details
+        return $this->storeData['files'][$key];
+    }
+
+    /**
+     * Upload a file, handling the deletion of any existing file in storage.
+     *
+     * @param string $key The key to identify the file (e.g., 'photo', 'nin').
+     * @param \Illuminate\Http\UploadedFile $file The new file being uploaded.
+     * @param string|null $filePath The path to the existing file, if any.
+     * @return array The details of the uploaded file.
+     */
     // public function uploadFile($key, $file, $filePath)
     // {
     //     // Check if there's an existing file and delete it
@@ -334,6 +374,8 @@ trait WithSteps
 
     //     return $this->storeData['files'][$key];
     // }
+
+
 
     // public function uploadFiles($key, $newFile, $files)
     // {

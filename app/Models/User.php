@@ -43,7 +43,8 @@ class User extends Authenticatable
         'status',
         'rating',
         'details',
-        'records'
+        'records',
+        'verification'
     ];
 
     /**
@@ -139,4 +140,19 @@ class User extends Authenticatable
 
         return $socialLogos;
     }
+
+    /**
+     * Retrieve the user's verification details.
+     *
+     * This method returns the verification details associated with the user.
+     * The verification details are stored as an object in the database.
+     *
+     * @return object|null The verification details of the user, or null if not set.
+     */
+    public function getVerification(){
+
+        return $this->verification;
+    }
+
+    
 }

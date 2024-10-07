@@ -17,82 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('status')->default('onboarding'); // user status (active or inactive or suspended)
-            $table->float('rating')->default(0);
+            $table->json('details')->nullable();
+            $table->json('verification')->nullable();            
+            $table->json('records')->nullable();
+            $table->string('profile_photo_path', 2048)->nullable();            
             $table->rememberToken();
-            $table->json('details')->default(json_encode([
-                'phone' => [
-                    'work' => ['country_code' => '', 'number' => '', 'verified_at' => null],
-                    'home' => ['country_code' => '', 'number' => '', 'verified_at' => null]
-                ],
-                'date_of_birth' => null,
-                'gender' => 'Rather not say',
-                'address' => null,
-                'social' => null,
-            ]));
-            $table->json('records')->default(json_encode([
-                'password' => [
-                    'resets_count' => 0,
-                    'changed_at' => null,
-                    'changed_count' => 0,
-                ],
-                'email' => [
-                    'changed_at' => null,
-                    'changed_from' => null,
-                    'changed_count' => 0,
-                ],
-                'phone' => [
-                    'home' => [
-                        'changed_at' => null,
-                        'changed_from' => null,
-                        'changed_count' => 0,
-                    ],
-                    'work' => [
-                        'changed_at' => null,
-                        'changed_from' => null,
-                        'changed_count' => 0,
-                    ],
-                ],
-                'onboarding' => [
-                    'status' => 'start', // start, completed, skipped
-                    'step' => 0,
-                    'restart_at' => '',
-                    'completed_at' => '',
-                ],
-            ]));
-            $table->json('verification')->default(json_encode([
-                'account' => [
-                    'status' => 'pending', // pending, approved, rejected
-                    'verified_at' => null,
-                ],
-                'owner'=> [
-                    'status' => 'pending', // pending, approved, rejected
-                    'verified_at' => null,
-                ],
-                'driver'=> [
-                    'status' => 'pending', // pending, approved, rejected
-                    'verified_at' => null,
-                ],
-                'email' => [
-                    'code' => null,
-                    'code_sent_at' => null,
-                    'code_expires_at' => null,
-                    'attempts' => 0,
-                ],
-                'phone' => [
-                    'home' => [
-                        'code' => null,
-                        'code_sent_at' => null,
-                        'attempts' => 0,
-                    ],
-                    'work' => [
-                        'code' => null,
-                        'code_sent_at' => null,
-                        'attempts' => 0,
-                    ],
-                ],
-            ]));
-            $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
         });
 

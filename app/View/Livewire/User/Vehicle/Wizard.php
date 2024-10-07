@@ -2,10 +2,13 @@
 
 namespace App\View\Livewire\User\Vehicle;
 
+use App\Http\Controllers\Attachments\AttachmentUploadController;
+use App\Models\Admin;
+use App\Models\User;
 use App\Models\Vehicle;
 use App\Traits\WithSteps;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -25,7 +28,7 @@ class Wizard extends Component
         'uploaded' => [],
         'errors' => [],
     ];
-    
+
     public $proofOfOwnership = [];
     public $registration = [];
     public $insurance = [];
@@ -46,27 +49,15 @@ class Wizard extends Component
         $this->proofOfOwnership['uploaded'] = $this->files['proof_of_ownership'] ?? [];
         $this->registration['uploaded'] = $this->files['registration'] ?? [];
         $this->insurance['uploaded'] = $this->files['insurance'] ?? [];
-
-        if (!isset($this->storeData['featured_image_index'])) {
-            $this->storeData['featured_image_index'] = '';
-        }
-
+        // Get featured Image index from the Stored Data file
         $this->storeData['featured_image_index'] = $this->images['featuredIndex'];
-    }
-
-    public function attachToNextStep()
-    {
-        $this->store();
-        $validationData = $this->rulesForStep();
-        if ($validationData['rules']) {
-            $this->validate($validationData['rules'], [], $validationData['customAttributes']);
-        }
     }
 
     protected function rulesForStep()
     {
         $rules = [];
-        $customAttributes = [];
+        $names = [];
+        $messages = [];
 
         switch ($this->currentStep) {
             case 0:
@@ -74,14 +65,14 @@ class Wizard extends Component
                 break;
             case 1:
                 $rules = [
-                    'storeData.description' => 'min:60|max:900|required|string',
-                    'storeData.vit' => 'required|string|in:' . implode(',', array_keys($this->vits)),
-                    'storeData.vin' => 'required|string|min:5|max:40',
-                    'storeData.make' => 'required|string',
-                    'storeData.manufacturer' => 'required|string',
-                    'storeData.model' => 'required|string',
-                    'storeData.year' => 'required|integer|min:1900|max:' . date('Y'),
-                    'storeData.location.full' => [
+                    'storeData.details.description' => 'min:60|max:900|required|string',
+                    'storeData.details.vin.type' => 'required|string|in:' . implode(',', array_keys($this->vits)),
+                    'storeData.details.vin.number' => 'required|string|min:5|max:40',
+                    'storeData.details.make' => 'required|string',
+                    'storeData.details.manufacturer' => 'required|string',
+                    'storeData.details.model' => 'required|string',
+                    'storeData.details.year' => 'required|integer|min:1900|max:' . date('Y'),
+                    'storeData.location.*.full' => [
                         'required',
                         'string',
                         function ($attribute, $value, $fail) {
@@ -96,125 +87,125 @@ class Wizard extends Component
                     ],
                 ];
 
-                $customAttributes = [
+                $names = [
                     'storeData.name' => 'name',
-                    'storeData.description' => 'description',
-                    'storeData.vit' => 'Identification Type',
-                    'storeData.vin' => 'Identification Number',
-                    'storeData.make' => 'make',
-                    'storeData.manufacturer' => 'manufacturer',
-                    'storeData.model' => 'model',
-                    'storeData.year' => 'year',
+                    'storeData.details.description' => 'description',
+                    'storeData.details.vin.type' => 'Identification Type',
+                    'storeData.details.vin.number' => 'Identification Number',
+                    'storeData.details.make' => 'make',
+                    'storeData.details.manufacturer' => 'manufacturer',
+                    'storeData.details.model' => 'model',
+                    'storeData.details.year' => 'year',
                     'storeData.location' => 'location',
                 ];
                 break;
             case 2:
                 // Validation rules for step 2
                 $rules = [
-                    'storeData.exterior.color' => 'required|string|max:50',
-                    'storeData.exterior.type' => 'required|string|max:50',
-                    'storeData.exterior.doors' => 'required|integer|min:0|max:6',
-                    'storeData.exterior.windows' => 'required|integer|min:0|max:6',
-                    'storeData.interior.color' => 'required|string|max:50',
-                    'storeData.interior.seats' => 'required|integer|min:1|max:10',
-                    'storeData.interior.upholstery' => 'required|string|in:leather,fabric,vinyl,suede,alcantara',
-                    'storeData.interior.ac' => 'required|string|in:yes,no',
-                    'storeData.interior.heater' => 'required|string|in:yes,no',
+                    'storeData.details.exterior.color' => 'required|string|max:50',
+                    'storeData.details.exterior.type' => 'required|string|max:50',
+                    'storeData.details.exterior.doors' => 'required|integer|min:0|max:6',
+                    'storeData.details.exterior.windows' => 'required|integer|min:0|max:6',
+                    'storeData.details.interior.color' => 'required|string|max:50',
+                    'storeData.details.interior.seats' => 'required|integer|min:1|max:10',
+                    'storeData.details.interior.upholstery' => 'required|string|in:leather,fabric,vinyl,suede,alcantara',
+                    'storeData.details.interior.ac' => 'required|string|in:yes,no',
+                    'storeData.details.interior.heater' => 'required|string|in:yes,no',
                 ];
 
-                $customAttributes = [
-                    'storeData.exterior.color' => 'Color',
-                    'storeData.exterior.type' => 'Type',
-                    'storeData.exterior.doors' => 'Doors',
-                    'storeData.exterior.windows' => 'Windows',
-                    'storeData.interior.color' => 'Color',
-                    'storeData.interior.seats' => 'Seats',
-                    'storeData.interior.upholstery' => 'Upholstery',
-                    'storeData.interior.ac' => 'AC',
-                    'storeData.interior.heater' => 'Heater',
+                $names = [
+                    'storeData.details.exterior.color' => 'Color',
+                    'storeData.details.exterior.type' => 'Type',
+                    'storeData.details.exterior.doors' => 'Doors',
+                    'storeData.details.exterior.windows' => 'Windows',
+                    'storeData.details.interior.color' => 'Color',
+                    'storeData.details.interior.seats' => 'Seats',
+                    'storeData.details.interior.upholstery' => 'Upholstery',
+                    'storeData.details.interior.ac' => 'AC',
+                    'storeData.details.interior.heater' => 'Heater',
                 ];
                 break;
             case 3:
                 // Validation rules for step 3
                 $rules = [
-                    'storeData.engine.type' => 'required|string',
-                    'storeData.engine.size' => 'required|string',
-                    'storeData.engine.hp' => 'required|numeric',
-                    'storeData.fuel.type' => 'required|string',
-                    'storeData.fuel.economy' => 'required|string',
-                    'storeData.transmission.type' => 'required|string',
-                    'storeData.transmission.gears' => 'required|integer',
-                    'storeData.transmission.drivetrain' => 'required|string',
+                    'storeData.details.engine.type' => 'required|string',
+                    'storeData.details.engine.size' => 'required|string',
+                    'storeData.details.engine.hp' => 'required|numeric',
+                    'storeData.details.fuel.type' => 'required|string',
+                    'storeData.details.fuel.economy' => 'required|string',
+                    'storeData.details.transmission.type' => 'required|string',
+                    'storeData.details.transmission.gears' => 'required|integer',
+                    'storeData.details.transmission.drivetrain' => 'required|string',
                 ];
 
-                $customAttributes = [
-                    'storeData.engine.type' => 'engine type',
-                    'storeData.engine.size' => 'engine size',
-                    'storeData.engine.hp' => 'engine horsepower',
-                    'storeData.fuel.type' => 'fuel type',
-                    'storeData.fuel.economy' => 'fuel economy',
-                    'storeData.transmission.type' => 'transmission',
-                    'storeData.transmission.gears' => 'gears',
-                    'storeData.transmission.drivetrain' => 'drivetrain',
+                $names = [
+                    'storeData.details.engine.type' => 'engine type',
+                    'storeData.details.engine.size' => 'engine size',
+                    'storeData.details.engine.hp' => 'engine horsepower',
+                    'storeData.details.fuel.type' => 'fuel type',
+                    'storeData.details.fuel.economy' => 'fuel economy',
+                    'storeData.details.transmission.type' => 'transmission',
+                    'storeData.details.transmission.gears' => 'gears',
+                    'storeData.details.transmission.drivetrain' => 'drivetrain',
                 ];
                 break;
             case 4:
                 // Validation rules for step 4 (KYC)
                 $rules = [
-                    // 'storeData.safety.abs' => 'required|string|in:yes,no',
-                    // 'storeData.safety.traction_control' => 'required|string|in:yes,no',
-                    // 'storeData.safety.stability_control' => 'required|string|in:yes,no',
-                    // 'storeData.safety.lane_departure_warning' => 'required|string|in:yes,no',
-                    // 'storeData.safety.lane_keeping_assist' => 'required|string|in:yes,no',
-                    // 'storeData.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
-                    // 'storeData.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
-                    // 'storeData.safety.forward_collision_warning' => 'required|string|in:yes,no',
-                    // 'storeData.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
-                    // 'storeData.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
-                    // 'storeData.safety.parking_sensors' => 'required|string|in:yes,no',
-                    // 'storeData.safety.camera_360' => 'required|string|in:yes,no',
-                    // 'storeData.safety.driver_attention_monitor' => 'required|string|in:yes,no',
-                    // 'storeData.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
-                    // 'storeData.safety.airbags' => 'required|string|in:front,front & sides,front, sides & curtain',
-                    // 'storeData.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
-                    // 'storeData.safety.crumple_zones' => 'required|string|in:yes,no',
-                    // 'storeData.safety.isofix_mounts' => 'required|string|in:yes,no',
-                    // 'storeData.security.alarm_system' => 'required|string|in:yes,no',
-                    // 'storeData.security.immobilizer' => 'required|string|in:yes,no',
-                    // 'storeData.security.remote_central_locking' => 'required|string|in:yes,no',
-                    // 'storeData.security.gps_tracking' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.abs' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.traction_control' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.stability_control' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.lane_departure_warning' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.lane_keeping_assist' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.forward_collision_warning' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.parking_sensors' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.camera_360' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.driver_attention_monitor' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.airbags' => 'required|string|in:front,front & sides,front, sides & curtain',
+                    // 'storeData.details.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.crumple_zones' => 'required|string|in:yes,no',
+                    // 'storeData.details.safety.isofix_mounts' => 'required|string|in:yes,no',
+                    // 'storeData.details.security.alarm_system' => 'required|string|in:yes,no',
+                    // 'storeData.details.security.immobilizer' => 'required|string|in:yes,no',
+                    // 'storeData.details.security.remote_central_locking' => 'required|string|in:yes,no',
+                    // 'storeData.details.security.gps_tracking' => 'required|string|in:yes,no',
                 ];
 
-                $customAttributes = [
-                    'storeData.safety.abs' => 'ABS',
-                    'storeData.safety.traction_control' => 'traction control',
-                    'storeData.safety.stability_control' => 'stability control',
-                    'storeData.safety.lane_departure_warning' => 'lane departure warning',
-                    'storeData.safety.lane_keeping_assist' => 'lane keeping assist',
-                    'storeData.safety.adaptive_cruise_control' => 'adaptive cruise control',
-                    'storeData.safety.blind_spot_monitoring' => 'blind spot monitoring',
-                    'storeData.safety.forward_collision_warning' => 'forward collision warning',
-                    'storeData.safety.automatic_emergency_braking' => 'automatic emergency braking',
-                    'storeData.safety.rear_cross_traffic_alert' => 'rear cross traffic alert',
-                    'storeData.safety.parking_sensors' => 'parking sensors',
-                    'storeData.safety.camera_360' => '360-degree camera',
-                    'storeData.safety.driver_attention_monitor' => 'driver attention monitor',
-                    'storeData.safety.tire_pressure_monitor' => 'tire pressure monitor',
-                    'storeData.safety.airbags' => 'airbags',
-                    'storeData.safety.seat_belt_pretensioners' => 'seat belt pretensioners',
-                    'storeData.safety.crumple_zones' => 'crumple zones',
-                    'storeData.safety.isofix_mounts' => 'ISOFIX mounts',
-                    'storeData.security.alarm_system' => 'alarm system',
-                    'storeData.security.immobilizer' => 'immobilizer',
-                    'storeData.security.remote_central_locking' => 'remote central locking',
-                    'storeData.security.gps_tracking' => 'GPS tracking',
+                $names = [
+                    'storeData.details.safety.abs' => 'ABS',
+                    'storeData.details.safety.traction_control' => 'traction control',
+                    'storeData.details.safety.stability_control' => 'stability control',
+                    'storeData.details.safety.lane_departure_warning' => 'lane departure warning',
+                    'storeData.details.safety.lane_keeping_assist' => 'lane keeping assist',
+                    'storeData.details.safety.adaptive_cruise_control' => 'adaptive cruise control',
+                    'storeData.details.safety.blind_spot_monitoring' => 'blind spot monitoring',
+                    'storeData.details.safety.forward_collision_warning' => 'forward collision warning',
+                    'storeData.details.safety.automatic_emergency_braking' => 'automatic emergency braking',
+                    'storeData.details.safety.rear_cross_traffic_alert' => 'rear cross traffic alert',
+                    'storeData.details.safety.parking_sensors' => 'parking sensors',
+                    'storeData.details.safety.camera_360' => '360-degree camera',
+                    'storeData.details.safety.driver_attention_monitor' => 'driver attention monitor',
+                    'storeData.details.safety.tire_pressure_monitor' => 'tire pressure monitor',
+                    'storeData.details.safety.airbags' => 'airbags',
+                    'storeData.details.safety.seat_belt_pretensioners' => 'seat belt pretensioners',
+                    'storeData.details.safety.crumple_zones' => 'crumple zones',
+                    'storeData.details.safety.isofix_mounts' => 'ISOFIX mounts',
+                    'storeData.details.security.alarm_system' => 'alarm system',
+                    'storeData.details.security.immobilizer' => 'immobilizer',
+                    'storeData.details.security.remote_central_locking' => 'remote central locking',
+                    'storeData.details.security.gps_tracking' => 'GPS tracking',
                 ];
                 break;
             default:
                 break;
         }
 
-        return ['rules' => $rules, 'customAttributes' => $customAttributes];
+        return ['rules' => $rules, 'messages' => $messages, 'names' => $names];
     }
 
 
@@ -231,7 +222,7 @@ class Wizard extends Component
             $error = '';
 
             // Validate if the file is a valid image
-            if (getimagesize($newImage->getRealPath()) === false) {
+            if (strpos($newImage->getMimeType(), 'image/') === false) {
                 $error = "The file " . $fileName . " is not a valid image.";
             }
             // Validate the file size (1MB limit)
@@ -319,192 +310,221 @@ class Wizard extends Component
         Storage::put($this->storePath, json_encode($this->storeData));
     }
 
+    /**
+     * Handle the update and validation of a file.
+     *
+     * This function validates the newly uploaded file, resets the file input,
+     * and reinitializes the uploaded file data.
+     *
+     * @param string $type The type of file being updated (e.g., 'registration', 'insurance', 'proofOfOwnership').
+     * @param string $label The label for the file type used in validation messages.
+     * @return void
+     */
+    public function updatedFile($type, $label)
+    {
+        // Validate the file
+        $this->validate(
+            ["{$type}.new" => 'required|file|max:1024'],
+            [],
+            ["{$type}.new" => $label]
+        );
 
+        $path = $this->{$type}['uploaded']['path'] ?? null;
+        $new = $this->{$type}['new'] ?? null;
+
+        // Optionally reset file input
+        $this->reset($type);
+        $this->{$type}['new'] = [];
+
+        // Reinitialize the uploaded file data
+        $this->{$type}['uploaded'] = $this->uploadFile($type, $new, $path);
+    }
 
     /**
-     * Handle the upload and validation of the National Identification Number (NIN) file.
+     * Handle the update of the registration file.
+     *
+     * This function is triggered when the registration file is updated.
+     * It validates the new registration file, resets the file input,
+     * and reinitializes the uploaded registration file data.
      *
      * @return void
      */
     public function updatedRegistration()
     {
-        // Validate the file
-        $this->validate([
-            'registration.new' => 'required|file|max:3072', // Adjust rules as needed
-        ]);
-
-        $path = $this->registration['path'] ?? null;
-        $new = $this->registration['new'] ?? null;
-
-        $this->registration['uploaded'] = $this->uploadFile('registrationistration', $new, $path);
-        // Optionally reset file input
-        // $this->reset('nin');
+        $this->updatedFile('registration', 'Registration');
     }
 
     /**
-     * Handle the upload and validation of the international passport file.
+     * Handle the update of the insurance file.
+     *
+     * This function is triggered when the insurance file is updated.
+     * It validates the new insurance file, resets the file input,
+     * and reinitializes the uploaded insurance file data.
      *
      * @return void
      */
     public function updatedInsurance()
     {
-        // Validate the file
-        $this->validate([
-            'insurance.new' => 'required|file|max:3072', // Adjust rules as needed
-        ]);
-
-        $path = $this->insurance['path'] ?? null;
-        $new = $this->insurance['new'] ?? null;
-
-        $this->insurance['uploaded'] = $this->uploadFile('insurance', $new, $path);
-        // Optionally reset file input
-        // $this->reset('insurance');
+        $this->updatedFile('insurance', 'Insurance');
     }
 
     /**
-     * Handle the upload and validation of the driver's license file.
+     * Handle the update of the proof of ownership file.
+     *
+     * This function is triggered when the proof of ownership file is updated.
+     * It validates the new proof of ownership file, resets the file input,
+     * and reinitializes the uploaded proof of ownership file data.
      *
      * @return void
      */
     public function updatedProofOfOwnership()
     {
-        // Validate the file
-        $this->validate([
-            'proofOfOwnership.new' => 'required|file|max:3072', // Adjust rules as needed
-        ]);
-
-        $path = $this->proofOfOwnership['path'] ?? null;
-        $new = $this->proofOfOwnership['new'] ?? null;
-
-        $this->proofOfOwnership['uploaded'] = $this->uploadFile('proof_of_ownership', $new, $path);
-        // Optionally reset file input
-        // $this->reset('proofOfOwnership');
+        $this->updatedFile('proofOfOwnership', 'Proof Of Ownership');
     }
-
-
-
 
     public function submit()
     {
+        $data = $this->storeData;
+        $user = $this->user;
+        // make user the default chauffeur if not provided and the chauffeur if none is found
+        $defaultChauffeur = [
+            'name' => $user->name,
+            'phone' => [
+                'home' => formatPhone($user->phone, type: 'home'),
+                'work' => formatPhone($user->phone, type: 'work')
+            ],
+            'email' => $user->email
+        ];
+        // set currency if none is set
+        isset($data['price']['currency']) ?:  $data['price']['currency']  = app_currency(false);
+        // Set the default chauffeur if none is provided
+        $chauffeur = isset($data['has_chauffeur']) ? $data['chauffeur'] : $defaultChauffeur;
+
+        // Ensure the name is constructed correctly
+        $vehicleName = trim($data['details']['make'] . ' ' . $data['details']['model'] . ' ' . $data['details']['year']);
+
         // Final submission: Create the vehicle in the database
-
-        $vehicle = Vehicle::create([
-            'name' => $this->storeData['name'],
-            'slug' => $this->storeData['slug'],
-            'vin' => json_encode([
-                'type' => $this->storeData['vin_type'],
-                'number' => $this->storeData['vin_number'],
-            ]),
-            'description' => $this->storeData['description'],
-            'rating' => $this->storeData['rating'],
-            'price' => json_encode([
-                'currency' => $this->storeData['price_currency'],
-                'amount' => $this->storeData['price_amount'],
-            ]),
-            'status' => $this->storeData['status'],
-            'location' => json_encode([
-                'city' => $this->storeData['location_city'],
-                'state' => $this->storeData['location_state'],
-                'country' => $this->storeData['location_country'],
-            ]),
-            'details' => json_encode([
-                'type' => $this->storeData['type'],
-                'make' => $this->storeData['make'],
-                'manufacturer' => $this->storeData['manufacturer'],
-                'model' => $this->storeData['model'],
-                'year' => $this->storeData['year'],
-                'exterior' => [
-                    'color' => $this->storeData['exterior_color'],
-                    'type' => $this->storeData['exterior_type'],
-                    'doors' => $this->storeData['exterior_doors'],
-                    'windows' => $this->storeData['exterior_windows'],
-                ],
-                'interior' => [
-                    'seats' => $this->storeData['interior_seats'],
-                    'upholstery' => $this->storeData['interior_upholstery'],
-                    'color' => $this->storeData['interior_color'],
-                    'ac' => $this->storeData['interior_ac'],
-                    'heater' => $this->storeData['interior_heater'],
-                ],
-                'dimensions' => [
-                    'length' => $this->storeData['dimensions_length'],
-                    'width' => $this->storeData['dimensions_width'],
-                    'height' => $this->storeData['dimensions_height'],
-                ],
-                'engine' => [
-                    'size' => $this->storeData['engine_size'],
-                    'hp' => $this->storeData['engine_hp'],
-                    'type' => $this->storeData['engine_type'],
-                ],
-                'transmission' => [
-                    'type' => $this->storeData['transmission_type'],
-                    'gear_ratio' => $this->storeData['transmission_gear_ratio'],
-                    'gears' => $this->storeData['transmission_gears'],
-                    'oil' => $this->storeData['transmission_oil'],
-                    'drivetrain' => $this->storeData['transmission_drivetrain'],
-                ],
-                'fuel' => [
-                    'type' => $this->storeData['fuel_type'],
-                    'economy' => $this->storeData['fuel_economy'],
-                ],
-                'modifications' => [
-                    'performance' => $this->storeData['modifications_performance'],
-                    'aesthetic' => $this->storeData['modifications_aesthetic'],
-                    'interior' => $this->storeData['modifications_interior'],
-                ],
-                'security' => [
-                    'auto_lock' => $this->storeData['security_auto_lock'],
-                    'alarm_system' => $this->storeData['security_alarm_system'],
-                    'tracking_system' => $this->storeData['security_tracking_system'],
-                ],
-                'safety' => [
-                    'airbags' => $this->storeData['safety_airbags'],
-                    'emergency_braking' => $this->storeData['safety_emergency_braking'],
-                ],
-                'service' => [
-                    'status' => $this->storeData['service_status'],
-                    'last_service_date' => $this->storeData['last_service_date'],
-                    'last_inspection_date' => $this->storeData['last_inspection_date'],
-                ],
-                'faults' => $this->storeData['faults'],
-            ]),
-            'insurance' => json_encode([
-                'provider' => $this->storeData['insurance_provider'],
-                'policy_number' => $this->storeData['insurance_policy_number'],
-                'coverage' => $this->storeData['insurance_coverage'],
-                'expiry_date' => $this->storeData['insurance_expiry_date'],
-            ]),
-            'chauffeur' => json_encode([
-                'name' => $this->storeData['chauffeur_name'],
-                'license_number' => $this->storeData['chauffeur_license_number'],
-                'availability' => $this->storeData['chauffeur_availability'],
-            ]),
-            'ownerable_id' => $this->getOwner()->id,
-            'ownerable_type' => get_class($this->getOwner()),
+        $vehicle = new Vehicle([
+            'name' => $vehicleName,
+            'price' => $data['price'],
+            'status' => 'pending',
+            'location' => $data['location'],
+            'details' => $data['details'],
+            'insurance' => $data['insurance'],
+            'chauffeur' => $chauffeur,
         ]);
-
-        // Handle vehicle images upload
-        foreach ($this->vehicleImages as $image) {
-            $image->storeAs("vehicles/{$vehicle->id}/images", $image->getClientOriginalName());
-        }
-
-        // Handle vehicle documents upload
-        foreach ($this->vehicleDocuments as $document) {
-            $document->storeAs("vehicles/{$vehicle->id}/documents", $document->getClientOriginalName());
-        }
-
-        // Handle insurance documents upload
-        foreach ($this->insuranceDocuments as $document) {
-            $document->storeAs("vehicles/{$vehicle->id}/insurance", $document->getClientOriginalName());
-        }
+        // Use the associate method to automatically handle ownerable_id and ownerable_type
+        $vehicle->ownerable()->associate($user);
+        $this->saveAttachments($user, $vehicle);
+        $vehicle->save();
 
         // Clear the stored data after submission
-        Storage::delete("Users/" . getUser()->id . "/vehicle.json");
+        //Storage::delete("Users/" . getUser()->id . "/vehicle.json");
 
         // Redirect or reset after successful submission
         return redirect()->route('vehicles.index');
     }
 
+
+    protected function saveAttachments(User|Admin $user, Vehicle $vehicle)
+    {
+        // Get the upload files details using the function because the variable data is not updated at this point
+        $files = $this->getStoredData()['files'];
+
+        foreach ($files['images'] as $index => $image) {
+            // Generate a unique hash name for the image
+            $hashName = Str::random(40);
+
+            if (isset($image['path']) && Storage::exists('public/'. $image['path'])) {
+                // get the featured image using the featured index
+                $featured = $index === $this->images['featuredIndex'] ? true : false;
+                // Generate the image name ans description.
+                $name = $vehicle->name . '\'s Gallery Image ' . numberToWords($index);
+                $description = $user->name . '\'s ' . numberToWords($index, true) . " Gallery Image of {$vehicle->name} - {$vehicle->description}";
+                $resize = [
+                    'width' => 2880,
+                    'height' => 1400,
+                    'type' => 'resize',
+                ];
+                // Save the image to the storage, update the user profile image and attach it with the user Via attachable
+                AttachmentUploadController::Image(
+                    name: $name,
+                    description: $description,
+                    image: Storage::path('public/' . $image['path']),
+                    mimeType: $image['mime_type'],
+                    is_featured: $featured,
+                    resize: $resize,
+                    quality: 90,
+                    authorable: $user,
+                    attachable: $vehicle,
+                    path: 'public/vehicles/' . $vehicle->id . '/' . $hashName . '.webp',
+                );
+
+                // Delete the uploaded photo after saving it to the storage
+                Storage::delete('public/' . $image['path']);
+                unset($this->storeData['files']['images'][$index]);
+            }
+        }
+        foreach ($files as $key => $file) {
+            // Save uploaded files to the storage and attach them with the user Via attachable
+            if ($key !== 'images' && isset($file['path']) && Storage::exists('public/'. $file['path'])) {
+
+                $storagePath = getUserStorage('private', $user->id) . 'documents/vehicles/' . $vehicle->id;
+                $mime_type = $file['mime_type'];
+                $path = str_contains($mime_type, 'image') ? $storagePath . $key . '.webp' : $storagePath . $key . '.pdf';
+                $docName = $this->getDocName($key) . ' for ' . $vehicle->name;
+                $docDesc = $user->name . '\'s ' . $docName;
+
+                // Save the document to the storage and attach it with the user Via attachable
+                AttachmentUploadController::file(
+                    name: $docName,
+                    description: $docDesc,
+                    file: Storage::path('public/' . $file['path']),
+                    mimeType: $mime_type,
+                    is_featured: true,
+                    quality: 90,
+                    authorable: $user,
+                    attachable: $user,
+                    path: $path,
+                );
+
+                // Delete the uploaded file after saving it to the storage
+                Storage::delete('public/' . $file['path']);
+                unset($this->storeData['files'][$key]);
+            }
+            // Update the stored data after saving files to the designated storages
+            $this->putData($this->storeData);
+        }
+    }
+
+    /**
+     * Get the document name based on the document type.
+     *
+     * @param string $docType The type of the document.
+     * @return string The name of the document.
+     */
+    protected function getDocName(string $fileType): string
+    {
+        $fileNames = [
+            'images' => 'Gallery Images',
+            'insurance' => 'Insurance Document',
+            'registration' => 'Vehicle Registration',
+            'proof_of_ownership' => 'Proof of Ownership',
+            // Add more document types and their corresponding names as needed
+        ];
+
+        return $fileNames[$fileType] ?? 'Vehicle File';
+    }
+
+    /**
+     * Initializes the steps for the vehicle wizard process.
+     *
+     * This function sets up the step names and calculates the total number of steps
+     * required for the vehicle wizard. Each step corresponds to a specific part of
+     * the vehicle information and submission process.
+     *
+     * @return void
+     */
     public function defineSteps()
     {
         $this->stepNames = [
@@ -522,12 +542,30 @@ class Wizard extends Component
         $this->totalSteps = count($this->stepNames) - 1;
     }
 
+    /**
+     * Initializes the storage path and data for the vehicle wizard.
+     *
+     * This function sets the path for storing vehicle data in a JSON file,
+     * retrieves any previously stored data, and initializes the current step
+     * of the wizard process.
+     *
+     * @return void
+     */
     public function defineStore()
     {
         $this->storePath = getUserStorage('private') . "/data/vehicle.json";
         $this->storeData = $this->getStoredData() ?? $this->storeData;
+        $this->currentStep = $this->storeData['current_step'] ?? 0;
     }
 
+    /**
+     * Renders the vehicle wizard view.
+     *
+     * This function prepares and returns the view for the vehicle wizard,
+     * including the current step information and navigation prefixes.
+     *
+     * @return \Illuminate\View\View The view for the vehicle wizard with layout.
+     */
     public function render()
     {
         return view(
@@ -535,7 +573,7 @@ class Wizard extends Component
             [
                 'prevStepName' => $this->getPrevStepName(),
                 'nextStepName' => $this->getNextStepName(),
-                'currentStepName' => $this->getStepName($this->getStoredData()['current_step']),
+                'currentStepName' => $this->getStepName($this->currentStep),
                 'currentStep' => $this->updateCurrentStep(),
                 'nextPrefix' => 'next-',
                 'prevPrefix' => 'prev-',

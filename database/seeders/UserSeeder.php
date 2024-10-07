@@ -22,18 +22,18 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // // Retrieve all roles where 'guard' is 'web'
-        // $roles = Role::where('guard', 'web')->get();
+        // Retrieve all roles where 'guard' is 'web'
+        $roles = Role::where('guard', 'web')->get();
 
-        // // Loop through each role and create a user
-        // foreach ($roles as $role) {
-        //     User::factory()->create([
-        //         'name' => $role->name,
-        //         'email' => strtolower($role->name) . '@example.com',
-        //         'role' => $role->slug,
-        //     ]);
-        // }
+        // Loop through each role and create a user
+        foreach ($roles as $role) {
+            User::factory()->create([
+                'name' => $role->name,
+                'email' => strtolower($role->name) . '@example.com',
+                'role' => $role->slug,
+            ]);
+        }
         // // Create fake users
-        // User::factory(2)->create();
+         User::factory(2)->create();
     }
 }

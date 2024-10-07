@@ -88,4 +88,14 @@ trait HasDetails
     {
         return $this->getDetails()->nin ?? null;
     }
+    /**
+     * Get the phone numbers from the details attribute.
+     *
+     * @return object|null
+     */
+    public function getStatusAttribute()
+    {
+        return $this->getDetails()->status ?? $this->getVerification()->account->status;
+    }
+
 }

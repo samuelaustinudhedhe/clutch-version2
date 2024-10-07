@@ -38,8 +38,6 @@ class AdminSeeder extends Seeder
                 'email' => strtolower($role->name) . '@dev.clutch.africa', // Admin user's email
                 'password' => Hash::make('3233ClutchWW'), // Admin user's password (hashed)
                 'role' => $role->slug, // Admin user's role
-                'status' => Arr::random(['active']),
-
             ]);
         }
         // Create 20 admin users

@@ -18,12 +18,12 @@ class DatabaseSeeder extends Seeder
 
         # Call the SettingsSeeder to seed the settings table
         $this->call(SettingSeeder::class);
-        
-        # Call the RoleSeeder to seed the roles table
-        $this->call(RoleSeeder::class);
-        
+              
         # Call the PermissionSeeder to seed the permissions table
         $this->call(PermissionSeeder::class);
+
+         # Call the RoleSeeder to seed the roles table
+        $this->call(RoleSeeder::class);
         
         # Call the AdminSeeder to seed the admin users table
         $this->call(AdminSeeder::class);

@@ -32,8 +32,6 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
-            'status' => Arr::random(['active', 'inactive', 'suspended', 'onboarding']),
-            'rating' => Arr::random(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.2', '4.5', '4.6', '4.7', '4.8', '5.0']),
             'role' => $this->getRandomRole(),
             'details' => $this->generateDetails(),
         ];
@@ -76,6 +74,7 @@ class UserFactory extends Factory
                 'work' => $this->generatePhone(),
                 'home' => $this->generatePhone(),
             ],
+            'status' => Arr::random(['active', 'inactive', 'suspended', 'onboarding']),
             'date_of_birth' => fake()->date(max: '2006-12-31'),
             'gender' => Arr::random(['Male', 'Female', 'Prefer not to say']),
             'address' => $this->generateAddress(),

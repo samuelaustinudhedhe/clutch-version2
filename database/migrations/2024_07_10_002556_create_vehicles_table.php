@@ -14,28 +14,24 @@ return new class extends Migration
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id()->startingValue(28450000051);
             $table->string('name');
-            //$table->string('slug')->unique();
-            $table->json('vin')->default(
-                json_encode([
-                    'type' => '', // vehicle identification type VIN, HIN, TN, SN, UIC, PIN, VSN etc
-                    'number' => '', // vehicle identification number 
-                ])
-            );
-            $table->text('description');
-            $table->float('rating')->default(0);
             $table->json('price')->nullable();
             $table->string('status')->default('active');
             $table->json('location');
             $table->json('details')->default(
                 json_encode([
-
+                    'vin' => [
+                        'type' => '', // vehicle identification type VIN, HIN, TN, SN, UIC, PIN, VSN etc
+                        'number' => '', // vehicle identification number 
+                    ],
+                    'description' => '',
+                    
                     // Vehicle Basic Information
                     'type' => '', // vehicle type (e.g., car, motorcycle, truck, van, bus, pickup truck, SUV, convertible, etc.)
                     'make' => '', // Vehicle make (e.g., Toyota, Honda, Ford, Chevrolet, etc.)
                     'manufacturer' => '', // Vehicle manufacturer (e.g., Toyota, Honda, Ford, Chevrolet)
                     'model' => '', // Vehicle model (e.g., Camry, Accord, Explorer, Corvette, etc.)
                     'year' => '', // Vehicle year (e.g., 2020, 2019, 2018, etc.)
-
+                    'millage' => 'unknown ', // Vehicle mileage (e.g., 15000, 20000, 25000, etc.)
                     // Exterior Details
                     'exterior' => [
                         'color' => '', // Exterior color
@@ -109,7 +105,7 @@ return new class extends Migration
                     ],
                     'faults' => '', // Faults (e.g., brakes, tires, air conditioning, lights, etc.)
                 ])
-            );
+            )->nullable();
             $table->json('insurance')->nullable();
             $table->json('chauffeur')->nullable();
             $table->morphs('ownerable'); // Polymorphic fields for author (User or Admin)

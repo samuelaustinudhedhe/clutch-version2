@@ -5,7 +5,7 @@ namespace App\Traits;
 trait Onboarding
 {
 
-     /**
+    /**
      * Get and update the onboarding key within the records attribute.
      *
      * @return object The decoded JSON object of the onboarding data.
@@ -13,23 +13,26 @@ trait Onboarding
     public function onboarding()
     {
         // Decode the JSON encoded onboarding data.
-        $onboarding = is_string($this->records->onboarding) ? json_decode($this->records->onboarding) : $this->records->onboarding;
+        if (isset($this->records->onboarding)) {
+            $onboarding = is_string($this->records->onboarding) ?
+                json_decode($this->records->onboarding) :
+                $this->records->onboarding;        
+                
+        return $onboarding;
 
-        // Automatically assign onboarding keys if it's null or empty.
-        if (is_null($onboarding) || empty($onboarding)) {
+        }else {
             // Fill the onboarding attribute with default values and save the model.
             $this->forceFill([
-                'records->onboarding' => json_encode([
+                'records->onboarding' =>[
                     'status' => 'start', // Initial status of onboarding.
                     'step' => 0, // Initial step of onboarding.
                     'restart_at' => '', // Placeholder for restart timestamp.
                     'completed_at' => '', // Placeholder for completion timestamp.
-                ]),
+                ],
             ])->save();
         }
 
         // Return the decoded onboarding data.
-        return $onboarding;
     }
 
 
@@ -51,7 +54,7 @@ trait Onboarding
 
         // Save the updated onboarding data.
         $this->forceFill([
-            'records->onboarding' => json_encode($onboarding),
+            'records->onboarding' => $onboarding,
         ])->save();
     }
 
@@ -65,7 +68,7 @@ trait Onboarding
         // Call the onboarding method to get the onboarding data.
         return $this->onboarding();
     }
-    
+
     /**
      * Retrieves the status of the onboarding process.
      * 

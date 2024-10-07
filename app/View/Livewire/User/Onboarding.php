@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Livewire\User\Onboarding;
+namespace App\View\Livewire\User;
 
 use App\Notifications\Onboarding\Completed;
 use App\Notifications\Onboarding\Skipped;
@@ -10,12 +10,12 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Http\Controllers\Attachments\AttachmentUploadController as Upload;
 use App\Models\Admin;
-use App\Models\Attachment;
 use App\Models\User;
 use App\Rules\CheckNIN;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class Main extends Component
+class Onboarding extends Component
 {
     use WithSteps, WithFileUploads;
 
@@ -51,19 +51,33 @@ class Main extends Component
         $this->proofOfAddress['file'] = $this->files['proof_of_address'] ?? null;
     }
 
+    /**
+     * Populate the storeData array with user information if not already set.
+     *
+     * This method checks various user attributes such as phone numbers, date of birth,
+     * gender, address, social media links, and identification numbers. If these attributes
+     * are not already present in the storeData array, they are populated from the user's
+     * existing data.
+     *
+     * @return void
+     */
     public function defineStoreData()
     {
-        if (empty($this->storeData['phone'])) {
-            $this->storeData['phone'] = (array) $this->user->phone;
+        if (empty($this->storeData['phone']['work']) && !empty($this->user->phone->work->number) && !empty($this->user->phone->work->country_code)) {
+            $this->storeData['phone']['work'] = (array) $this->user->phone->work;
         }
-        if (empty($this->storeData['date_of_birth'])) {
+        if (empty($this->storeData['phone']['home']) && !empty($this->user->phone->home->number) && !empty($this->user->phone->home->country_code)) {
+            $this->storeData['phone']['home'] = (array) $this->user->phone->home;
+        }
+
+        if (empty($this->storeData['date_of_birth']) && !empty($this->user->date_of_birth)) {
             $this->storeData['date_of_birth'] = $this->user->date_of_birth;
         }
-        if (empty($this->storeData['gender'])) {
+        if (empty($this->storeData['gender']) && !empty($this->user->gender)) {
             $this->storeData['gender'] = $this->user->gender;
         }
-        if (empty($this->storeData['address'])) {
-            $this->storeData['address'] = (array) $this->user->address;
+        if (empty($this->storeData['address']['home']['full']) && !empty($this->user->address->home->full)) {
+            $this->storeData['address']['home'] = (array) $this->user->address->home;
         }
         if (empty($this->storeData['social'])) {
             $this->storeData['social'] = (array) $this->user->social;
@@ -79,6 +93,17 @@ class Main extends Component
         }
         if (empty($this->storeData['status'])) {
             $this->storeData['status'] = $this->user->status;
+        }
+
+        // Check and update address details
+        $addressKeys = ['country', 'state', 'city', 'street'];
+        foreach ($addressKeys as $key) {
+            if (empty($this->storeData['address']['home'][$key]) && !empty($this->user->address->home->$key)) {
+                $this->storeData['address']['home'][$key] = $this->user->address->home->$key;
+            }
+            if (empty($this->storeData['address']['work'][$key]) && !empty($this->user->address->work->$key)) {
+                $this->storeData['address']['work'][$key] = $this->user->address->work->$key;
+            }
         }
     }
 
@@ -165,8 +190,8 @@ class Main extends Component
                 break;
             case 2:
                 $rules = [
-                    'storeData.phone.*.country_code' => 'required|string|regex:/^\+\d+$/',
-                    'storeData.phone.*.number' => 'required|digits_between:4,11',
+                    'storeData.phone.home.country_code' => 'required|string|regex:/^\+\d+$/',
+                    'storeData.phone.home.number' => 'required|digits_between:4,11',
                     'storeData.date_of_birth' => [
                         'required',
                         'string',
@@ -174,7 +199,20 @@ class Main extends Component
                     ],
                     'storeData.gender' => 'required|string|in:male,female',
 
-                    'storeData.address.*.full' => [
+                    'storeData.address.home.full' => [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            // Custom validation logic to check if the location exists using Google Maps API
+                            $response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($value) . "&key=" . getGoogleMapKey());
+                            $response = json_decode($response, true);
+
+                            if (empty($response['results'])) {
+                                $fail('The ' . $attribute . ' is not a valid location.');
+                            }
+                        },
+                    ],
+                    'storeData.address.work.full' => [
                         'required',
                         'string',
                         function ($attribute, $value, $fail) {
@@ -208,9 +246,9 @@ class Main extends Component
                 ];
 
                 $messages = [
-                    'storeData.phone.*.country_code.required' => 'Please enter the country code for the phone number.',
-                    'storeData.phone.*.number.required' => 'Please enter the phone number.',
-                    'storeData.phone.*.number.numeric' => 'The phone number must be a numeric value.',
+                    'storeData.phone.home.country_code.required' => 'Please enter the country code for the phone number.',
+                    'storeData.phone.home.number.required' => 'Please enter the phone number.',
+                    'storeData.phone.home.number.numeric' => 'The phone number must be a numeric value.',
                     //
                     'storeData.date_of_birth.required' => 'Please enter your date of birth.',
                     'storeData.date_of_birth.string' => 'The date of birth must be in the format MM/DD/YYYY.',
@@ -218,7 +256,7 @@ class Main extends Component
                     'storeData.gender.required' => 'Please select your gender.',
                     'storeData.gender.string' => 'The selected gender is invalid.',
                     'storeData.gender.in' => 'The selected gender is invalid.',
-                    'storeData.address.*.full.required' => 'Please enter the location.',
+                    'storeData.address.*.full.required' => 'Please enter a location.',
                     'storeData.address.*.full.string' => 'The location must be a valid address.',
                     'storeData.address.*.full.exists' => 'The location does not exist.',
                 ];
@@ -316,168 +354,105 @@ class Main extends Component
         return ['rules' => $rules, 'messages' => $messages, 'names' => $names];
     }
 
+    /**
+     * Handle the update and validation of a file.
+     *
+     * This function validates the newly uploaded file, resets the file input,
+     * and reinitializes the uploaded file data.
+     *
+     * @param string $type The type of file being updated (e.g., 'photo', 'nin', 'internationalPassport', 'driversLicense', 'proofOfAddress').
+     * @param string $label The label for the file type used in validation messages.
+     * @param bool $isImage Whether the file should be validated as an image.
+     * @return void
+     */
+    public function updatedFile($type, $label, $isImage = false)
+    {
+        // Determine the validation rule based on whether the file is an image
+        $validationRule = $isImage ? 'required|image|max:1024' : 'required|file|max:1024';
+
+        // Validate the file
+        $this->validate(
+            ["{$type}.new" => $validationRule],
+            [],
+            ["{$type}.new" => $label]
+        );
+
+        $path = $this->{$type}['file']['path'] ?? null;
+        $new = $this->{$type}['new'] ?? null;
+
+        // Optionally reset file input
+        $this->reset($type);
+        $this->{$type}['new'] = [];
+
+        // Reinitialize the file
+        $this->{$type}['file'] = $this->uploadFile($type, $new, $path);
+    }
 
     /**
-     * Handle the upload and validation of the photo file.
+     * Handle the update of the user's profile photo.
+     *
+     * This function is triggered when the user's profile photo is updated.
+     * It validates and processes the new photo file.
      *
      * @return void
      */
     public function updatedPhoto()
     {
-        // Validate the file
-        $this->validate(
-            ['photo.new' => 'required|image|max:1024',],
-            [],
-            ['photo.new' => 'profile photo']
-        );
-
-        $path = $this->photo['file']['path'] ?? null;
-        $new = $this->photo['new'] ?? null;
-
-        // Optionally reset file input        
-        $this->reset('photo');
-        $this->photo['new'] = [];
-
-        // Reinitialize the photo
-        $this->photo['file'] = $this->uploadFile('photo', $new, $path);
+        $this->updatedFile('photo', 'Profile Photo', true);
     }
 
     /**
-     * Handle the upload and validation of the National Identification Number (NIN) file.
+     * Handle the update of the user's National Identification Number (NIN) document.
+     *
+     * This function is triggered when the user's NIN document is updated.
+     * It validates and processes the new NIN file.
      *
      * @return void
      */
     public function updatedNin()
     {
-        // Validate the file
-        $this->validate(
-            ['nin.new' => 'required|file|max:1024'],
-            [],
-            ['nin.new' => 'NIN']
-        );
-
-        $path = $this->nin['file']['path'] ?? null;
-        $new = $this->nin['new'] ?? null;
-
-        // Optionally reset file input
-        $this->reset('nin');
-        $this->nin['new'] = [];
-
-        // Reinitialize the NIN
-        $this->nin['file'] = $this->uploadFile('nin', $new, $path);
+        $this->updatedFile('nin', 'NIN');
     }
 
     /**
-     * Handle the upload and validation of the international passport file.
+     * Handle the update of the user's International Passport document.
+     *
+     * This function is triggered when the user's International Passport document is updated.
+     * It validates and processes the new International Passport file.
      *
      * @return void
      */
     public function updatedInternationalPassport()
     {
-        // Validate the file
-        $this->validate(
-            ['internationalPassport.new' => 'required|file|max:1024'],
-            [],
-            ['internationalPassport.new' => 'International Passport']
-        );
-
-        $path = $this->internationalPassport['file']['path'] ?? null;
-        $new = $this->internationalPassport['new'] ?? null;
-
-        // Optionally reset file input
-        $this->reset('internationalPassport');
-        $this->internationalPassport['new'] = [];
-
-        // Reinitialize the International Passport
-        $this->internationalPassport['file'] = $this->uploadFile('passport', $new, $path);
+        $this->updatedFile('internationalPassport', 'International Passport');
     }
 
     /**
-     * Handle the upload and validation of the driver's license file.
+     * Handle the update of the user's Driver's License document.
+     *
+     * This function is triggered when the user's Driver's License document is updated.
+     * It validates and processes the new Driver's License file.
      *
      * @return void
      */
     public function updatedDriversLicense()
     {
-        // Validate the file
-        $this->validate(
-            ['driversLicense.new' => 'required|file|max:1024'],
-            [],
-            ['driversLicense.new' => 'Drivers License']
-        );
-
-        $path = $this->driversLicense['file']['path'] ?? null;
-        $new = $this->driversLicense['new'] ?? null;
-
-        // Optionally reset file input
-        $this->reset('driversLicense');
-        $this->driversLicense['new'] = [];
-
-        // Reinitialize the Driver's License
-        $this->driversLicense['file'] = $this->uploadFile('drivers_license', $new, $path);
+        $this->updatedFile('driversLicense', 'Drivers License');
     }
 
     /**
-     * Handle the upload and validation of the proof of address file.
+     * Handle the update of the user's Proof of Address document.
+     *
+     * This function is triggered when the user's Proof of Address document is updated.
+     * It validates and processes the new Proof of Address file.
      *
      * @return void
      */
     public function updatedProofOfAddress()
     {
-        // Validate the file
-        $this->validate(
-            ['proofOfAddress.new' => 'required|file|max:1024'],
-            [],
-            ['proofOfAddress.new' => 'Proof Of Address']
-        );
-
-        $path = $this->proofOfAddress['file']['path'] ?? null;
-        $new = $this->proofOfAddress['new'] ?? null;
-
-        // Optionally reset file input
-        $this->reset('proofOfAddress');
-        $this->proofOfAddress['new'] = [];
-
-        // Reinitialize the Proof of Address
-        $this->proofOfAddress['file'] = $this->uploadFile('proof_of_address', $new, $path);
+        $this->updatedFile('proofOfAddress', 'Proof Of Address');
     }
 
-    /**
-     * Upload a file, handling the deletion of any existing file in storage.
-     *
-     * @param string $key The key to identify the file (e.g., 'photo', 'nin').
-     * @param \Illuminate\Http\UploadedFile $file The new file being uploaded.
-     * @param string|null $filePath The path to the existing file, if any.
-     * @return array The details of the uploaded file.
-     */
-    public function uploadFile($key, $file, $filePath)
-    {
-        // Check if there's an existing file and delete it
-        if ($filePath && Storage::disk('public')->exists($filePath)) {
-            Storage::disk('public')->delete($filePath);
-        }
-
-        // Save the uploaded file and get the file path
-        $filePath = $file->store("tmp", 'public');
-
-        if (!isset($this->storeData['files'][$key])) {
-            $this->storeData['files'][$key] = [];
-        }
-
-        // Save file details to the JSON file
-        $this->storeData['files'][$key] = [
-            'path' => $filePath,
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize(),
-        ];
-
-
-        $this->deleteFile($file);
-
-        Storage::put($this->storePath, json_encode($this->storeData));
-
-        return $this->storeData['files'][$key];
-    }
 
     /**
      * Save the uploaded files associated with the user.
@@ -487,58 +462,55 @@ class Main extends Component
     protected function saveFiles(User|Admin $user)
     {
         if (isset($this->photo['file']['path'])) {
-            $image = Storage::path('public/' . $this->photo['file']['path']);
-            $mime_type = $this->photo['file']['mime_type'];
-            $profilePath = getUserStorage() . 'profile/photo.webp';
-            $photoName = $this->getDocName('photo');
-            $photoDesc = $user->name . '\'s ' . $photoName;
-
-            // Save the photo to the storage, update the user profile photo and attach it with the user Via attachable
-            Upload::file(
-                name: $photoName,
-                description: $photoDesc,
-                file: $image,
-                mimeType: $mime_type,
-                is_featured: false,
-                quality: 90,
-                authorable: $user,
-                attachable: $user,
-                path: $profilePath,
+            $this->processFile(
+                $user,
+                $this->photo['file'],
+                'photo',
+                getUserStorage() . 'profile/photo.webp',
+                false,
+                80
             );
-
-            // Delete the uploaded photo after saving it to the storage
-            Storage::delete('public/' . $this->photo['file']['path']);
-            $this->storeData['files']['photo'] = [];
         }
 
         foreach ($this->getStoredData()['files'] as $key => $file) {
-            // Save uploaded files to the storage and attach them with the user Via attachable
             if ($key !== 'photo' && isset($file['path'])) {
                 $storagePath = getUserStorage('private', $this->user->id) . 'documents/';
-                $document = Storage::path('public/' . $file['path']);
-                $mime_type = $file['mime_type'];
-                $path = str_contains($mime_type, 'image') ? $storagePath . $key . '.webp' : $storagePath . $key . '.pdf';
-                $docName = $this->getDocName($key);
-                $docDesc = $user->name . '\'s ' . $docName;
-
-                // Save the document to the storage and attach it with the user Via attachable
-                Upload::file(
-                    name: $docName,
-                    description: $docDesc,
-                    file: $document,
-                    mimeType: $mime_type,
-                    is_featured: true,
-                    quality: 90,
-                    authorable: $user,
-                    attachable: $user,
-                    path: $path,
-                );
-
-                // Delete the uploaded file after saving it to the storage
-                Storage::delete('public/' . $file['path']);
-                $this->storeData['files'][$key] = [];
+                $path = str_contains($file['mime_type'], 'image') ? $storagePath . $key . '.webp' : $storagePath . $key . '.pdf';
+                $this->processFile($user, $file, $key, $path, true);
             }
         }
+    }
+
+    /**
+     * Process and save a file to storage.
+     *
+     * @param User|Admin $user The user associated with the file.
+     * @param array $file The file data.
+     * @param string $key The key representing the file type.
+     * @param string $path The storage path for the file.
+     * @param bool $isFeatured Whether the file is featured.
+     * @return void
+     */
+    protected function processFile(User|Admin $user, array $file, string $key, string $path, bool $isFeatured, int $quality = 100)
+    {
+        $document = Storage::path('public/' . $file['path']);
+        $docName = $this->getDocName($key);
+        $docDesc = $user->name . '\'s ' . $docName;
+
+        Upload::file(
+            name: $docName,
+            description: $docDesc,
+            file: $document,
+            mimeType: $file['mime_type'],
+            is_featured: $isFeatured,
+            quality: $quality,
+            authorable: $user,
+            attachable: $user,
+            path: $path,
+        );
+
+        Storage::delete('public/' . $file['path']);
+        $this->storeData['files'][$key] = [];
     }
 
     /**
@@ -584,35 +556,26 @@ class Main extends Component
         // Redirect to the user dashboard after completing the onboarding process
         redirect()->route('user.dashboard')->with('message', 'You have completed the onboarding process. You have been updated to ' . ucfirst($this->user->role) . '.');
 
-        // Decode the verification data JSON string into an associative array
-        $verificationData = json_decode($this->user->verification, true) ?? [];
-        
-        // Update the verification data
-        $verificationData['account']['status'] = 'pending';
-
-        // Prepare the onboarding data
-        $onboardingData = [
-            'status' => 'completed',
-            'step' => $this->currentStep,
-            'restart_at' => null,
-            'completed_at' => now(),
-        ];
-
-        // Use forceFill to update all user attributes at once
-        $this->user->forceFill([
-            'records->onboarding' => json_encode($onboardingData),
-            'status' => 'active',
-            'verification' => json_encode($verificationData), // Re-encode the verification data
-            'role' => $this->storeData['role'],
-            'details->phone' => $this->storeData['phone'],
-            'details->date_of_birth' => $this->storeData['date_of_birth'],
-            'details->gender' => $this->storeData['gender'],
-            'details->address' => $this->storeData['address'],
-            'details->social' => $this->storeData['social'],
-            'details->nin' => $this->storeData['nin'],
-            'details->self_drive' => $this->storeData['drive'],
-            'profile_photo_path' => getUserStorage('') . 'profile/photo.webp',
-        ])->save();
+        // Update the user fields using database-level JSON updates
+        DB::table('users')
+            ->where('id', $this->user->id)
+            ->update([
+                'records->onboarding->status' => 'completed',
+                'records->onboarding->step' => $this->currentStep,
+                'records->onboarding->restart_at' => null,
+                'records->onboarding->completed_at' => now(),
+                'details->phone' => json_encode($this->storeData['phone']),
+                'details->date_of_birth' => json_encode($this->storeData['date_of_birth']),
+                'details->gender' => json_encode($this->storeData['gender']),
+                'details->address' => json_encode($this->storeData['address']),
+                'details->social' => json_encode($this->storeData['social']),
+                'details->nin' => json_encode($this->storeData['nin']),
+                'details->self_drive' => json_encode($this->storeData['drive']),
+                'status' => 'active',
+                'verification->account->status' => 'pending',
+                'role' => $this->storeData['role'],
+                'profile_photo_path' => getUserStorage('') . 'profile/photo.webp',
+            ]);
 
         // Save the uploaded files
         $this->saveFiles($this->user);
@@ -624,7 +587,27 @@ class Main extends Component
         $this->user->notify(new Completed());
     }
 
-    
+    public function oldSubmit()
+    {
+        // Save any necessary data to the database
+        $user = $this->user;
+        $user->role = $this->storeData['role'];
+        // Update the details attribute using the updateDetails method
+        $user->updateDetails('phone', $this->storeData['phone']);
+        $user->updateDetails('date_of_birth', $this->storeData['date_of_birth']);
+        $user->updateDetails('gender', $this->storeData['gender']);
+        $user->updateDetails('address', $this->storeData['address']);
+        $user->updateDetails('social', $this->storeData['social']);
+        $user->updateDetails('nin', $this->storeData['nin']);
+        $user->updateDetails('self_drive', $this->storeData['drive']);
+        $this->saveFiles($user);
+        $user->save();
+        //delete the onboarding json file after saving the data
+        Storage::delete($this->storePath);
+
+        $this->completeOnboarding();
+    }
+
     /**
      * Complete the onboarding process.
      * 
@@ -645,6 +628,7 @@ class Main extends Component
         // Redirect to the user dashboard after completing the onboarding process
         return redirect()->route('user.dashboard')->with('message', 'You have completed the onboarding process. You have been updated to ' . ucfirst($this->user->role) . '.');
     }
+
 
     /**
      * Skip the onboarding process.

@@ -18,19 +18,11 @@ class VehicleFactory extends Factory
     {
         return [
             'name' => fake()->sentence(4) . fake()->year($max = 'now', $min = 2006),
-            // 'slug' => fake()->slug,
-            'vin' => $this->generateVin(),
-            'description' => fake()->paragraph,
             'price' => $this->generatePrice(),
             'location' => $this->generateLocation(),
-            'status' => fake()->randomElement(['available', 'unavailable', 'rented']),
-            'rating' => fake()->randomElement(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.2', '4.5', '4.6', '4.7', '4.8', '5.0']),
             'details' => $this->generateDetails(),
             'ownerable_id' => $this->generateOwnerable()->id,
             'ownerable_type' => $this->generateOwnerable()->getMorphClass(),
-
-            'created_at' => now(),
-            'updated_at' => now(),
         ];
     }
 
@@ -118,6 +110,8 @@ class VehicleFactory extends Factory
     protected function generateDetails(): string
     {
         return json_encode([
+            'vin' => $this->generateVin(),
+            'description' => fake()->paragraph,
             'make' => fake()->company,
             'manufacturer' => fake()->company,
             'model' => fake()->word,

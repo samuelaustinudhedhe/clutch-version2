@@ -4,7 +4,7 @@ use App\Http\Controllers\User\Dashboard\UserDashboardController as Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Pages\DynamicPageController as DynamicPage;
 use App\Http\Kernel;
-use App\View\Livewire\User\Onboarding\Main as OnboardingLayout;
+use App\View\Livewire\User\Onboarding as OnboardingLayout;
 use Illuminate\Http\Request;
 
 Route::redirect('/dashboard', '/user/dashboard');

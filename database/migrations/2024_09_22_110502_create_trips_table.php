@@ -13,16 +13,7 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->id()->startingValue(10061100044);
-            $table->enum('status', [
-                'upcoming',      // The trip is booked but hasn't started yet
-                'ongoing',       // The trip is currently active
-                'completed',     // The trip has ended successfully
-                'canceled',      // The trip was canceled by either the driver or the owner
-                'emergency',     // A serious issue occurred, such as an accident or kidnapping
-                'accident',      // A vehicle accident occurred during the trip
-                'legal_issue',   // A legal complication such as kidnapping or other criminal activity
-                'under_investigation' // The trip is under investigation due to an incident
-            ]);
+            $table->string('status')->nullable();
             $table->json('details')->default(json_encode([
                 'start' => [
                     'location' => [

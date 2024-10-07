@@ -3,7 +3,7 @@
     {{-- Gallery Section --}}
     <section class="flex justify-center">
 
-        <div id="indicators-carousel" class="relative w-full" data-carousel="static">
+        <div id="indicators-carousel" class="relative w-full" data-carousel="static" x-init="initCarousels()">
             <!-- Carousel wrapper -->
             <div class="relative min-h-[280px] overflow-hidden lg:rounded-lg rounded-none md:h-[440px]">
                 <!-- Item 1 -->

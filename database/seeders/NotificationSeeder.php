@@ -15,23 +15,23 @@ class NotificationSeeder extends Seeder
      */
     public function run(): void
     {
-        // // Ensure you have users and admin in the database
-        // $user = User::first();
-        // $admin = Admin::first();
-        // $notifiables = collect([$user, $admin]);
+        // Ensure you have users and admin in the database
+        $user = User::first();
+        $admin = Admin::first();
+        $notifiables = collect([$user, $admin]);
 
-        // $notifiables->each(function ($notifiable) {
-        //     if ($notifiable) {
-        //         // Generate 10 notifications for each notifiable
-        //         $notifiable::factory()->count(10)->create()->each(function ($notifiableInstance) use ($notifiable) {
-        //             NotificationFactory::new()->create([
-        //                 'notifiable_id' => $notifiableInstance->id,
-        //                 'notifiable_type' => $notifiableInstance->getMorphClass(),
-        //             ]);
-        //         });
-        //     }
-        // });
+        $notifiables->each(function ($notifiable) {
+            if ($notifiable) {
+                // Generate 10 notifications for each notifiable
+                $notifiable::factory()->count(10)->create()->each(function ($notifiableInstance) use ($notifiable) {
+                    NotificationFactory::new()->create([
+                        'notifiable_id' => $notifiableInstance->id,
+                        'notifiable_type' => $notifiableInstance->getMorphClass(),
+                    ]);
+                });
+            }
+        });
 
-        // NotificationFactory::new()->count(10)->create();
+        NotificationFactory::new()->count(10)->create();
     }
 }

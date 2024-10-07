@@ -16,7 +16,7 @@ class AttachmentUploadController extends AttachmentController
      *
      * @param object $authorable The user who is uploading the image.
      * @param mixed $image The source of the image (e.g., file path, stream, or uploaded file).
-     * @param string $folder The folder where the image will be stored.
+     * @param string $resize The folder where the image will be stored.
      * @param string $filename The name of the image file.
      * @param string $size The resizing method (e.g., 'resize', 'fit', 'fit-to-width', 'fit-to-height').
      * @param int|null $width The desired width of the resized image (optional).
@@ -25,56 +25,97 @@ class AttachmentUploadController extends AttachmentController
      *
      * @return string The path of the stored image file.
      */
-    public static function image($image, $folder, $filename, $size = 'resize', ?int $width = null, ?int $height = null, $quality = 80, object $authorable, object $attachable = null)
+    // public static function image($image, $folder, $filename, $size = 'resize', ?int $width = null, ?int $height = null, $quality = 80, object $authorable, object $attachable = null)
+    // {
+    //     // Get the file extension from the filename
+    //     $extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+    //     // Construct the full path for the file
+    //     $path = $folder . '/' . $filename;
+
+    //     // Create the directory if it doesn't exist
+    //     parent::makeDir($folder);
+
+    //     // Read the image from the provided source
+    //     $image = (new parent)->read($image);
+
+    //     // Check if $size is not empty before applying the resizing operation
+    //     if (!empty($size)) {
+    //         // Resize the image based on the specified size and dimensions
+    //         $image = $image->$size($width, $height);
+    //     }
+
+    //     // Compress the image and get the encoded image
+    //     $encodedImage = Compress::image($image, $extension, $quality);
+
+    //     // Store the encoded image to the specified path
+    //     self::store($path, $encodedImage);
+
+    //     // Create a new attachment record in the database
+    //     AttachmentController::createRaw(
+    //         // Generate a title from the filename
+    //         $authorable->name . '\'s ' . ucwords(toSlug(pathinfo($filename, PATHINFO_FILENAME), ' ')),
+    //         'profile picture for ' . $authorable->name,
+    //         'active',
+    //         true,
+    //         [
+    //             'size' => filesize(parent::readPath('public', $path)),
+    //             'dimension' => [
+    //                 'width' => $image->width(),
+    //                 'height' => $image->height(),
+    //                 'ratio' => $image->width() / $image->height(),
+    //             ],
+    //             'format' => $extension,
+    //         ],
+    //         $encodedImage->mediaType(),
+    //         $attachable ?? $authorable,
+    //         $authorable,
+    //         $path
+    //     );
+
+    //     // Return the path of the stored file
+    //     return $path;
+    // }
+    public static function image($name, $description, $image, $mimeType, $is_featured, $resize, $quality = 90, $authorable, $attachable, $path)
     {
         // Get the file extension from the filename
-        $extension = pathinfo($filename, PATHINFO_EXTENSION);
-
-        // Construct the full path for the file
-        $path = $folder . '/' . $filename;
-
-        // Create the directory if it doesn't exist
-        parent::makeDir($folder);
+        $fileName = basename($image);
+        $name = $name ?? $authorable->name . '\'s ' . ucwords(toSlug(pathinfo($fileName, PATHINFO_FILENAME), ' '));
+        $description = $description ?? 'Image uploaded by ' . $authorable->name . ' and attached to ' . $attachable->name;
 
         // Read the image from the provided source
         $image = (new parent)->read($image);
 
-        // Check if $size is not empty before applying the resizing operation
-        if (!empty($size)) {
-            // Resize the image based on the specified size and dimensions
-            $image = $image->$size($width, $height);
+        if (!empty($resize['type'])) {
+            // Apply the specified resizing type
+            $type = $resize['type'];
+            // Get the dimensions if provided
+            $width = $resize['width']?? null;
+            $height = $resize['height']?? null;
+            // Get the options if provided
+            $options = $resize['options']?? [];
+
+            // Resize the image based on the specified size and dimensions and options
+            $image = (new parent)->resizing($image, $type, $width, $height, $options);
         }
-
+        
         // Compress the image and get the encoded image
-        $encodedImage = Compress::image($image, $extension, $quality);
+        $image = Compress::image($image, $mimeType, $quality);
 
-        // Store the encoded image to the specified path
-        self::store($path, $encodedImage);
+        // Store the image to the specified path
+        $image = self::store($path, $image, 'image/jpeg', true);
 
         // Create a new attachment record in the database
-        AttachmentController::createRaw(
-            // Generate a title from the filename
-            $authorable->name . '\'s ' . ucwords(toSlug(pathinfo($filename, PATHINFO_FILENAME), ' ')),
-            'profile picture for ' . $authorable->name,
-            'active',
-            true,
-            [
-                'size' => filesize(parent::readPath('public', $path)),
-                'dimension' => [
-                    'width' => $image->width(),
-                    'height' => $image->height(),
-                    'ratio' => $image->width() / $image->height(),
-                ],
-                'format' => $extension,
-            ],
-            $encodedImage->mediaType(),
-            $attachable ?? $authorable,
-            $authorable,
-            $path
+        AttachmentController::create(
+            name: $name,
+            description: $description,
+            file: $image,
+            mimeType: $mimeType,
+            is_featured: $is_featured,
+            attachable: $attachable,
+            authorable: $authorable,
+            path: $path,
         );
-
-        // Return the path of the stored file
-        return $path;
     }
 
     /**
@@ -103,12 +144,11 @@ class AttachmentUploadController extends AttachmentController
             $file = (new parent)->read($file);
             // Compress the file and get the encoded file
             $file = Compress::image($file, 'jpg', $quality);
-            
         }
 
         // Store the file to the specified path
         $file = self::store($path, $file, $mimeType, true);
-        
+
         // Create a new attachment record in the database
         AttachmentController::create(
             name: $name,
@@ -120,7 +160,6 @@ class AttachmentUploadController extends AttachmentController
             authorable: $authorable,
             path: $path,
         );
-        
     }
 
 

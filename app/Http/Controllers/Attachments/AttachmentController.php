@@ -6,17 +6,149 @@ use App\Http\Controllers\Controller;
 use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Exceptions\DecoderException;
 
 class AttachmentController extends Controller
 {
 
-    public function read($file)
+    /**
+     * Reads an image from various sources using the specified driver.
+     *
+     * This function utilizes the Intervention Image library to read an image
+     * from file paths, binary data, base64-encoded data, Data URI, or other supported sources.
+     * The function supports optional custom decoders for specific input formats.
+     *
+     * @param mixed $input The image source (e.g., file path, binary data, base64).
+     * @param array|string|null $decoders (optional) Decoders to process the input data.
+     *        This can be a string, array of decoder class names, or DecoderInterface instance(s).
+     *        If not specified, it will use default decoders based on the input.
+     * @param string $driverType (optional) The image processing driver to use ('gd' or 'imagick').
+     *        Defaults to 'gd'.
+     *
+     * @return \Intervention\Image\Image The image resource created from the input.
+     *
+     * @throws \Intervention\Image\Exception\DecoderException If the input cannot be decoded.
+     */
+    public function read($input, $decoders = null, $driverType = 'gd')
     {
-        $driver = ImageManager::gd();
-        $file = $driver->read($file);
+        // Choose driver based on the provided type ('gd' or 'imagick')
+        $driver = ($driverType === 'imagick')
+            ? new ImagickDriver()
+            : new GdDriver();
 
-        return $file;
+        // Create a new ImageManager with the selected driver
+        $manager = new ImageManager($driver);
+
+        try {
+            // If decoders are provided, pass them while reading the image
+            if (!empty($decoders)) {
+                $image = $manager->read($input, $decoders);
+            } else {
+                // Use default decoding mechanism
+                $image = $manager->read($input);
+            }
+
+            return $image;
+        } catch (DecoderException $e) {
+            // Handle decoding exception, maybe log or rethrow as necessary
+            throw $e;
+        }
     }
+
+
+    /**
+     * Resizes an image based on the provided type, width, and height.
+     *
+     * This function supports various resizing methods like 'resize', 'resizeDown', 
+     * 'scale', 'scaleDown', 'cover', 'coverDown', 'pad', 'contain', 'crop', etc.
+     * It maintains the aspect ratio, optionally pads, crops, or scales the image.
+     *
+     * @param \Intervention\Image\Image $image The image to be resized.
+     * @param string $type The type of resizing to be applied (e.g., 'resize', 'cover').
+     * @param int|null $width The target width for the resized image.
+     * @param int|null $height The target height for the resized image.
+     * @param array $options Additional options like position, background color, tolerance, etc.
+     *
+     * @return \Intervention\Image\Image Resized image instance.
+     */
+    public static function resizing($image, $type, ?int $width = null, ?int $height = null, array $options = [])
+    {
+        if (!empty($type)) {
+            switch ($type) {
+                case 'resize':
+                    // Basic resize, stretches the image
+                    return $image->resize(width: $width, height: $height);
+
+                case 'resizeDown':
+                    // Resize without exceeding original size
+                    return $image->resizeDown(width: $width, height: $height);
+
+                case 'scale':
+                    // Proportional resizing while maintaining aspect ratio
+                    return $image->scale(width: $width, height: $height);
+
+                case 'scaleDown':
+                    // Proportional scaling but not exceeding original size
+                    return $image->scaleDown(width: $width, height: $height);
+
+                case 'cover':
+                    // Crop & resize to cover area, optional position
+                    $position = $options['position'] ?? 'center';
+                    return $image->cover($width, $height, $position);
+
+                case 'coverDown':
+                    // Cover resizing without exceeding original size
+                    $position = $options['position'] ?? 'center';
+                    return $image->coverDown($width, $height, $position);
+
+                case 'pad':
+                    // Resize padded, optional background color and position
+                    $background = $options['background'] ?? 'ffffff00';
+                    $position = $options['position'] ?? 'center';
+                    return $image->pad($width, $height, $background, $position);
+
+                case 'contain':
+                    // Resize padded with upscaling
+                    $background = $options['background'] ?? 'ffffff00';
+                    $position = $options['position'] ?? 'center';
+                    return $image->contain($width, $height, $background, $position);
+
+                case 'crop':
+                    // Crop the image to given width and height, optional offset and position
+                    $offset_x = $options['offset_x'] ?? 0;
+                    $offset_y = $options['offset_y'] ?? 0;
+                    $position = $options['position'] ?? 'top-left';
+                    $background = $options['background'] ?? 'ffffff00';
+                    return $image->crop($width, $height, $offset_x, $offset_y, $background, $position);
+
+                case 'resizeCanvas':
+                    // Resize canvas, optional background color and position
+                    $background = $options['background'] ?? 'ffffff00';
+                    $position = $options['position'] ?? 'center';
+                    return $image->resizeCanvas($width, $height, $background, $position);
+
+                case 'resizeCanvasRelative':
+                    // Resize canvas with relative dimensions
+                    $background = $options['background'] ?? 'ffffff00';
+                    $position = $options['position'] ?? 'center';
+                    return $image->resizeCanvasRelative($width, $height, $background, $position);
+
+                case 'trim':
+                    // Trim similar-colored borders with optional tolerance
+                    $tolerance = $options['tolerance'] ?? 0;
+                    return $image->trim($tolerance);
+
+                default:
+                    throw new \InvalidArgumentException("Unsupported resize type: $type");
+            }
+        }
+
+        throw new \InvalidArgumentException('Type is required for resizing.');
+    }
+
+
     /**
      * Creates a directory on the specified disk.
      *

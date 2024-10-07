@@ -13,16 +13,13 @@ class Vehicle extends Model
     use HasFactory, HasAttachments;
 
     protected $fillable = [
-        'title',
-        'slug',
-        'description',
-        'rating',
+        'name',
         'price',
         'location',
         'details',
         'insurance',
         'chauffeur',
-        'authorable'
+        'ownerable'
     ];
 
     protected $casts = [
@@ -76,7 +73,7 @@ class Vehicle extends Model
      */
     public function getVin()
     {
-        return json_decode($this->vin);
+        return json_decode($this->details->vin);
     }
 
     /**
@@ -87,7 +84,7 @@ class Vehicle extends Model
      *
      * @return string|null The type of the vehicle's VIN, or null if not set.
      */
-    public function getVinTypeAttribute()
+    public function getVitAttribute()
     {
         return $this->getVin()->type ?? null;
     }
@@ -100,7 +97,7 @@ class Vehicle extends Model
      *
      * @return string|null The VIN number, or null if not set.
      */
-    public function getVinNumberAttribute()
+    public function getVinAttribute()
     {
         return $this->getVin()->number ?? null;
     }
@@ -315,7 +312,13 @@ class Vehicle extends Model
      */
     public function getDetails()
     {
-        return json_decode($this->details);
+        $details = $this->details;
+
+        if (is_string($details)) {
+            return json_decode($details);
+        }
+
+        return $details; // Assuming it's already an object or array
     }
 
     /**

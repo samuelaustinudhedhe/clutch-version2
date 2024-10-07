@@ -32,7 +32,7 @@ class Role extends Model
      */
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class);
+        return $this->belongsToMany(Permission::class, 'permissions');
     }
 
     /**
@@ -42,7 +42,7 @@ class Role extends Model
      */
     public function admins()
     {
-        return $this->hasMany(Admin::class);
+        return $this->hasMany(Admin::class, 'role');
     }
 
     /**
@@ -52,7 +52,7 @@ class Role extends Model
      */
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'role');
     }
 
 }

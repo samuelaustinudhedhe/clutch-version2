@@ -15,7 +15,7 @@
         }
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
@@ -45,11 +45,8 @@
         </div>
         <div class="content">
             <p>Dear {{ $name }},</p>
-            <p>We are thrilled to have you on board! Your account has been successfully created. Below are your account details:</p>
-            <ul>
-                <li><strong>Email:</strong> {{ $email }}</li>
-                <li><strong>Password:</strong> {{ $password }}</li>
-            </ul>
+            <p>We are thrilled to have you on board! Your account has been successfully created.</p>
+            <br/>
             <p>Please log in to verify your account at your earliest convenience.</p>
             <p>Thank you for joining us, and we look forward to serving you!</p>
         </div>

@@ -146,7 +146,7 @@
 
                         <div class="flex items-center justify-between gap-4">
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Mileage:
-                                {{ json_decode($vehicle->details, true)['mileage'] }} km</span>
+                                {{ $vehicle->details->mileage ?? 'unknown ' }} km</span>
 
                             <div class="flex items-center justify-end gap-2">
                                 <p class="text-xl leading-tight text-gray-900 dark:text-white">
@@ -208,7 +208,7 @@
                                             d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
                                     </svg>
 
-                                    {{ $vehicle->location->pickup->city }}
+                                    {{ $vehicle->location->pickup->city?? '' }}
                                 </div>
                             </div>
 
@@ -292,19 +292,19 @@
             @php
                 $mapVehicles = $vehicles->map(function($vehicle) {
                     return [
-                        'lat' => $vehicle->location->pickup->latitude,
-                        'lng' => $vehicle->location->pickup->longitude,
+                        'lat' => $vehicle->location->pickup->latitude?? '',
+                        'lng' => $vehicle->location->pickup->longitude?? '',
                         'price' => '₦' . number_format($vehicle->price->sale),
                         'regular_price' => '₦' . number_format($vehicle->price->amount),
                         'image' => $vehicle->featuredImage(),
                         'name' => $vehicle->name,
                         'rating' => $vehicle->rating,
                         'host_rating' => $vehicle->owner->rating > 4.9 ? 'All Star Host' : $vehicle->owner->rating . ' ★',
-                        'location' => $vehicle->location->pickup->city,
+                        'location' => $vehicle->location->pickup->city?? '',
                         'discount' => $vehicle->price->on_sale? $vehicle->price->amount - $vehicle->price->sale : 0,
                         'extra_fees' => $vehicle->extra_fees ?? 0,
                         'trips' => '200 trips',
-                        'pickup_city' => $vehicle->location->pickup->city,
+                        'pickup_city' => $vehicle->location->pickup->city?? '',
                     ];
                 });
             @endphp

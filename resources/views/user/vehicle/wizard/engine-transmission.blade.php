@@ -1,10 +1,9 @@
 <div>
     {{-- Engine Details --}}
-    <x-div class="grid gap-4 sm:grid-cols-2">
-        <div class="sm:col-span-2 flex gap-4">
-            <div class="w-2/4">
+    <x-div class="grid gap-4 sm:grid-cols-2 grid-cols-1">
+            <div class="w-full">
                 <x-label for="engine_type">Engine Type</x-label>
-                <x-select id="engine_type" wire:model="storeData.engine.type">
+                <x-select id="engine_type" wire:model="storeData.details.engine.type">
                     <option value="">Select Engine Type</option>
                     <option value="Internal Combustion Engine (ICE)">Internal Combustion Engine (ICE)</option>
                     <option value="Gasoline">Gasoline</option>
@@ -14,19 +13,17 @@
                     <option value="Electric Engine">Electric Engine</option>
                     <option value="Battery Electric Vehicle (BEV)">Battery Electric Vehicle (BEV)</option>
                     <option value="Hybrid Engine">Hybrid Engine</option>
-                    <option value="Plug-in Hybrid Electric Vehicle (PHEV)">Plug-in Hybrid Electric Vehicle (PHEV)
-                    </option>
+                    <option value="Plug-in Hybrid Electric Vehicle (PHEV)">Plug-in Hybrid Electric Vehicle (PHEV)</option>
                     <option value="Mild Hybrid Electric Vehicle (MHEV)">Mild Hybrid Electric Vehicle (MHEV)</option>
                     <option value="Hydrogen Fuel Cell Engine">Hydrogen Fuel Cell Engine</option>
                     <option value="Gas Turbine Engine">Gas Turbine Engine</option>
                     <option value="Other">Other</option>
-
                 </x-select>
-                <x-input-error for="storeData.engine.type" />
+                <x-input-error for="storeData.details.engine.type" />
             </div>
-            <div class="w-2/4">
+            <div class="w-full">
                 <x-label for="engine_size">Engine Size</x-label>
-                <x-select id="engine_size" wire:model="storeData.engine.size">
+                <x-select id="engine_size" wire:model="storeData.details.engine.size">
                     <option value="1.0L or Below">Small (Under 1.0L or Below 1000cc)</option>
                     <option value="1.0L - 1.5L">1.0L - 1.5L (1000cc - 1500cc)</option>
                     <option value="1.6L - 2.0L">1.6L - 2.0L (1600cc - 2000cc)</option>
@@ -34,16 +31,16 @@
                     <option value="2.6L - 3.0L">2.6L - 3.0L (2600cc - 3000cc)</option>
                     <option value="3.1L - 4.0L">3.1L - 4.0L (3100cc - 4000cc)</option>
                     <option value="4.0L or Above">Large (Over 4.0L or Above 4000cc)</option>
-                </x-select> <x-input-error for="storeData.engine.size" />
+                </x-select>
+                <x-input-error for="storeData.details.engine.size" />
             </div>
-        </div>
     </x-div>
     {{-- Fuel Details --}}
-    <x-div class="grid gap-4 sm:grid-cols-2">
-        <div class="sm:col-span-2 flex gap-4">
-            <div class="w-2/4">
+    <x-div class="grid gap-4 sm:grid-cols-2 grid-cols-1">
+
+            <div class="w-full">
                 <x-label for="fuel_type">Fuel Type</x-label>
-                <x-select id="fuel_type" wire:model="storeData.fuel.type">
+                <x-select id="fuel_type" wire:model="storeData.details.fuel.type">
                     <option value="" disabled selected>Select Fuel Type</option>
                     <option value="Gasoline">Gasoline</option>
                     <option value="Petrol">Petrol</option>
@@ -60,11 +57,11 @@
                     <option value="Propane">Propane</option>
                 </x-select>
 
-                <x-input-error for="storeData.fuel.type" />
+                <x-input-error for="storeData.details.fuel.type" />
             </div>
-            <div class="w-2/4">
+            <div class="w-full">
                 <x-label for="fuel_economy">Fuel Economy</x-label>
-                <x-select id="fuel_economy" wire:model="storeData.fuel.economy">
+                <x-select id="fuel_economy" wire:model="storeData.details.fuel.economy">
                     <option value="" disabled selected>Select Fuel Economy</option>
                     <option value="Below 15">Below 15 MPG (Very Poor)</option>
                     <option value="15-19">15-19 MPG (Poor)</option>
@@ -74,48 +71,50 @@
                     <option value="35-39">35-39 MPG (Good)</option>
                     <option value="40 Above">40 MPG and Above (Excellent)</option>
                 </x-select>
-                <x-input-error for="storeData.fuel.economy" />
+                <x-input-error for="storeData.details.fuel.economy" />
             </div>
-        </div>
+            <div class="w-full">
+                <x-label for="millage">Millage</x-label>
+                <x-xinput id="millage" type="number" wire:model="storeData.details.millage" />
+                <x-input-error for="storeData.details.millage" />
+            </div>
     </x-div>
     {{-- Transmission Details --}}
-    <x-div class="grid gap-4 sm:grid-cols-2">
-        <div class="sm:col-span-2 flex gap-4">
-            <div class="w-2/4">
+    <x-div class="grid gap-4 sm:grid-cols-2 grid-cols-1">
+
+            <div class="w-full">
                 <x-label for="transmission_type">Transmission Type</x-label>
-                <x-select id="transmission_type" wire:model="storeData.transmission.type">
+                <x-select id="transmission_type" wire:model="storeData.details.transmission.type">
                     <option value="manual">Manual</option>
                     <option value="automatic">Automatic</option>
                     <option value="semi-automatic">Semi-Automatic</option>
-                </x-select> <x-input-error for="storeData.transmission.type" />
+                </x-select> <x-input-error for="storeData.details.transmission.type" />
             </div>
-            <div class="w-2/4">
+            <div class="w-full">
                 <x-label for="engine_hp">Horsepower</x-label>
-                <x-xinput id="engine_hp" type="number" wire:model="storeData.engine.hp" />
-                <x-input-error for="storeData.engine.hp" />
+                <x-xinput id="engine_hp" type="number" wire:model="storeData.details.engine.hp" />
+                <x-input-error for="storeData.details.engine.hp" />
             </div>
-        </div>
-        <div class="sm:col-span-2 flex gap-4">
-            <div class="w-2/4">
+
+            <div class="w-full">
                 <x-label for="transmission_gears">Number of Gears</x-label>
-                <x-select id="transmission_gears" wire:model="storeData.transmission.gears">
+                <x-select id="transmission_gears" wire:model="storeData.details.transmission.gears">
                     <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
                     <option value="6">6</option>
                     <option value="7">7</option>
-                </x-select> <x-input-error for="storeData.transmission.gears" />
+                </x-select> <x-input-error for="storeData.details.transmission.gears" />
             </div>
-            <div class="w-2/4">
+            <div class="w-full">
                 <x-label for="transmission_drivetrain">Drivetrain Type</x-label>
-                <x-select id="transmission_drivetrain" wire:model="storeData.transmission.drivetrain">
+                <x-select id="transmission_drivetrain" wire:model="storeData.details.transmission.drivetrain">
                     <option value="fwd">FWD</option>
                     <option value="rwd">RWD</option>
                     <option value="awd">AWD</option>
                     <option value="4wd">4WD</option>
-                </x-select> <x-input-error for="storeData.transmission.drivetrain" />
+                </x-select> <x-input-error for="storeData.details.transmission.drivetrain" />
             </div>
-        </div>
     </x-div>
 
     {{-- <script>

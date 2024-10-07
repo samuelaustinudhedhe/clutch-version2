@@ -49,7 +49,6 @@ class WelcomeMail extends Mailable
                 'name' => $this->user->name,
                 'email' => $this->user->email,
                 'password' => $this->password,
-                'email_verification_code'=> $this->verification['email']['code'],                
             ],
         );
     }

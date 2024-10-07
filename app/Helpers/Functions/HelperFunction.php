@@ -203,3 +203,132 @@ function aggregateUserData(&$output, &$count, $input, int $offset = 0, int $limi
     // Assign the remaining count to the count parameter
     $count = $remaining;
 }
+
+
+
+if (!function_exists('numberToWords')) {
+    /**
+     * Converts a number into its word representation.
+     *
+     * This function can convert numbers into their word equivalents, and optionally
+     * into their ordinal form (e.g., "First", "Second").
+     *
+     * @param int $number The number to be converted into words.
+     * @param bool $ordinal Optional. If true, converts the number into its ordinal form. Default is false.
+     * @return string The word representation of the number, or its ordinal form if specified.
+     */
+    function numberToWords($number, $ordinal = false)
+    {
+        $words = [
+            0 => 'Zero',
+            1 => 'One',
+            2 => 'Two',
+            3 => 'Three',
+            4 => 'Four',
+            5 => 'Five',
+            6 => 'Six',
+            7 => 'Seven',
+            8 => 'Eight',
+            9 => 'Nine',
+            10 => 'Ten',
+            11 => 'Eleven',
+            12 => 'Twelve',
+            13 => 'Thirteen',
+            14 => 'Fourteen',
+            15 => 'Fifteen',
+            16 => 'Sixteen',
+            17 => 'Seventeen',
+            18 => 'Eighteen',
+            19 => 'Nineteen',
+            20 => 'Twenty',
+            30 => 'Thirty',
+            40 => 'Forty',
+            50 => 'Fifty',
+            60 => 'Sixty',
+            70 => 'Seventy',
+            80 => 'Eighty',
+            90 => 'Ninety'
+        ];
+    
+        $ordinals = [
+            1 => 'First',
+            2 => 'Second',
+            3 => 'Third',
+            4 => 'Fourth',
+            5 => 'Fifth',
+            6 => 'Sixth',
+            7 => 'Seventh',
+            8 => 'Eighth',
+            9 => 'Ninth',
+            10 => 'Tenth',
+            11 => 'Eleventh',
+            12 => 'Twelfth',
+            13 => 'Thirteenth',
+            14 => 'Fourteenth',
+            15 => 'Fifteenth',
+            16 => 'Sixteenth',
+            17 => 'Seventeenth',
+            18 => 'Eighteenth',
+            19 => 'Nineteenth',
+            20 => 'Twentieth',
+            30 => 'Thirtieth',
+            40 => 'Fortieth',
+            50 => 'Fiftieth',
+            60 => 'Sixtieth',
+            70 => 'Seventieth',
+            80 => 'Eightieth',
+            90 => 'Ninetieth'
+        ];
+    
+        if ($ordinal) {
+            // Check if the number is 20 or less, or a multiple of 10 less than 100
+            if ($number <= 20 || ($number < 100 && $number % 10 == 0)) {
+                // Increment the number if it is 0 to handle the ordinal case
+                if ($number == 0) {
+                    $number++;
+                }
+                // Return the ordinal word for the number
+                return $ordinals[$number];
+            } elseif ($number < 100) {
+                // For numbers between 21 and 99, split into tens and units
+                $tens = intval($number / 10) * 10;
+                $units = $number % 10;
+                // Return the combined ordinal word for tens and units
+                return $ordinals[$tens] . '-' . $ordinals[$units];
+            } elseif ($number < 1000) {
+                // For numbers between 100 and 999, split into hundreds and remainder
+                $hundreds = intval($number / 100);
+                $remainder = $number % 100;
+                // Return the combined word for hundreds and the ordinal word for the remainder
+                return $remainder ? $words[$hundreds] . ' Hundred and ' . numberToWords($remainder, true) : $words[$hundreds] . ' Hundredth';
+            } elseif ($number == 1000) {
+                // Special case for 1000
+                return 'One Thousandth';
+            }
+        } else {
+            // Handle non-ordinal numbers
+            if ($number <= 20) {
+                // Return the word for numbers 20 or less
+                return $words[$number];
+            } elseif ($number < 100) {
+                // For numbers between 21 and 99, split into tens and units
+                $tens = intval($number / 10) * 10;
+                $units = $number % 10;
+                // Return the combined word for tens and units
+                return $units ? $words[$tens] . '-' . $words[$units] : $words[$tens];
+            } elseif ($number < 1000) {
+                // For numbers between 100 and 999, split into hundreds and remainder
+                $hundreds = intval($number / 100);
+                $remainder = $number % 100;
+                // Return the combined word for hundreds and the word for the remainder
+                return $remainder ? $words[$hundreds] . ' Hundred ' . numberToWords($remainder) : $words[$hundreds] . ' Hundred';
+            } elseif ($number == 1000) {
+                // Special case for 1000
+                return 'One Thousand';
+            }
+        }
+    
+        // Fallback for numbers above 1000, return as string
+        return (string)$number;
+    }
+}

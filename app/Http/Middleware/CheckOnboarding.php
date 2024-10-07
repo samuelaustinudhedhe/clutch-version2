@@ -23,7 +23,7 @@ class CheckOnboarding
             if (($user->onboardingStart() || !$user->onboardingCompleted()) && !$user->onboardingIsSkipped() && $routeName !== 'user.onboarding') {
                 return redirect()->route('user.onboarding');
             } elseif ($routeName === 'user.onboarding' && $user->onboardingCompleted()) {
-                return redirect()->route('user.dashboard')->with('success', 'Welcome Onboard ' . $user->name);
+                return redirect()->route('user.dashboard')->with('info', 'You have completed the onboarding process' . $user->name);
             }
         }
 

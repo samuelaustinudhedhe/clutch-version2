@@ -20,13 +20,30 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        // Define the basic permissions that all users should have
+        $basicPermissions = [
+            'create_posts',
+            'edit_own_posts',
+            'delete_own_posts',
+            'read_posts',
+            'edit_own_posts',
+            'delete_own_posts',
+            'edit_own_vehicles',
+            'delete_own_vehicles',
+            'manage_own_invoices',
+            'view_own_financial_reports'
+        ];
+
+        // Fetch the basic permissions from the database
+        $user_basic_permissions = Permission::whereIn('slug', $basicPermissions)->pluck('slug')->toArray();
+
         // Define the roles and their associated permissions
         $roles = [
             [
                 'name' => 'Administrator',
                 'slug' => 'administrator',
                 'guard' => 'admin',
-                'permissions' => ['create_posts', 'edit_posts', 'delete_posts', 'publish_posts', 'manage_users', 'manage_categories', 'view_analytics'],
+                'permissions' => array_merge($user_basic_permissions, ['publish_posts', 'manage_users', 'manage_categories', 'view_analytics','view_tickets', 'resolve_tickets']),
             ],
             [
                 'name' => 'SuperAdmin',
@@ -44,19 +61,19 @@ class RoleSeeder extends Seeder
                 'name' => 'Author',
                 'slug' => 'author',
                 'guard' => 'admin',
-                'permissions' => ['create_posts', 'edit_own_posts', 'delete_own_posts', 'publish_posts'],
+                'permissions' => array_merge($user_basic_permissions, ['publish_posts']),
             ],
             [
                 'name' => 'Moderator',
                 'slug' => 'moderator',
                 'guard' => 'admin',
-                'permissions' => ['edit_posts', 'delete_posts', 'manage_comments'],
+                'permissions' => array_merge($user_basic_permissions, ['manage_comments']),
             ],
             [
                 'name' => 'Editor',
                 'slug' => 'editor',
                 'guard' => 'admin',
-                'permissions' => ['edit_posts', 'publish_posts', 'delete_posts'],
+                'permissions' => array_merge($user_basic_permissions, ['publish_posts']),
             ],
             [
                 'name' => 'Accountant',
@@ -74,36 +91,30 @@ class RoleSeeder extends Seeder
                 'name' => 'Owner',
                 'slug' => 'owner',
                 'guard' => 'web',
-                'permissions' => ['create_posts', 'edit_own_posts', 'delete_own_posts'],
+                'permissions' => array_merge($user_basic_permissions, ['assign_routes', 'add_vehicles']),
             ],
             [
                 'name' => 'Driver',
                 'slug' => 'driver',
                 'guard' => 'web',
-                'permissions' => ['view_assigned_routes'],
+                'permissions' => array_merge($user_basic_permissions, ['view_assigned_routes']),
             ],
         ];
 
         // Iterate over each role and create it in the database
-        foreach ($roles as $roleData) {
-            $rolePermissions = $roleData['permissions'];
+        foreach ($roles as $role) {
 
             // Create the role
-            Role::create([
-                'name' => $roleData['name'],
-                'slug' => $roleData['slug'],
-                'permissions' => $rolePermissions,
-                'guard' => $roleData['guard'],
-            ]);
+            Role::create($role);
 
             // Update each permission's roles column
-            foreach ($rolePermissions as $permissionSlug) {
-                $permission = DB::table('permissions')->where('slug', $permissionSlug)->first();
+            foreach ($role['permissions'] as $permissionSlug) {
+                $permission = Permission::where('slug', $permissionSlug)->first();
                 if ($permission) {
-                    $permissionRoles = json_decode($permission->roles, true) ?: [];
-                    if (!in_array($roleData['slug'], $permissionRoles)) {
-                        $permissionRoles[] = $roleData['slug'];
-                        DB::table('permissions')->where('id', $permission->id)->update(['roles' => json_encode($permissionRoles)]);
+                    $permissionRoles = $permission['roles'] ?: []; 
+                    if (!in_array($role['slug'], $permissionRoles)) {
+                        $permissionRoles[] = $role['slug'];
+                        Permission::where('id', $permission['id'])->update(['roles' => $permissionRoles]);
                     }
                 }
             }
