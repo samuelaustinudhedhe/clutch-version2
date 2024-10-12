@@ -4,10 +4,10 @@ namespace App\Traits;
 
 use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 
 trait HasAttachments
 {
-
     /**
      * Polymorphic relationship to the attachments.
      *
@@ -31,7 +31,7 @@ trait HasAttachments
      */
     public function documents()
     {
-        return $this->attachments()->search('mime_type', 'document')->get();
+        return $this->attachments()->ofType(Attachment::TYPE_DOCUMENT)->get();
     }
 
     /**
@@ -41,7 +41,7 @@ trait HasAttachments
      */
     public function videos()
     {
-        return $this->attachments()->search('mime_type', 'video')->get();
+        return $this->attachments()->ofType(Attachment::TYPE_VIDEO)->get();
     }
 
     /**
@@ -52,7 +52,7 @@ trait HasAttachments
     public function featuredImage($placeholder = 'car')
     {
         $image = $this->gallery()->where('is_featured', true)->first();
-        return $image->url ?? getPlaceHolder($placeholder);
+        return $image ?? getPlaceHolder($placeholder);
     }
 
     /**
@@ -62,8 +62,12 @@ trait HasAttachments
      */
     public function images($placeholder = 'car')
     {
-        $images = $this->attachments()->search('mime_type', 'image')->get();
-        return $images?? getPlaceHolder($placeholder) ;
+        $types = [
+            Attachment::TYPE_IMAGE,
+            Attachment::TYPE_GALLERY_IMAGE,
+        ];
+        $images = $this->attachments()->ofType($types)->search('mime_type', 'image')->get();
+        return $images ?? getPlaceHolder($placeholder);
     }
 
     /**
@@ -122,14 +126,24 @@ trait HasAttachments
      *
      * @param string $file
      * @param \App\Models\User $author
+     * @param string $type
      * @return \App\Models\Attachment
+     * @throws \InvalidArgumentException
      */
-    public function upload($file, $author)
+    public function upload($file, $author, $type)
     {
+        // Validate the file type
+        $validTypes = Attachment::getFileTypes();
+
+        if (!in_array($type, $validTypes)) {
+            throw new InvalidArgumentException("Invalid file type: $type");
+        }
+
         return $this->attachments()->create([
             'name' => $author->name . '\'s ' . basename(Storage::disk('public')->path($file)),
             'status' => 'active',
             'is_featured' => true,
+            'type' => $type,
             'metadata' => [
                 'size' => filesize($file),
                 'dimension' => [

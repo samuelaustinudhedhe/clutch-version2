@@ -5,7 +5,7 @@
 /public/storage
 /storage/*.key
 /vendor
-.env
+.env    
 .env.backup
 .env.production
 .phpactor.json
@@ -18,3 +18,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/public/build/manifest.json       
+/public/build/assets/app-Dosje9OO.css
+/public/build/assets/app-DxvN5yQS.js

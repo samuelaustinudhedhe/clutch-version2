@@ -32,7 +32,7 @@ class Show extends Component
         $this->trip = $this->getStoreData(true)[$this->vehicle->id] ?? [];
 
         $this->defineStoreData();
-        
+
         //  Get available times for the selected date
         $this->times = $this->generateTimes();
     }
@@ -64,7 +64,9 @@ class Show extends Component
         $this->store();
 
         if (!getUser()) {
-            return redirect()->route('login')->with('url.intended', url()->current());
+            $intendedUrl = route('vehicles.show', ['vehicle' => $this->vehicle->id]);
+            cookie()->queue(cookie('intended_url', $intendedUrl, 60)); // Queue the cookie to be sent with the response
+            return redirect()->route('login');
         } else {
             return redirect()->route('checkout.show', ['vehicle' => $this->vehicle->id]);
         }
@@ -177,7 +179,9 @@ class Show extends Component
      */
     public static function storeDataPath()
     {
-        return getUserStorage('private') . "/data/trip.json";
+        if (getUser()) {
+            return getUserStorage('private') . "/data/trip.json";
+        }
     }
 
     /**
@@ -210,7 +214,7 @@ class Show extends Component
      * @param mixed $data The data to be stored, which will be encoded to JSON format.
      * @return void
      */
-    public function putData($data,)
+    public function putData($data)
     {
         $path = $this->storeDataPath();
         if (!empty($path) && !empty($data)) {

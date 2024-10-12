@@ -1,29 +1,28 @@
 <?php
 
-namespace App\View\Livewire\User\Vehicle;
+namespace App\View\Livewire\Admin\Resources\Vehicles;
 
+use App\Models\Admin;
+use App\Models\User;
 use App\Models\Vehicle;
 use App\Traits\WithSteps;
 use App\View\Livewire\Resources\Vehicles\Wizard as VehiclesWizard;
 
-use Livewire\WithFileUploads;
 
 class Wizard extends VehiclesWizard
 {
-    use WithSteps, WithFileUploads;
-
     public $user;
-    public $vehicleData = [];
-    public $images = [
-        'newUploads' => [],
-        'featuredIndex' => 0,
-        'uploaded' => [],
-        'errors' => [],
-    ];
-
+    public $vehicleData;
+    // Files
+    public $images = ['newUploads' => [], 'featuredIndex' => 0, 'uploaded' => [], 'errors' => [],];
     public $proofOfOwnership = [];
     public $registration = [];
     public $insurance = [];
+    // index is used to support multiple car addition in same json file
+    // User related Vars  
+    public $selectedUser;
+    public $userSearch = '';
+    public $usersPerPage = 5;
 
     /**
      * Mount the component and initialize data.
@@ -36,15 +35,14 @@ class Wizard extends VehiclesWizard
     {
         // Retrieve the owner of the current session or context and assign it to the user property.
         $this->user = $this->getOwner();
-
         // Define the steps for the wizard process.
         $this->defineSteps();
 
         // Define the store for storing data during the wizard process.
-        $this->defineStore();
+        $this->defineStore(true);
 
         // Define the data structure for storing vehicle-related data.
-        $this->defineStoreData();
+        //$this->defineStoreData();
 
         // Load existing vehicle types and subtypes from the Vehicle model.
         $this->vehicleData['types'] = Vehicle::types(); // Fetch vehicle types
@@ -62,34 +60,49 @@ class Wizard extends VehiclesWizard
     }
 
     /**
-     * Retrieves the owner of the current session or context.
+     * Redirects to the vehicle index route with a success message.
      *
-     * This function is responsible for obtaining the user who is currently
-     * logged in or associated with the current session or context.
-     *
-     * @return \App\Models\User|null The user object representing the owner, or null if no user is found.
-     */
-    public function getOwner()
-    {
-        return getUser();
-    }
-
-    /**
-     * Redirects the user to the vehicle index route with a success message.
-     *
-     * This function is used to redirect the user to the 'user.vehicle.index' route
-     * after a vehicle has been created, along with a success message indicating
-     * that the vehicle is awaiting approval.
+     * This function handles the redirection after a successful vehicle creation,
+     * sending the user to the admin vehicles index page with a success message.
      *
      * @return \Illuminate\Http\RedirectResponse A redirect response to the specified route with a success message.
      */
     public function submissionRedirect()
     {
-        $route = 'user.vehicle.index';
-        $message = 'Vehicle created and awaiting approval';
+        $route = 'admin.vehicles.index';
+        $message = 'Vehicle Created';
         return redirect()->route($route)->with('success', $message);
     }
 
+    /**
+     * Retrieves the owner of the vehicle.
+     *
+     * @return User|Admin The user who is the owner or the admin if no owner is selected.
+     */
+    public function getOwner()
+    {
+        if (!empty($this->selectedUser)) {
+            return getUser(user: $this->selectedUser); // Get the selected user
+        }
+        return getUser() ?? getAdmin(); // Get the current user or the admin
+    }
+
+    public function selectVehicle($index)
+    {
+
+        $this->updateStoredData($index);
+        // // Check if the index exists in the storeData array
+        // if (isset($this->storeData[$index])) {
+        //     $selectedVehicle = $this->storeData[$index];
+        //     // Perform actions with the selected vehicle
+        //     // For example, you can redirect to a detailed view or update a state
+        //     session()->flash('message', 'Vehicle selected: ' . $selectedVehicle['details']['make']);
+        //     // Redirect to a detailed view (example)
+        //     // return redirect()->route('vehicle.details', ['id' => $selectedVehicle['id']]);
+        // } else {
+        //     session()->flash('error', 'Vehicle not found.');
+        // }
+    }
 
     /**
      * Generates validation rules, messages, and field names for the current step in a multi-step form.
@@ -258,6 +271,7 @@ class Wizard extends VehiclesWizard
         return ['rules' => $rules, 'messages' => $messages, 'names' => $names];
     }
 
+
     /**
      * Initializes the steps for the vehicle wizard process.
      *
@@ -279,11 +293,11 @@ class Wizard extends VehiclesWizard
             6 => 'Vehicle Images',
             7 => 'Vehicle Documents',
             8 => 'Price ',
-            9 => 'Review & Submit',
+            9 => 'Vehicle Owner',
+            10 => 'Review & Submit',
         ];
         $this->totalSteps = count($this->stepNames) - 1;
     }
-
 
     /**
      * Renders the vehicle wizard view.
@@ -295,8 +309,13 @@ class Wizard extends VehiclesWizard
      */
     public function render()
     {
+
+        $users = User::search('name', $this->userSearch)
+            ->where('role', 'owner')
+            ->paginate($this->usersPerPage);
+
         return view(
-            'user.vehicle.wizard',
+            'admin.resources.vehicles.wizard',
             [
                 'prevStepName' => $this->getPrevStepName(),
                 'nextStepName' => $this->getNextStepName(),
@@ -306,7 +325,9 @@ class Wizard extends VehiclesWizard
                 'prevPrefix' => 'prev-',
                 'vits' => $this->vehicleData['vits'],
                 'VehicleTypes' => $this->vehicleData['types'],
+                'users' => $users,
+
             ]
-        )->layout('layouts.user');
+        )->layout('layouts.admin');
     }
 }

@@ -10,6 +10,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Http\Controllers\Attachments\AttachmentUploadController as Upload;
 use App\Models\Admin;
+use App\Models\Attachment;
 use App\Models\User;
 use App\Rules\CheckNIN;
 use Illuminate\Support\Facades\DB;
@@ -96,7 +97,7 @@ class Onboarding extends Component
         }
 
         // Check and update address details
-        $addressKeys = ['country', 'state', 'city', 'street'];
+        $addressKeys = ['full', 'country', 'state', 'city', 'street', 'postal_code', 'unit', 'longitude', 'latitude'];
         foreach ($addressKeys as $key) {
             if (empty($this->storeData['address']['home'][$key]) && !empty($this->user->address->home->$key)) {
                 $this->storeData['address']['home'][$key] = $this->user->address->home->$key;
@@ -105,6 +106,19 @@ class Onboarding extends Component
                 $this->storeData['address']['work'][$key] = $this->user->address->work->$key;
             }
         }
+    }
+
+    /**
+     * Updates the stored data with the current state of the storeData property.
+     *
+     * This function is triggered when the storeData property is updated. It saves
+     * the current state of the storeData property to persistent storage.
+     *
+     * @return void
+     */
+    public function updatedStoreData()
+    {
+        $this->putData($this->storeData);
     }
 
     /**
@@ -462,12 +476,19 @@ class Onboarding extends Component
     protected function saveFiles(User|Admin $user)
     {
         if (isset($this->photo['file']['path'])) {
+            $resizing = [
+                'width' => 140,
+                'height' => 140,
+                'type' => 'coverDown'
+            ];
             $this->processFile(
                 $user,
                 $this->photo['file'],
                 'photo',
                 getUserStorage() . 'profile/photo.webp',
                 false,
+                Attachment::TYPE_PHOTO,
+                $resizing,
                 80
             );
         }
@@ -476,38 +497,60 @@ class Onboarding extends Component
             if ($key !== 'photo' && isset($file['path'])) {
                 $storagePath = getUserStorage('private', $this->user->id) . 'documents/';
                 $path = str_contains($file['mime_type'], 'image') ? $storagePath . $key . '.webp' : $storagePath . $key . '.pdf';
-                $this->processFile($user, $file, $key, $path, true);
+                $this->processFile($user, $file, $key, $path, true, Attachment::TYPE_DOCUMENT);
             }
         }
     }
 
     /**
-     * Process and save a file to storage.
+     * Process and upload a file or image for a user or admin.
      *
-     * @param User|Admin $user The user associated with the file.
-     * @param array $file The file data.
-     * @param string $key The key representing the file type.
-     * @param string $path The storage path for the file.
-     * @param bool $isFeatured Whether the file is featured.
+     * This function handles the processing of a file or image, including determining
+     * the document name and description, and uploading it using the appropriate method
+     * based on the file type. After processing, the original file is deleted from storage.
+     *
+     * @param User|Admin $user The user or admin associated with the file.
+     * @param array $file An associative array containing file details such as path and mime type.
+     * @param string $key The key representing the type of document (e.g., 'photo', 'nin').
+     * @param string $path The storage path where the processed file will be saved.
+     * @param bool $isFeatured Indicates whether the file should be marked as featured.
+     * @param mixed $type The type of the file, used to determine processing logic.
+     * @param array $resizing Optional. An array specifying resizing options for images.
+     * @param int $quality Optional. The quality of the image if it is being processed as an image. Default is 100.
      * @return void
      */
-    protected function processFile(User|Admin $user, array $file, string $key, string $path, bool $isFeatured, int $quality = 100)
+    protected function processFile(User|Admin $user, array $file, string $key, string $path, bool $isFeatured, $type, $resizing = [], int $quality = 100)
     {
         $document = Storage::path('public/' . $file['path']);
         $docName = $this->getDocName($key);
         $docDesc = $user->name . '\'s ' . $docName;
-
-        Upload::file(
-            name: $docName,
-            description: $docDesc,
-            file: $document,
-            mimeType: $file['mime_type'],
-            is_featured: $isFeatured,
-            quality: $quality,
-            authorable: $user,
-            attachable: $user,
-            path: $path,
-        );
+        if ($type === Attachment::TYPE_DOCUMENT) {
+            Upload::file(
+                name: $docName,
+                description: $docDesc,
+                file: $document,
+                mimeType: $file['mime_type'],
+                is_featured: $isFeatured,
+                type: $type,
+                authorable: $user,
+                attachable: $user,
+                path: $path,
+            );
+        } else {
+            Upload::image(
+                name: $docName,
+                description: $docDesc,
+                image: $document,
+                mimeType: $file['mime_type'],
+                is_featured: $isFeatured,
+                type: $type,
+                resizing: $resizing,
+                quality: $quality,
+                authorable: $user,
+                attachable: $user,
+                path: $path,
+            );
+        }
 
         Storage::delete('public/' . $file['path']);
         $this->storeData['files'][$key] = [];
@@ -556,26 +599,23 @@ class Onboarding extends Component
         // Redirect to the user dashboard after completing the onboarding process
         redirect()->route('user.dashboard')->with('message', 'You have completed the onboarding process. You have been updated to ' . ucfirst($this->user->role) . '.');
 
-        // Update the user fields using database-level JSON updates
-        DB::table('users')
-            ->where('id', $this->user->id)
-            ->update([
-                'records->onboarding->status' => 'completed',
-                'records->onboarding->step' => $this->currentStep,
-                'records->onboarding->restart_at' => null,
-                'records->onboarding->completed_at' => now(),
-                'details->phone' => json_encode($this->storeData['phone']),
-                'details->date_of_birth' => json_encode($this->storeData['date_of_birth']),
-                'details->gender' => json_encode($this->storeData['gender']),
-                'details->address' => json_encode($this->storeData['address']),
-                'details->social' => json_encode($this->storeData['social']),
-                'details->nin' => json_encode($this->storeData['nin']),
-                'details->self_drive' => json_encode($this->storeData['drive']),
-                'status' => 'active',
-                'verification->account->status' => 'pending',
-                'role' => $this->storeData['role'],
-                'profile_photo_path' => getUserStorage('') . 'profile/photo.webp',
-            ]);
+        updateUser($this->user->id,[
+            'records->onboarding->status' => 'completed',
+            'records->onboarding->step' => $this->currentStep,
+            'records->onboarding->restart_at' => null,
+            'records->onboarding->completed_at' => now(),
+            'details->phone' => json_encode($this->storeData['phone']),
+            'details->date_of_birth' => json_encode($this->storeData['date_of_birth']),
+            'details->gender' => json_encode($this->storeData['gender']),
+            'details->address' => json_encode($this->storeData['address']),
+            'details->social' => json_encode($this->storeData['social']),
+            'details->nin' => json_encode($this->storeData['nin']),
+            'details->self_drive' => json_encode($this->storeData['drive']),
+            'details->status' => 'active',
+            'verification->account->status' => 'pending',
+            'role' => $this->storeData['role'],
+            'profile_photo_path' => getUserStorage('') . 'profile/photo.webp',
+        ]);
 
         // Save the uploaded files
         $this->saveFiles($this->user);
@@ -646,20 +686,20 @@ class Onboarding extends Component
         if ($skipCount <= 3) {
             redirect()->route('user.dashboard')->with('info', 'You have skipped the onboarding process ' . ($skipCount <= 1 ? '' : $skipCount . ' times') . '.');
             // Check if the user's onboarding status is already 'skipped'
-            if ($this->user->onboarding->status !== 'skipped') {
+            //if ($this->user->onboarding->status !== 'skipped') {
 
-                // Update the user's onboarding status and skip count
-                $this->user->updateOnboarding([
-                    'status' => 'skipped',
-                    'step' => $this->currentStep,
-                    'restart_at' => now()->addDays(2),
-                    'completed_at' => null,
-                    'skip_count' => $skipCount,
-                ]);
+            // Update the user's onboarding status and skip count
+            $this->user->updateOnboarding([
+                'status' => 'skipped',
+                'step' => $this->currentStep,
+                'restart_at' => now()->addDays(2),
+                'completed_at' => null,
+                'skip_count' => $skipCount,
+            ]);
 
-                // Notify the user about the skipped onboarding process
-                $this->user->notify(new Skipped());
-            }
+            // Notify the user about the skipped onboarding process
+            $this->user->notify(new Skipped());
+            //}
         } else {
             // set notice saying you cannot skip the onboarding process any more
             $this->dispatch('notify', 'You cannot skip the Onboarding process anymore', 'warning');

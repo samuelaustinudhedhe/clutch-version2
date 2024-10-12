@@ -17,7 +17,7 @@ class Index extends Component
     public $roles;
     public $selected = []; // Array to hold selected user IDs
     public $selectAll = false; // Boolean to track the select all checkbox
-    public $sortField = 'status'; // Default sort field
+    public $sortField = 'details->status'; // Default sort field
     public $sortDirection = 'asc'; // Default sort direction
     public $currentPageUsers; // Array to hold users currently being displayed
 
@@ -47,13 +47,13 @@ class Index extends Component
 
     public function suspendAll()
     {
-        User::whereIn('id', $this->selected)->update(['status' => 'suspended']);
+        User::whereIn('id', $this->selected)->update(['details->status' => 'suspended']);
         $this->resetSelection();
     }
 
     public function activateAll()
     {
-        User::whereIn('id', $this->selected)->update(['status' => 'active']);
+        User::whereIn('id', $this->selected)->update(['details->status' => 'active']);
         $this->resetSelection();
     }
 
@@ -78,13 +78,16 @@ class Index extends Component
             $this->sortDirection = 'asc';
         }
     }
+
     public function render()
     {
-        $users = User::search('name', $this->search)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage);
+        $users = User::where('name', 'like', '%' . $this->search . '%')
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate($this->perPage);
 
         $this->currentPageUsers = $users->pluck('id')->toArray();
 
-        $activeUsers = User::search('status', 'active')->count();
+        $activeUsers = User::where('details->status', 'active')->count();
         
         return view('admin.resources.users.index', [
             'users' => $users,

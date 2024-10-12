@@ -6,11 +6,10 @@
         <h1 class="text-xl tracking-tight text-gray-900 sm:mb-6 leding-tight dark:text-white">
             {{ $currentStepName }}
         </h1>
+        
         @switch($currentStep)
             @case(0)
-                <div>
-                    Welcome to Vehicle Wizard
-                </div>
+                @include('resources.vehicles.wizard.introduction')
             @break
 
             @case(1)
@@ -39,7 +38,7 @@
             @break
 
             @case(7)
-                <!-- Step 7: Insurance Documents -->
+                <!-- Step 7: Owner Documents -->
                 @include('resources.vehicles.wizard.documents')
             @break
 
@@ -48,6 +47,10 @@
                 @include('resources.vehicles.wizard.price')
             @break
             @case(9)
+                <!-- Step 8: Final Confirmation and Submission -->
+                @include('resources.vehicles.wizard.assign-owner')            
+                @break
+            @case(10)
                 <!-- Step 8: Final Confirmation and Submission -->
                 @include('resources.vehicles.wizard.review-submit')
             @break
@@ -239,7 +242,7 @@
                 </div>
             </li>
 
-            {{-- Insurance --}}
+            {{-- Price --}}
             <li class="flex items-center space-x-4" wire:click="goToStep(8)">
                 <div class="relative">
                     <div
@@ -258,17 +261,41 @@
                     </div>
                 </div>
                 <div>
-                    <p class="text-xs font-semibold">Insurance</p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">Add you Vehicle Insurance Details</p>
+                    <p class="text-xs font-semibold">Price</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400">Price you vehicle</p>
                 </div>
             </li>
 
-            {{-- Review --}}
+            {{-- Owner --}}
             <li class="flex items-center space-x-4" wire:click="goToStep(9)">
                 <div class="relative">
                     <div
                         class="w-8 h-8 flex items-center justify-center {{ $currentStep >= 9 ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600' }} rounded-full">
                         <svg class="w-4 h-4 {{ $currentStep >= 9 ? 'text-white' : 'text-gray-600 dark:text-gray-300' }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.948 8.948 0 0 0 12 21Zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+
+                    </div>
+                    <div
+                        class="absolute w-1 h-12 {{ $currentStep >= 8 ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600' }} left-1/2 transform -translate-x-1/2 top-full">
+                    </div>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold">Owner</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400">Assign the Vehicle to it's Owner</p>
+                </div>
+            </li>
+            
+            {{-- Review --}}
+            <li class="flex items-center space-x-4" wire:click="goToStep(10)">
+                <div class="relative">
+                    <div
+                        class="w-8 h-8 flex items-center justify-center {{ $currentStep >= 10 ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600' }} rounded-full">
+                        <svg class="w-4 h-4 {{ $currentStep >= 10 ? 'text-white' : 'text-gray-600 dark:text-gray-300' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"

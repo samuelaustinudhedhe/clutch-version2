@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         foreach ($roles as $role) {
             User::factory()->create([
                 'name' => $role->name,
-                'email' => strtolower($role->name) . '@example.com',
+                'email' => strtolower($role->name) . '@clutch.africa',
                 'role' => $role->slug,
             ]);
         }

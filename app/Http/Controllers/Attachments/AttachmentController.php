@@ -9,6 +9,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\Exceptions\DecoderException;
+use InvalidArgumentException;
 
 class AttachmentController extends Controller
 {
@@ -37,11 +38,16 @@ class AttachmentController extends Controller
         $driver = ($driverType === 'imagick')
             ? new ImagickDriver()
             : new GdDriver();
-
+    
         // Create a new ImageManager with the selected driver
         $manager = new ImageManager($driver);
-
+    
         try {
+            // Check if the input is readable
+            if (!is_readable($input)) {
+                return false;
+            }
+    
             // If decoders are provided, pass them while reading the image
             if (!empty($decoders)) {
                 $image = $manager->read($input, $decoders);
@@ -49,11 +55,11 @@ class AttachmentController extends Controller
                 // Use default decoding mechanism
                 $image = $manager->read($input);
             }
-
+    
             return $image;
         } catch (DecoderException $e) {
             // Handle decoding exception, maybe log or rethrow as necessary
-            throw $e;
+            return false;
         }
     }
 
@@ -119,7 +125,7 @@ class AttachmentController extends Controller
                     // Crop the image to given width and height, optional offset and position
                     $offset_x = $options['offset_x'] ?? 0;
                     $offset_y = $options['offset_y'] ?? 0;
-                    $position = $options['position'] ?? 'top-left';
+                    $position = $options['position'] ?? 'center';
                     $background = $options['background'] ?? 'ffffff00';
                     return $image->crop($width, $height, $offset_x, $offset_y, $background, $position);
 
@@ -217,81 +223,103 @@ class AttachmentController extends Controller
     }
 
 
+
     /**
-     * Create a new Attachment.
+     * Creates a new Attachment with the provided details and metadata.
+     *
+     * This function gathers metadata from the provided file, such as dimensions and size,
+     * and then creates a new Attachment record using the createRaw method.
      *
      * @param string $name The name of the Attachment.
-     * @param string $description The description of the Attachment.
-     * @param \Illuminate\Http\UploadedFile $file The uploaded file.
-     * @param object $attachable The model that the Attachment is attached to.
-     * @param object $authorable The model that created the Attachment.
-     * @param string $path The file path of the Attachment.
+     * @param string $description A brief description of the Attachment.
+     * @param mixed $file The file to be attached, which can be a file path or a resource.
+     * @param string $mimeType The MIME type of the file.
+     * @param bool $is_featured Indicates whether the Attachment is featured. Defaults to false.
+     * @param string $type The type of Attachment (e.g., 'image', 'document', 'gallery_image').
+     * @param object $attachable The model instance to which the Attachment is related.
+     * @param object $authorable The model instance representing the creator of the Attachment.
+     * @param string $path The file path where the Attachment will be stored.
      *
-     * @return void
+     * @return \App\Models\Attachment The newly created Attachment instance.
      */
-    public static function create($name, $description, $file, $mimeType, $is_featured = false, $attachable, $authorable, $path)
+    public static function create($name, $description, $file, $mimeType, $is_featured = false, string $type, $attachable, $authorable, $path)
     {
         // Get the MIME type of the file
-        $fileInfo =  getimagesize($file);
+        $fileInfo = getimagesize($file);
 
-        // $exif = null;
-        // if (!in_array($fileInfo['mime'], ['image/png', 'image/jpeg', 'image/gif'])) {
-        //     $exif = exif_read_data($file);
-        // }
+        // Check if the MIME type is not available
+        if ($fileInfo === false || !isset($fileInfo['mime'])) {
+            // Log the error or handle it as needed
+            error_log("Failed to get MIME type for file: $file");
+
+            // Return an error or exit the function
+            return null; // or throw an exception if preferred
+        }
+
         $width = $fileInfo[0] ?? null;
         $height = $fileInfo[1] ?? null;
-        $ratio = ($height > 0) ? ($width / $height) : null; // Add condition to check if height is not zero before performing division
-        $dimension = '';
-        if ($fileInfo)
-            $dimension = [
-                'width' => $width,
-                'height' => $height,
-                'ratio' => $ratio,
-            ];
+        $ratio = ($height > 0) ? ($width / $height) : null;
+        $dimension = [
+            'width' => $width,
+            'height' => $height,
+            'ratio' => $ratio,
+        ];
+
         // Collect metadata about the file
         $metadata = [
             'size' => filesize($file),
-            $dimension
-            // 'exif' => $exif ?: null,
+            'dimension' => $dimension,
         ];
 
         // Create the Attachment using the raw method
-        self::createRaw(
+        $attachment = self::createRaw(
             $name,
             $description,
             'active',
             $is_featured,
+            $type,
             $metadata,
             $mimeType,
             $attachable,
             $authorable,
             $path
         );
-    }
 
+        return $attachment;
+    }
     /**
-     * Create a new Attachment without processing the file.
+     * Creates a new Attachment record in the database.
+     *
+     * This function inserts a new record into the Attachment table with the provided details.
      *
      * @param string $name The name of the Attachment.
-     * @param string $description The description of the Attachment.
-     * @param string $active The status of the Attachment.
-     * @param bool $is_featured Whether the Attachment is is_featurable.
-     * @param array $metadata The metadata of the Attachment.
-     * @param string $mime_type The MIME type of the Attachment.
-     * @param object $attachable The model that the Attachment is attached to.
-     * @param object $authorable The model that created the Attachment.
-     * @param string $path The file path of the Attachment.
+     * @param string $description A brief description of the Attachment.
+     * @param string $active The status of the Attachment, typically 'active'.
+     * @param bool $is_featured Indicates whether the Attachment is featured.
+     * @param string $type The type of the Attachment, such as 'image', 'document', or 'video'.
+     * @param array $metadata An array containing metadata about the Attachment, such as size and dimensions.
+     * @param string $mimeType The MIME type of the Attachment file.
+     * @param object $attachable The model instance to which the Attachment is related.
+     * @param object $authorable The model instance representing the creator of the Attachment.
+     * @param string $path The file path where the Attachment is stored.
      *
-     * @return void
+     * @return \App\Models\Attachment The newly created Attachment instance.
      */
-    public static function createRaw(string $name, string $description, string $active, bool $is_featured, array $metadata, string $mimeType, object $attachable, object $authorable, string $path)
+    public static function createRaw(string $name, string $description, string $active, bool $is_featured, string $type, array $metadata, string $mimeType, object $attachable, object $authorable, string $path)
     {
+        // Validate the file type
+        $validTypes = Attachment::getFileTypes();
+
+        if (!in_array($type, $validTypes)) {
+            throw new InvalidArgumentException("Invalid file type: $type");
+        }
         // Create the Attachment record in the database
-        Attachment::create([
+        $attachment = Attachment::create([
             'name' => $name,
             'description' => $description,
             'status' => $active,
             'is_featured' => $is_featured,
+            'type' => $type,
             'metadata' => json_encode($metadata),
             'mime_type' => $mimeType,
             'attachable_id' => $attachable->id,
@@ -300,5 +328,7 @@ class AttachmentController extends Controller
             'authorable_type' => get_class($authorable),
             'file_path' => $path,
         ]);
+
+        return $attachment;
     }
 }

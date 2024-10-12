@@ -7,6 +7,8 @@ use App\Http\Controllers\Attachments\AttachmentCompressController as Compress;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Encoders\AutoEncoder;
 
+use function PHPUnit\Framework\isReadable;
+
 class AttachmentUploadController extends AttachmentController
 {
 
@@ -76,7 +78,26 @@ class AttachmentUploadController extends AttachmentController
     //     // Return the path of the stored file
     //     return $path;
     // }
-    public static function image($name, $description, $image, $mimeType, $is_featured, $resize, $quality = 90, $authorable, $attachable, $path)
+
+
+    /**
+     * Processes and stores an image, applying optional resizing and compression, and creates a new attachment record in the database.
+     *
+     * @param string|null $name The name of the image. If null, a default name is generated.
+     * @param string|null $description A description of the image. If null, a default description is generated.
+     * @param mixed $image The source of the image (e.g., file path, stream, or uploaded file).
+     * @param string $mimeType The MIME type of the image.
+     * @param bool $is_featured Indicates if the image is featured.
+     * @param string $type The type of the image (e.g., 'image', 'document', 'video').
+     * @param array $resize An array containing resizing options, including type, width, height, and additional options.
+     * @param int $quality The quality of the compressed image (default is 90).
+     * @param object $authorable The user who is uploading the image.
+     * @param object $attachable The entity to which the image is attached.
+     * @param string $path The path where the image will be stored.
+     *
+     * @return \App\Models\Attachment The newly created Attachment instance.
+     */
+    public static function image($name, $description, $image, $mimeType, $is_featured, $type, $resizing, $quality = 90, $authorable, $attachable, $path)
     {
         // Get the file extension from the filename
         $fileName = basename($image);
@@ -86,51 +107,64 @@ class AttachmentUploadController extends AttachmentController
         // Read the image from the provided source
         $image = (new parent)->read($image);
 
-        if (!empty($resize['type'])) {
-            // Apply the specified resizing type
-            $type = $resize['type'];
-            // Get the dimensions if provided
-            $width = $resize['width']?? null;
-            $height = $resize['height']?? null;
-            // Get the options if provided
-            $options = $resize['options']?? [];
+        $isReadable = (new parent)->read($image);
 
-            // Resize the image based on the specified size and dimensions and options
-            $image = (new parent)->resizing($image, $type, $width, $height, $options);
+        // if error skip compression 
+        if ($isReadable) {
+            
+            $image = $isReadable;
+            if (!empty($resizing['type'])) {
+                // Apply the specified resizing type
+                $resizingType = $resizing['type'];
+                // Get the dimensions if provided
+                $resizingWidth = $resizing['width'] ?? null;
+                $resizingHeight = $resizing['height'] ?? null;
+                // Get the options if provided
+                $resizingOptions = $resizing['options'] ?? [];
+
+                // Resize the image based on the specified size and dimensions and options
+                $image = (new parent)->resizing($image, $resizingType, $resizingWidth, $resizingHeight, $resizingOptions);
+            }
+
+            // Compress the image and get the encoded image
+            $image = Compress::image($image, $mimeType, $quality);
         }
-        
-        // Compress the image and get the encoded image
-        $image = Compress::image($image, $mimeType, $quality);
-
         // Store the image to the specified path
         $image = self::store($path, $image, 'image/jpeg', true);
 
         // Create a new attachment record in the database
-        AttachmentController::create(
+        $attachment = AttachmentController::create(
             name: $name,
             description: $description,
             file: $image,
             mimeType: $mimeType,
             is_featured: $is_featured,
+            type: $type,
             attachable: $attachable,
             authorable: $authorable,
             path: $path,
         );
+
+        return $attachment;
     }
 
+
     /**
-     * Uploads and processes a file, compresses it if necessary, and stores it in the specified folder.
-     * It also creates a new attachment record in the database.
+     * Processes and stores a file, compressing it if it's an image, and creates a new attachment record in the database.
      *
-     * @param object $authorable The user who is uploading the file.
+     * @param string|null $name The name of the file. If null, a default name is generated.
+     * @param string|null $description A description of the file. If null, a default description is generated.
      * @param mixed $file The source of the file (e.g., file path, stream, or uploaded file).
-     * @param string $folder The folder where the file will be stored.
-     * @param string $filename The name of the file.
-     * @param int $quality The quality of the compressed file (default is 80).
+     * @param string $mimeType The MIME type of the file.
+     * @param bool $is_featured Indicates if the file is featured.
+     * @param string $type The type of the file (e.g., 'image', 'gallery_image', 'document', 'video').
+     * @param object $authorable The user who is uploading the file.
+     * @param object $attachable The entity to which the file is attached.
+     * @param string $path The path where the file will be stored.
      *
-     * @return string The path of the stored file.
+     * @return \App\Models\Attachment The newly created Attachment instance.
      */
-    public static function file($name, $description, $file, $mimeType, $is_featured, $quality = 90, $authorable, $attachable, $path)
+    public static function file($name, $description, $file, $mimeType, $is_featured, $type, $authorable, $attachable, $path)
     {
         // Get the file extension from the filename
         $fileName = basename($file);
@@ -141,25 +175,32 @@ class AttachmentUploadController extends AttachmentController
         // Check if the file is an image
         if (str_contains($mimeType, 'image')) {
             // Read the file from the provided source
-            $file = (new parent)->read($file);
-            // Compress the file and get the encoded file
-            $file = Compress::image($file, 'jpg', $quality);
+            $isReadable = (new parent)->read($file);
+
+            // if error skip compression 
+            if ($isReadable) {
+                // Compress the file and get the encoded file
+                $file = Compress::image($isReadable, 'jpg', 100);
+            }
         }
 
         // Store the file to the specified path
         $file = self::store($path, $file, $mimeType, true);
 
         // Create a new attachment record in the database
-        AttachmentController::create(
+        $attachment = AttachmentController::create(
             name: $name,
             description: $description,
             file: $file,
             mimeType: $mimeType,
             is_featured: $is_featured,
+            type: $type,
             attachable: $attachable,
             authorable: $authorable,
             path: $path,
         );
+
+        return $attachment;
     }
 
 

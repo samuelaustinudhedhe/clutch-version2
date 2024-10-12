@@ -81,6 +81,8 @@ class User extends Authenticatable
         'verification' => 'object',
     ];
 
+
+
     /**
      * Get the color associated with the user's role.
      *

@@ -106,7 +106,11 @@ return new class extends Migration
                     'faults' => '', // Faults (e.g., brakes, tires, air conditioning, lights, etc.)
                 ])
             )->nullable();
-            $table->json('insurance')->nullable();
+            $table->json('documents')->default(json_encode([
+                'insurance' => '', // Insurance details
+                'proof_of_ownership' => '', // proof of ownership details
+                'registration' => '', // Registration details
+            ]))->nullable();
             $table->json('chauffeur')->nullable();
             $table->morphs('ownerable'); // Polymorphic fields for author (User or Admin)
             $table->timestamps();

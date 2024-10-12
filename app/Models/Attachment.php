@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use ReflectionClass;
 
 class Attachment extends Model
 {
@@ -12,8 +13,10 @@ class Attachment extends Model
 
     protected $fillable = [
         'name',
-        'size',
+        'description',
         'status',
+        'is_featured',
+        'type',
         'metadata',
         'mime_type',
         'file_path',
@@ -24,6 +27,7 @@ class Attachment extends Model
     ];
 
     protected $casts = [
+        'is_featured' => 'bool',
         'metadata' => 'object',
         'dimensions' => 'object',
     ];
@@ -59,6 +63,39 @@ class Attachment extends Model
         'image/webp',
     ];
 
+    // Define constants for attachment types
+    const TYPE_IMAGE = 'image';
+    const TYPE_PHOTO = 'photo';    //
+    const TYPE_GALLERY_IMAGE = 'gallery_image';
+    const TYPE_REVIEW_IMAGE = 'review_image';
+    const TYPE_PROOF_OF_PAYMENT = 'proof_of_payment';
+
+    // Define constants for document and specific documents types    
+    const TYPE_DOCUMENT = 'document';    
+    const TYPE_REGISTRATION_DOCUMENT = 'registration_document';
+    const TYPE_PROOF_OF_OWNERSHIP_DOCUMENT = 'proof_of_ownership_document';
+    const TYPE_INSURANCE_DOCUMENT = 'insurance_document';
+
+    // define constants for video and audio types
+    const TYPE_VIDEO = 'video';
+    const TYPE_AUDIO = 'audio';
+    
+
+    /**
+     * Get all defined file types.
+     *
+     * @return array
+     */
+    public static function getFileTypes()
+    {
+        $reflection = new ReflectionClass(__CLASS__);
+        $constants = $reflection->getConstants();
+
+        // Filter constants to only include those that start with 'TYPE_'
+        return array_filter($constants, function ($key) {
+            return strpos($key, 'TYPE_') === 0;
+        }, ARRAY_FILTER_USE_KEY);
+    }
 
     /**
      * Establish a polymorphic relationship to the parent model.
@@ -87,6 +124,23 @@ class Attachment extends Model
     }
 
     /**
+     * Scope a query to only include attachments of given types.
+     *
+     * This function adds a condition to the query to filter attachments based on the specified types.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The query builder instance.
+     * @param array|string $types The type(s) of attachments to filter by.
+     * @return \Illuminate\Database\Eloquent\Builder The modified query builder instance.
+     */
+    public function scopeOfType($query, $types)
+    {
+        if (is_array($types)) {
+            return $query->whereIn('type', $types);
+        }
+    
+        return $query->where('type', $types);
+    }
+    /**
      * Get the URL of the attachment file.
      *
      * This function checks if the file path is a valid URL. If it is, it returns the file path as is.
@@ -100,6 +154,6 @@ class Attachment extends Model
         if (filter_var($filePath, FILTER_VALIDATE_URL)) {
             return $filePath;
         }
-        return Storage::disk('public')->url($filePath);
+        return Storage::url($filePath);
     }
 }

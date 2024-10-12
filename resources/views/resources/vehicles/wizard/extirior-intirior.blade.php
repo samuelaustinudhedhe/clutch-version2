@@ -17,11 +17,11 @@
             <div class="w-full">
                 <x-label for="exterior_doors">Number of Doors</x-label>
                 <x-select name="exterior_doors" wire:model="storeData.details.exterior.doors" id="exterior_doors">
-                    <option selected value="0">No Door</option>
+                    <option  value="0">No Door</option>
                     <option value="1">1 Door</option>
                     <option value="2">2 Doors</option>
                     <option value="3">3 Doors</option>
-                    <option value="4">4 Doors</option>
+                    <option selected value="4">4 Doors</option>
                     <option value="5">5 Doors</option>
                     <option value="6">6 Doors</option>
                 </x-select>
@@ -30,11 +30,11 @@
             <div class="w-full">
                 <x-label for="exterior_windows">Number of Windows</x-label>
                 <x-select name="exterior_windows" wire:model="storeData.details.exterior.windows" id="exterior_windows">
-                    <option selected value="0">No Window</option>
+                    <option value="0">No Window</option>
                     <option value="1">1 Window</option>
                     <option value="2">2 Windows</option>
                     <option value="3">3 Windows</option>
-                    <option value="4">4 Windows</option>
+                    <option selected value="4">4 Windows</option>
                     <option value="5">5 Windows</option>
                     <option value="6">6 Windows</option>
                 </x-select>
@@ -45,7 +45,12 @@
 
     {{-- Interior Details --}}
     <x-div class="grid gap-4 sm:grid-cols-2">
-
+        <select class="mySelect">
+            <option value="A" >Option A (Default)</option>
+            <option value="B">Option B</option>
+            <option value="C"selected>Option C</option>
+          </select>
+          
         <div class="sm:col-span-2 flex gap-4">
             <div class="w-full">
                 <x-label for="interior_color">Exterior Color</x-label>
@@ -56,8 +61,8 @@
         <div class="sm:col-span-2 flex gap-4">
             <div class="w-full">
                 <x-label for="interior_seats">Number of Seats</x-label>
-                <x-select name="interior_seats" wire:model="storeData.details.interior.seats" id="interior_seats">
-                    <option selected>--Select Seats--</option>
+                <x-select name="interior_seats" wire:model="storeData.details.interior.seats" id="interior_seats" selected="5">
+                    <option disabled >--Select Seats--</option>
                     <option value="1">1 Seat</option>
                     <option value="2">2 Seats</option>
                     <option value="3">3 Seats</option>
@@ -68,6 +73,7 @@
                     <option value="8">8+ Seats</option>
                 </x-select>
                 <x-input-error for="storeData.details.interior.seats" />
+        {{ $this->storeData['details']['interior']['seats']?? '' }}
             </div>
             <div class="w-full">
                 <x-label for="interior_upholstery">Upholstery Type</x-label>

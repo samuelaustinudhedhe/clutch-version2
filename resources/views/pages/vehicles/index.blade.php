@@ -115,7 +115,7 @@
                         class=" sm:hidden space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <div class="relative mb-4 max-h-72 overflow-hidden rounded-md">
                             <!-- Carousel wrapper -->
-                            <img src="{{ $vehicle->featuredImage('car.jpg') }}"
+                            <img src="{{ is_string($vehicle->featuredImage('car'))? $vehicle->featuredImage('car') : $vehicle->featuredImage('car')->url }}"
                                 class="h-72 w-full object-cover rounded-md" alt="{{ $vehicle->name }}" />
                             <div class="absolute right-0 top-0 p-1">
                                 <button type="button" data-tooltip-target="tooltip-add-to-favorites-9"
@@ -163,7 +163,7 @@
 
                         <div class="border-1 border-lg h-[176px] w-[291px]  relative">
                             <!-- Carousel wrapper -->
-                            <img src="{{ $vehicle->featuredImage('car.jpg') }}"
+                            <img src="{{ is_string($vehicle->featuredImage('car'))? $vehicle->featuredImage('car') : $vehicle->featuredImage('car')->url }}"
                                 class="h-full w-full object-cover rounded-l-md" alt="{{ $vehicle->name }}" />
                             <div class="absolute right-0 top-0 p-1">
                                 <button type="button" data-tooltip-target="tooltip-add-to-favorites-9"

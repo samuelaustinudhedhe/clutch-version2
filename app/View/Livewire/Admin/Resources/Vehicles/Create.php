@@ -625,7 +625,7 @@ class Create extends Component
             ->paginate($this->usersPerPage);
 
         return view(
-            'admin.resources.vehicle.create',
+            'admin.resources.vehicles.create',
             [
                 'users' => $users,
             ]

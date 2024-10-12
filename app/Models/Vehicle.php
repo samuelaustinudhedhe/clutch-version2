@@ -17,8 +17,10 @@ class Vehicle extends Model
         'price',
         'location',
         'details',
-        'insurance',
+        'documents',
         'chauffeur',
+        'ownerable_id',
+        'ownerable_type',
         'ownerable'
     ];
 
@@ -26,7 +28,7 @@ class Vehicle extends Model
         'price' => 'object',
         'details' => 'object',
         'location' => 'object',
-        'insurance' => 'object',
+        'documents' => 'object',
         'chauffeur' => 'object',
     ];
 

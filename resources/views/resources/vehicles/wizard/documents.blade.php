@@ -1,17 +1,22 @@
 <div>
 
     <x-div>
-        <div class=" mb-4">
+        <div class="mb-4">
             <x-label for="registration"
                 class="!text-base dark:!text-gray-200 !text-gray-800 font-normal">Registration</x-label>
             <div class="flex items-center gap-6">
                 <div class="w-full sm:w-1/2">
-                    <x-date id="issued_date" wire:model="storeData.details.reigistration.issued_date" placeholder="issued date" max="{{ date('m/d/Y', strtotime('+1 year')) }}" min="{{ date('m/d/Y', strtotime('-1 year')) }}" />
-                    <x-input-error for="storeData.details.reigistration.issued_date" />
+                    <x-date id="issued_date" wire:model.lazy="storeData.documents.reigistration.issued_date" placeholder="issued date" max="{{ now()->format('d/m/Y') }}" min="{{ now()->subYears(1)->format('d/m/Y') }}" loadJS=true/>
+                    <x-input-error for="storeData.documents.reigistration.issued_date" />
                 </div>
                 <div class="w-full sm:w-1/2">
-                    <x-date id="expiration_date" wire:model="storeData.details.reigistration.expiration_date" placeholder="expiration date" max="{{ date('m/d/Y', strtotime('+1 year')) }}" min="{{ date('m/d/Y', strtotime('-1 year')) }}" />
-                    <x-input-error for="storeData.details.reigistration.expiration_date" />
+                    @php
+                        $issuedDate = \Carbon\Carbon::parse($storeData['documents']['reigistration']['issued_date'] ?? now());
+                        $expirationMinDate = $issuedDate->copy()->addYear()->format('d/m/Y');
+                        $expirationMaxDate = $issuedDate->copy()->addYear()->format('d/m/Y');
+                    @endphp
+                    <x-date id="expiration_date" wire:model="storeData.documents.reigistration.expiration_date" placeholder="expiration date" max="{{ $expirationMaxDate }}" min="{{ $expirationMinDate }}" />
+                    <x-input-error for="storeData.documents.reigistration.expiration_date" />
                 </div>
             </div>
         </div>
@@ -46,7 +51,7 @@
 
 
     <x-div>
-        <x-label for="registration" class="!text-base dark:!text-gray-200 !text-gray-800 font-normal">Proof Of
+        <x-label for="proofOfOwnership" class="!text-base dark:!text-gray-200 !text-gray-800 font-normal">Proof Of
             Ownership</x-label>
 
         <div class="items-center w-full sm:flex space-x-6">
@@ -90,7 +95,7 @@
         </x-tooltip>
 
         <div class="mb-2 gap-4 text-sm sm:grid-cols-2 grid">
-            <x-radio id="noInsurance" name="has_insurance" value="invalid" wire:model.live="storeData.insurance.status"
+            <x-radio id="noInsurance" name="has_insurance" value="invalid" wire:model.live="storeData.document.insurance.status"
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -99,7 +104,7 @@
                 </svg>
                 <span class="w-full">No i do not</span>
             </x-radio>
-            <x-radio id="yesInsurance" name="has_insurance" value="valid" wire:model.live="storeData.insurance.status"
+            <x-radio id="yesInsurance" name="has_insurance" value="valid" wire:model.live="storeData.document.insurance.status"
                 checked showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -112,7 +117,7 @@
         </div>
 
 
-        @if (isset($storeData['insurance']['status']) && $storeData['insurance']['status'] === 'valid')
+        @if (isset($storeData['document']['insurance']['status']) && $storeData['document']['insurance']['status'] === 'valid')
 
         <hr class="my-6 border-gray-300 dark:border-gray-600">
             <div class="items-center w-full sm:flex space-x-6 mb-2 mt-6">

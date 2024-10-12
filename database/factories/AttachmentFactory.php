@@ -3,9 +3,14 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Vehicle;
+use App\Models\User;
+use App\Models\Admin;
+use App\Models\Post;
+use App\Models\Attachment;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Vehicle>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Attachment>
  */
 class AttachmentFactory extends Factory
 {
@@ -19,25 +24,47 @@ class AttachmentFactory extends Factory
         $faker = fake();
 
         // Fetch a random user or admin
-        $user = \App\Models\User::inRandomOrder()->first();
-        $admin = \App\Models\Admin::inRandomOrder()->first();
+        $user = User::inRandomOrder()->first();
+        $admin = Admin::inRandomOrder()->first();
         // Fetch a random post or vehicle
-        $post = \App\Models\Post::inRandomOrder()->first();
-        $vehicle = \App\Models\Vehicle::inRandomOrder()->first();
+        $post = Post::inRandomOrder()->first();
+        $vehicle = Vehicle::inRandomOrder()->first();
 
         // Determine which one to use as authorable
-        $authorable = $faker->randomElement(['user', 'admin']) === 'user' ? $user : $admin;
+        $authorable = $user ?? $admin;
+        if (!$authorable) {
+            throw new \Exception('No User or Admin found.');
+        }
 
-        $attachable = $faker->randomElement(['vehicle', 'post']) === 'vehicle' ? $vehicle : $vehicle;
+        $attachable = $vehicle ?? $post;
+        if (!$attachable) {
+            throw new \Exception('No Vehicle or Post found.');
+        }
+
+        // Determine mime type and type
+        $mimeType = $faker->randomElement(array_merge(Attachment::$imageMimeTypes, Attachment::$documentMimeTypes));
+        $type = in_array($mimeType, Attachment::$imageMimeTypes) ? $faker->randomElement(['image', 'gallery_image']) : 'document';
+
+        // Ensure vehicle has one featured image
+        $is_featured = false;
+        if ($type === 'gallery_image' || $type === 'image') {
+            $is_featured = $vehicle && $vehicle->attachments()->where('is_featured', true)->doesntExist();
+        }
+
+        // Ensure vehicle has specific documents
+        if ($type === 'document') {
+            $documentTypes = ['proof of ownership', 'registration document', 'insurance document'];
+            $type = $faker->randomElement($documentTypes);
+        }
 
         return [
             'name' => $faker->word,
             'description' => $faker->sentence,
             'status' => $faker->randomElement(['active', 'inactive', 'suspended']),
-            'is_featured' => $faker->boolean(20), // 50% chance of being true
-            'mime_type' => $faker->mimeType(),
+            'is_featured' => $is_featured,
+            'type' => $type,
+            'mime_type' => $mimeType,
             'metadata' => json_encode([
-                // Add more metadata fields as needed
                 'dimensions' => json_encode([
                     'width' => $faker->randomFloat(2, 1, 5),
                     'height' => $faker->randomFloat(2, 0.1, 3),

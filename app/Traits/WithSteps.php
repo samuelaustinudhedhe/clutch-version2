@@ -110,7 +110,7 @@ trait WithSteps
      * echo $stepName; // Outputs: 'Step 2'
      * ```
      */
-    private function getStepName($step)
+    public function getStepName($step)
     {
         return $this->stepNames[$step] ?? 'Unknown Step';
     }
@@ -198,7 +198,9 @@ trait WithSteps
      */
     public function goToStep($step)
     {
-        if ($step >= 0 && $step <= $this->totalSteps) {
+        if ($step <= $this->totalSteps) {
+            // create a function to verify each steps  and check if all steps before the current step is validated before moving to the current step
+            
             $this->currentStep = $step;
         } else {
             $this->dispatch('notify', 'Invalid step number' . [$step], 'error');

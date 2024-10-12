@@ -36,10 +36,10 @@ class VehicleFactory extends Factory
      */
     protected function generateVin()
     {
-        return json_encode([
+        return [
             'type' => fake()->randomElement(['VIN', 'HIN', 'TN', 'SN', 'UIC', 'PIN', 'VSN']),
             'number' => strtoupper(fake()->bothify('??######??######'))
-        ]);
+        ];
     }
 
     /**
@@ -64,35 +64,118 @@ class VehicleFactory extends Factory
     /**
      * Generate the location details for the vehicle.
      *
-     * This function creates an array containing the pickup and dropoff addresses for the vehicle.
+     * This function creates an array containing the pickup and drop_off addresses for the vehicle.
      *
      * @return array<string, string> An associative array with the following keys:
      * - 'pickup': A randomly generated address for the pickup location.
-     * - 'dropoff': A randomly generated address for the dropoff location.
+     * - 'drop_off': A randomly generated address for the drop_off location.
      */
     protected function generateLocation()
     {
+        $statesAndCities = [
+            'Lagos' => [
+                'cities' => ['Lagos', 'Ikeja', 'Epe'],
+                'lat_range' => [6.5244, 6.6000],
+                'lng_range' => [3.3792, 3.5000]
+            ],
+            'FCT' => [
+                'cities' => ['Abuja'],
+                'lat_range' => [9.0579, 9.1000],
+                'lng_range' => [7.4951, 7.6000]
+            ],
+            'Kano' => [
+                'cities' => ['Kano', 'Wudil'],
+                'lat_range' => [11.9998, 12.1000],
+                'lng_range' => [8.5167, 8.6000]
+            ],
+            'Oyo' => [
+                'cities' => ['Ibadan', 'Ogbomosho'],
+                'lat_range' => [7.3775, 7.5000],
+                'lng_range' => [3.9470, 4.0000]
+            ],
+            'Rivers' => [
+                'cities' => ['Port Harcourt', 'Obio-Akpor'],
+                'lat_range' => [4.8156, 4.9000],
+                'lng_range' => [7.0498, 7.1000]
+            ],
+            'Kaduna' => [
+                'cities' => ['Kaduna', 'Zaria'],
+                'lat_range' => [10.5105, 10.6000],
+                'lng_range' => [7.4165, 7.5000]
+            ],
+            'Enugu' => [
+                'cities' => ['Enugu', 'Nsukka'],
+                'lat_range' => [6.5244, 6.6000],
+                'lng_range' => [7.5086, 7.6000]
+            ],
+            'Anambra' => [
+                'cities' => ['Awka', 'Onitsha'],
+                'lat_range' => [6.2100, 6.3000],
+                'lng_range' => [7.0741, 7.2000]
+            ],
+            'Ogun' => [
+                'cities' => ['Abeokuta', 'Sagamu'],
+                'lat_range' => [7.1600, 7.2000],
+                'lng_range' => [3.3500, 3.5000]
+            ],
+            'Delta' => [
+                'cities' => ['Asaba', 'Warri'],
+                'lat_range' => [5.5000, 5.6000],
+                'lng_range' => [6.0000, 6.2000]
+            ],
+            'Edo' => [
+                'cities' => ['Benin City', 'Auchi'],
+                'lat_range' => [6.3400, 6.4000],
+                'lng_range' => [5.6200, 5.7000]
+            ],
+            'Cross River' => [
+                'cities' => ['Calabar', 'Ikom'],
+                'lat_range' => [4.9500, 5.0000],
+                'lng_range' => [8.3300, 8.4000]
+            ],
+            'Borno' => [
+                'cities' => ['Maiduguri', 'Biu'],
+                'lat_range' => [11.8333, 11.9000],
+                'lng_range' => [13.1500, 13.2000]
+            ],
+            'Sokoto' => [
+                'cities' => ['Sokoto', 'Tambuwal'],
+                'lat_range' => [13.0059, 13.1000],
+                'lng_range' => [5.2476, 5.3000]
+            ],
+            'Katsina' => [
+                'cities' => ['Katsina', 'Daura'],
+                'lat_range' => [12.9908, 13.1000],
+                'lng_range' => [7.6000, 7.7000]
+            ],
+        ];
+    
+        $state = fake()->randomElement(array_keys($statesAndCities));
+        $city = fake()->randomElement($statesAndCities[$state]['cities']);
+        $lat_range = $statesAndCities[$state]['lat_range'];
+        $lng_range = $statesAndCities[$state]['lng_range'];
+    
         return [
             'pickup' => [
                 'street' => fake()->streetAddress,
                 'unit' => fake()->buildingNumber,
-                'city' => fake()->city,
-                'state' => fake()->state,
-                'country' => fake()->country,
+                'city' => $city,
+                'state' => $state,
+                'country' => 'Nigeria',
                 'postal_code' => fake()->postcode,
-                'latitude' => fake()->latitude,
-                'longitude' => fake()->longitude,
+                'latitude' => fake()->latitude($lat_range[0], $lat_range[1]),
+                'longitude' => fake()->longitude($lng_range[0], $lng_range[1]),
                 'full' => fake()->address,
             ],
-            'dropoff' => [
+            'drop_off' => [
                 'street' => fake()->streetAddress,
                 'unit' => fake()->buildingNumber,
-                'city' => fake()->city,
-                'state' => fake()->state,
-                'country' => fake()->country,
+                'city' => $city,
+                'state' => $state,
+                'country' => 'Nigeria',
                 'postal_code' => fake()->postcode,
-                'latitude' => fake()->latitude,
-                'longitude' => fake()->longitude,
+                'latitude' => fake()->latitude($lat_range[0], $lat_range[1]),
+                'longitude' => fake()->longitude($lng_range[0], $lng_range[1]),
                 'full' => fake()->address,
             ],
         ];

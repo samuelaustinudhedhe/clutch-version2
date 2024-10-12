@@ -164,7 +164,7 @@
                                 <th scope="row"
                                     class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     <a href="{{ route('admin.users.show', $user->id) }}" class="flex items-center">
-                                        <img src="{{ $user->profile_photo_path ? asset('storage/'.$user->profile_photo_path) : $user->profile_photo_url }}" alt="{{ $user->name }}"
+                                        <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}"
                                             class="w-auto h-8 mr-3 rounded-full">
                                         {{ $user->name }}
                                     </a>

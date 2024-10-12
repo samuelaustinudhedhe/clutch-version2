@@ -50,7 +50,7 @@ class Index extends Component
         $this->currentPageVehicles = $vehicles->pluck('id')->toArray();
 
         $vehiclesCount = Vehicle::all()->count();
-        return view('admin.resources.vehicle.index', compact('vehicles','vehiclesCount'))
+        return view('admin.resources.vehicles.index', compact('vehicles','vehiclesCount'))
             ->layout('layouts.admin');
     }
 }

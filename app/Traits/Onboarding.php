@@ -109,8 +109,8 @@ trait Onboarding
      */
     public function onboardingResumeOn()
     {
-        // Return the resume_at timestamp from the onboarding data.
-        return $this->onboarding->resume_at;
+        // Return the restart_at timestamp from the onboarding data.
+        return $this->onboarding->restart_at;
     }
 
     /**
@@ -134,4 +134,22 @@ trait Onboarding
         // Check if the onboarding status is 'skipped'.
         return $this->onboarding->status === 'skipped' ? true : false;
     }
+
+    /**
+     * Checks if the onboarding process should be resumed and updates the status if necessary.
+     *
+     * @return void
+     */
+    public function checkAndResumeOnboarding()
+    {
+        $onboarding = $this->onboarding();
+    
+        // Check if the restart_at timestamp is set and has reached or passed
+        if (isset($onboarding->restart_at) && strtotime($onboarding->restart_at) <= time() && $this->onboardingCompleted() == false ) {
+            \Log::info('Resuming onboarding for user: ' . $this->id);
+            // Update the status to 'start'
+            $this->updateOnboarding(['status' => 'start']);
+        }
+    }
+    
 }
