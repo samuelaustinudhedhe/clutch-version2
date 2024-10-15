@@ -1,6 +1,6 @@
 <div>
     {{-- Gallery Section --}}
-    <div id="indicators-carousel" class="relative w-full" data-carousel="static" x-init="initCarousels()" >
+    <div id="indicators-carousel" class="relative w-full" data-carousel="static" x-init="initCarousels()">
         <!-- Carousel wrapper -->
         <x-div class="!p-0 relative min-h-[220px] overflow-hidden lg:rounded-lg md:h-[340px]">
             <!-- Item 1 -->
@@ -12,13 +12,13 @@
                     src="{{ Storage::url($image['path']) ?? placeholder('car.png') }}"
                     alt="{{ $image->name ?? 'Vehicle Image ' . $loop->index }}">
             @endforeach
-        <!-- Slider indicators -->
-        <div class="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
-            @foreach ($images['uploaded'] as $index => $image)
-                <button type="button" class="w-3 h-3 rounded-full" aria-current="true"
-                    aria-label="Slide {{ $index }}" data-carousel-slide-to="{{ $index }}"></button>
-            @endforeach
-        </div>
+            <!-- Slider indicators -->
+            <div class="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
+                @foreach ($images['uploaded'] as $index => $image)
+                    <button type="button" class="w-3 h-3 rounded-full" aria-current="true"
+                        aria-label="Slide {{ $index }}" data-carousel-slide-to="{{ $index }}"></button>
+                @endforeach
+            </div>
 
         </x-div>
 
@@ -54,32 +54,44 @@
     <x-div class="w-full space-y-2">
         <div class="space-y-2">
             <h1 class="text-2xl capitalize">
-                {{ $storeData['details']['make'] . ' ' . $storeData['details']['model'] . ' ' . $storeData['details']['year'] }}</h1>
+                {{ $storeData['details']['make'] . ' ' . $storeData['details']['model'] . ' ' . $storeData['details']['year'] }}
+            </h1>
             <div class="flex items-baseline ">
-                <span class="flex items-center !text-[21px] font-semibold" title="This is not the actual rating for your vehicle">{{ $user->rating ?? 4.9 }}                    <svg class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true"
+                <span class="flex items-center !text-[21px] font-semibold"
+                    title="This is not the actual rating for your vehicle">{{ $user->rating ?? 4.9 }} <svg
+                        class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                         viewBox="0 0 24 24">
                         <path
                             d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
                     </svg>
                 </span>
-                <span class="ml-2" title="This is not the actual trips your vehicle has taken">({{ '5 trips' }})</span>
+                <span class="ml-2"
+                    title="This is not the actual trips your vehicle has taken">({{ '5 trips' }})</span>
             </div>
         </div>
         <div class="flex flex-nowrap items-baseline gap-2">
-            @if ($storeData['price']['on_sale'] === 'true')
-                <span class="text-lg line-through opacity-60">{{ app_currency_symbol(). number_format($storeData['price']['amount'], 2) }}</span>
-                <span class="text-2xl font-semibold">{{ app_currency_symbol(). number_format($storeData['price']['sale'], 2) }}</span>
+            @isset($storeData['price'])
+                @if ($storeData['price']['on_sale'] === 'true')
+                    <span class="text-lg line-through opacity-60">{{ humanifyPrice($storeData['price']['amount']) }}</span>
+                    <span class="text-2xl font-semibold">{{ humanifyPrice($storeData['price']['sale']) }}</span>
+                @else
+                    <span class="text-2xl font-semibold">{{ humanifyPrice($storeData['price']['amount']) }}</span>
+                @endif
             @else
-                <span class="text-2xl font-semibold">{{ app_currency_symbol(). number_format($storeData['price']['amount'], 2) }}</span>
-            @endif
+                <span class="text-2xl font-semibold">unknown</span>
+            @endisset
             / day
         </div>
-
-        <p class="text-xs mt-4">$150 excl. taxes & fees</p>
+        {{-- Discount text --}}
+        @isset($storeData['price']['discount']['days'])
+            <p class="text-xs mt-4">The discount is applied if the vehicle is rented for
+                <span class="font-bold"> {{ countDays($storeData['price']['discount']['days'] ?? 1) }} </span> or more
+            </p>
+        @endisset
 
     </x-div>
-
+    
     {{-- Right --}}
     <x-div class="w-full">
 
@@ -118,8 +130,8 @@
             </div>
             {{--  --}}
             <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none" viewBox="0 0 24 24"
-                    class="text-gray-700 dark:text-gray-200" role="img" version="1.1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
+                    viewBox="0 0 24 24" class="text-gray-700 dark:text-gray-200" role="img" version="1.1">
                     <path fill="currentColor"
                         d="M19.67 21.45H7.27c-1.33 0-2.5-.85-2.91-2.1l-2.2-6.68c-.38-1.14-.05-2.4.83-3.21l6.08-5.63c.8-.75 2.28-1.33 3.38-1.33h8.92c.35 0 .62.28.62.62s-.28.62-.62.62h-8.92c-.78 0-1.96.46-2.53.99l-6.09 5.64c-.52.48-.71 1.23-.49 1.9l2.2 6.68c.25.75.94 1.25 1.72 1.25h12.4c.59 0 1.07-.48 1.07-1.07V5.51c0-.34.28-.62.62-.62s.62.28.62.62v13.61a2.3 2.3 0 0 1-2.3 2.33">
                     </path>
@@ -153,12 +165,12 @@
                 <div class="flex items-center gap-4">
                     <div class="relative w-20 h-20 ">
                         <img class="w-20 h-20 rounded-full border border-gray-200 shadow-sm dark:border-gray-700"
-                            src="{{ $user->profile_photo_url }}" alt="{{ $user->name . ' Photo' }}">
+                            src="{{ $this->getOwner()->profile_photo_url }}" alt="{{ $this->getOwner()->name . ' Photo' }}">
 
                         <div class="flex items-center space-x-1 absolute bottom-0 left-1/2 transform -translate-x-1/2">
                             <span
                                 class="flex bg-white dark:bg-gray-800 rounded-lg text-sm border border-gray-200 shadow-sm dark:border-gray-700 px-2 py-0.5 gap-1">
-                                {{ $user->rating ?? '5.0' }}
+                                {{ $this->getOwner()->rating ?? '5.0' }}
                                 <svg class="w-4 h-4 dark:text-indigo-400 text-indigo-800" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     fill="currentColor" viewBox="0 0 24 24">
@@ -169,8 +181,8 @@
                         </div>
                     </div>
                     <div class="">
-                        <h3 class="">{{ $user->name }}</h3>
-                        <p>{{ $user->created_at->format('M Y') }}</p>
+                        <h3 class="">{{ $this->getOwner()->name }}</h3>
+                        <p>{{ $this->getOwner()->created_at->format('M Y') }}</p>
                     </div>
                 </div>
             </div>
@@ -178,12 +190,106 @@
     </x-div>
 
     <x-div>
-        <h3 class="text-xl font-light">Description:</h3>
-        <p>{{ $storeData['details']['description'] }}</p>
 
-        
+        <div class="flex flex-wrap lg:flex-nowrap gap-4 text-sm">
+            <div class="w-full lg:w-1/2">
+                <h3 class="text-lg font-light">Pickup Address</h3>
+                <div class="gap-2 mt-2">
+                    @foreach ($storeData['location']['pickup'] as $key => $value)
+                        @if ($key === 'latitude' || $key === 'longitude')
+                            @continue
+                        @endif
+                        <p><span class="capitalize opacity-70">{{ str_replace('_', ' ', $key) }}:</span>
+                            {{ $value }}</p>
+                    @endforeach
+                </div>
+            </div>
+            <div class="w-full lg:w-1/2">
+                <h3 class="text-lg font-light">Drop-off Address</h3>
+                <div class="gap-2 mt-2">
+                    @foreach ($storeData['location']['drop_off'] as $key => $value)
+                        @if ($key === 'latitude' || $key === 'longitude')
+                            @continue
+                        @endif
+                        <p><span class="capitalize opacity-70">{{ str_replace('_', ' ', $key) }}:</span>
+                            {{ $value }}</p>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+    </x-div>
+    <x-div class="!space-y-4">
+        <h3 class="text-lg font-light">Description:</h3>
+        <p class="text-sm">{{ $storeData['details']['description'] }}</p>
     </x-div>
 
-    
+    <x-div class="!space-y-4">
+        <h3 class="text-lg font-light">Features</h3>
+        <div class="flex flex-wrap gap-4 justify-center items-start mt-2">
+
+            @foreach (['security', 'exterior', 'interior', 'engine', 'transmission', 'safety'] as $key)
+                <div
+                    class="w-full rounded-lg border border-gray-100 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 md:p-6">
+                    <h4 class="text-base font-semibold text-gray-900 dark:text-white capitalize">
+                        {{ str_replace('_', ' ', $key) }}</h4>
+
+                    <div class="mt-2 divide-y divide-gray-200 dark:divide-gray-700 dark:border-gray-800">
+                        @foreach ($storeData['details'][$key] as $item => $value)
+                            <dl class="flex items-center justify-between gap-4 py-2">
+                                <dt class="text-xs font-medium text-gray-900 dark:text-white capitalize">
+                                    {{ str_replace('_', ' ', $item) ?? '' }}
+                                </dt>
+                                <dd class="text-sm font-normal text-gray-500 dark:text-gray-400 capitalize">
+                                    {{ str_replace('-', ', ', $value) ?? '' }}</dd>
+                            </dl>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+    </x-div>
+
+    <x-div>
+        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Uploaded Documents</h3>
+        <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
+            Vehicle document you uploaded for this vehicle.
+        </p>
+        @foreach (['proof_of_ownership', 'registration', 'insurance'] as $key)
+            {{-- Documents --}}
+            @isset($storeData['files'][$key])
+                <div class="flex items-center justify-between py-4 px-4">
+                    <div class="lg:flex w-full">
+                        <div class="w-full lg:w-2/5 text-sm font-medium text-gray-900 dark:text-white capitalize">
+                            {{ str_replace('_', ' ', $key) ?? '' }}
+                        </div>
+                    </div>
+
+                    @if (str_contains($storeData['files'][$key]['mime_type'], 'image'))
+                        <img class="mb-4 min-w-20 min-h-14 max-w-20 max-h-14 rounded border-2 border-gray-200 dark:border-white sm:mb-0 object-cover"
+                            src="{{ isset($storeData['files'][$key]) ? Storage::url($storeData['files'][$key]['path']) : '' }}"
+                            alt="Uploaded Proof of Address">
+                    @else
+                        <div
+                            class="overflow-hidden  rounded border-2 border-gray-200 dark:border-white w-20 h-14 transition-transform duration-500 transform translate-x-0">
+
+                            <embed src="{{ Storage::url($storeData['files'][$key]['path']) }}" type="application/pdf"
+                                class="max-w-[94px] max-h-[70px] min-w-[94px] min-h-[70px] mt-[-2px] ml-[-2px]"
+                                width="94px" height="70px" />
+                        </div>
+                    @endif
+                </div>
+            @endisset
+        @endforeach
+
+    </x-div>
+    @isset($storeData['documents']['insurance']['note'])
+        <x-div class="!space-y-4">
+            <h3 class="text-lg font-light">Insurance Note:</h3>
+            <p class="text-sm">{{ $storeData['documents']['insurance']['note'] }}</p>
+        </x-div>
+    @endisset
+
 
 </div>

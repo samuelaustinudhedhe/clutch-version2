@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //Create Roles Column in Users Table 
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('subscriber')->after('password');
-        });
+        // Create Roles Column in Users Table
+        if (!Schema::hasColumn('users', 'role')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('role')->default('subscriber')->after('password');
+            });
+        }
 
-        //Create Roles Column in Admins Table 
-        Schema::table('admins', function (Blueprint $table) {
-            $table->string('role')->default('subscriber')->after('password'); 
-        });
+        // Create Roles Column in Admins Table
+        if (!Schema::hasColumn('admins', 'role')) {
+            Schema::table('admins', function (Blueprint $table) {
+                $table->string('role')->default('subscriber')->after('password');
+            });
+        }
 
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
@@ -37,15 +41,19 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //Drop Roles Column in Users Table 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
-        });
+        // Drop Roles Column in Users Table
+        if (Schema::hasColumn('users', 'role')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('role');
+            });
+        }
 
-        //Drop Roles Column in Admins Table 
-        Schema::table('admins', function (Blueprint $table) {
-            $table->dropColumn('role');
-        });
+        // Drop Roles Column in Admins Table
+        if (Schema::hasColumn('admins', 'role')) {
+            Schema::table('admins', function (Blueprint $table) {
+                $table->dropColumn('role');
+            });
+        }
 
         Schema::dropIfExists('roles');
     }

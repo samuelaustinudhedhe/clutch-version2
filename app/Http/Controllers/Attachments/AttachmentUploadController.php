@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Attachments;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Attachments\AttachmentCompressController as Compress;
+use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Encoders\AutoEncoder;
 
@@ -105,14 +106,14 @@ class AttachmentUploadController extends AttachmentController
         $description = $description ?? 'Image uploaded by ' . $authorable->name . ' and attached to ' . $attachable->name;
 
         // Read the image from the provided source
-        $image = (new parent)->read($image);
-
         $isReadable = (new parent)->read($image);
 
-        // if error skip compression 
+        // if error skip compression and resizing 
         if ($isReadable) {
-            
+            // Read the image from the provided source
             $image = $isReadable;
+
+            // Check if resizing is required
             if (!empty($resizing['type'])) {
                 // Apply the specified resizing type
                 $resizingType = $resizing['type'];
@@ -129,6 +130,7 @@ class AttachmentUploadController extends AttachmentController
             // Compress the image and get the encoded image
             $image = Compress::image($image, $mimeType, $quality);
         }
+
         // Store the image to the specified path
         $image = self::store($path, $image, 'image/jpeg', true);
 
@@ -168,8 +170,14 @@ class AttachmentUploadController extends AttachmentController
     {
         // Get the file extension from the filename
         $fileName = basename($file);
+
+        // Get the file extension from the filename
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+        // Get the name if provided, otherwise generate a default name
         $name = $name ?? $authorable->name . '\'s ' . ucwords(toSlug(pathinfo($fileName, PATHINFO_FILENAME), ' '));
+
+        // Get the description if provided, otherwise generate a default description
         $description = $description ?? 'File uploaded by ' . $authorable->name . ' and attached to ' . $attachable->name;
 
         // Check if the file is an image

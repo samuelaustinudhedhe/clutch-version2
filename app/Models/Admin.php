@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Traits\HasAttachments;
 use App\Traits\HasRolesAndPermissions;
+use App\Traits\HasTwoFactorAuthenticatable;
 use App\Traits\HasVehicles;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -19,7 +19,7 @@ class Admin extends Authenticatable implements MustVerifyEmail
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
-    use TwoFactorAuthenticatable;
+    use HasTwoFactorAuthenticatable;
     use HasRolesAndPermissions;
     use HasAttachments;
     use HasVehicles;
@@ -37,8 +37,6 @@ class Admin extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
     ];
 
     /**

@@ -7,12 +7,12 @@ namespace App\Models;
 use App\Traits\HasAttachments;
 use App\Traits\HasDetails;
 use App\Traits\HasRolesAndPermissions;
+use App\Traits\HasTwoFactorAuthenticatable;
 use App\Traits\HasVehicles;
 use App\Traits\Onboarding;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -23,7 +23,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use HasDetails;
-    use TwoFactorAuthenticatable;
+    use HasTwoFactorAuthenticatable;
     use HasRolesAndPermissions;
     use HasAttachments;
     use Onboarding;
@@ -55,8 +55,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
     ];
 
     /**

@@ -71,7 +71,7 @@ abstract class Wizard extends Component
     public function updated($propertyName)
     {
 
-        // $this->updateStoredData();
+         $this->putData($this->storeData);
     }
 
     /**
@@ -432,7 +432,7 @@ abstract class Wizard extends Component
         $defaultChauffeur = $this->getDefaultChauffeur($owner);
 
         // Set the currency if it is not already set in the data
-        $this->setDefaultCurrency($data);
+        $this->formatPrice($data);
 
         // Determine the chauffeur details, using the default if none is provided
         $chauffeur = $data['has_chauffeur'] ?? $defaultChauffeur;
@@ -472,16 +472,25 @@ abstract class Wizard extends Component
     }
 
     /**
-     * Set the default currency if not already set.
+     * Set the default currency if not already set and format the prices.
      *
      * @param array &$data The vehicle data.
      * @return void
      */
-    private function setDefaultCurrency(array &$data): void
+    private function formatPrice(array &$data): void
     {
+        // Set default currency if not already set in the data
         if (!isset($data['price']['currency'])) {
             $data['price']['currency'] = app_currency(false); // Set default currency
         }
+        // Format the prices to two decimal places
+        if(isset($data['price']['amount'])){
+            $data['price']['amount'] =  str_replace(',', '', $data['price']['amount']); // Remove commas from the amount and convert to float
+        }
+        // Format the sale price to two decimal places
+        if(isset($data['price']['sale'])){
+            $data['price']['sale'] =  str_replace(',', '', $data['price']['sale']); // Remove commas from the sale and convert to float
+        } 
     }
 
     /**
@@ -589,37 +598,42 @@ abstract class Wizard extends Component
         $nameKey = $featured ? Attachment::TYPE_IMAGE : Attachment::TYPE_GALLERY_IMAGE;
 
         // Get the document name based on the type.
-        $imageName = $this->getDocName($nameKey);
+        $imageName = $this->getFileName($nameKey);
 
         // Convert the index to words if it's a gallery image.
         $toWord = ($nameKey === Attachment::TYPE_GALLERY_IMAGE ? numberToWords($index) : '');
 
         // Construct the name and description for the image.
         $name = "{$vehicle->name}'s {$imageName} " . $toWord;
-        $description = "{$user->name}'s " . $toWord . " {$imageName} of {$vehicle->name} - {$vehicle->description}";
+        $description = "{$user->name}'s " . $toWord . " {$imageName} of {$vehicle->name}";
 
         // Define the resizing options for the image.
-        $resizing = [
-            'width' => 1440,
-            'height' => 700,
-            'type' => 'coverDown',
-            'option' => ['position' => 'center']
-        ];
+        
 
         // Upload the image using the Attachment Upload controller.
         Upload::Image(
             name: $name,
             description: $description,
             image: Storage::path('public/' . $image['path']),
-            mimeType: $image['mime_type'],
+            mimeType: 'image/webp', // force all image to be compressed as WEBP
             is_featured: $featured,
             type: $nameKey,
-            resizing: $resizing,
+            resizing: $this->resizingImage(),
             quality: 90,
             authorable: $user,
             attachable: $vehicle,
             path: "public/vehicles/{$vehicle->id}/{$hashName}.webp"
         );
+    }
+
+    public function resizingImage(): array
+    {
+        return [
+            'width' => 1440,
+            'height' => 700,
+            'type' => 'coverDown',
+            'option' => ['position' => 'center']
+        ];
     }
 
     /**
@@ -671,7 +685,7 @@ abstract class Wizard extends Component
         $hashName = Str::random(30);
 
         // Define the storage path for the document.
-        $storagePath = $this->getStorage('private', $user->id) . "documents/vehicles/{$vehicle->id}";
+        $storagePath = $this->getStorage('private', $user) . "documents/vehicles/{$vehicle->id}";
 
         // Get the MIME type of the document.
         $mime_type = $file['mime_type'];

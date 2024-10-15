@@ -11,7 +11,7 @@
                         Protrction plan keeps you covered while pinching some penalties.
                     </p>
                 </x-div>
-
+{{-- 
                 <x-accordion id="checlout-accordion">
                     <x-accordion-item id="checlout-accordion-item-2">
                         <x-slot name="title">
@@ -22,7 +22,7 @@
 
                         </x-slot>
                     </x-accordion-item>
-                </x-accordion>
+                </x-accordion> --}}
 
                 <x-accordion id="payment-accordion">
                     <x-accordion-item id="payment-accordion-item-2">
@@ -170,7 +170,7 @@
                 <x-div class="!my-0 gap-6 space-y-4">
                     {{-- Featured Image --}}
                     <div class="relative">
-                        <img src="{{ $vehicle->featuredImage('car.jpg') }}"
+                        <img src="{{ $vehicle->featured_image_url }}"
                             class="rounded  min-w-80 w-full min-h-44 h-full  object-cover" width="220px"
                             height="180px" alt="{{ $vehicle->name }} image" />
                         <div class="flex items-center gap-4 absolute bottom-0 left-0 p-2 rounded-tr-lg">
@@ -246,7 +246,7 @@
                         @else
                             <span class="text-2xl ">{{ $vehicle->human_price }}</span>
                         @endif
-                        x {{ ($trip->days > 1) ? $trip->days . ' days' : $trip->days . ' day' }}
+                        x {{ countDays($trip->days) }}
                     </div>
 
                 </x-div>
@@ -274,14 +274,20 @@
                                 <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tax</dt>
                                 <dd class="text-base font-medium text-gray-900 dark:text-white">{{ $vehicle->calcTotalTax($trip->days) }}</dd>
                             </dl>
+                            <dl class="flex items-center justify-between gap-4">
+                                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Days</dt>
+                                <dd class="text-base font-medium text-gray-900 dark:text-white">
+                                x {{ $trip->days }}</dd>
+                            </dl>
                         </div>
-
+                        {{-- Total price --}}
                         <dl
                             class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
                             <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
                             <dd class="text-base font-bold text-gray-900 dark:text-white">
-                                {{ $vehicle->calcTotalPrice($trip->days,true) }}</dd>
+                            {{ $vehicle->calcTotalPrice($trip->days,true) }}</dd>
                         </dl>
+                        
                     </div>
                 </x-div>
 

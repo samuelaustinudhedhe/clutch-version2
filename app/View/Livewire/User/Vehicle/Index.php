@@ -15,6 +15,7 @@ class Index extends Component
 
     ##Filters##
     public $search; # Search query for filtering vehicles
+    public $orderby = 'desc'; # Order vehicles by this field (default: desc)
     public $perPage = 15; # Default number of vehicles per page
     public $selected = []; # Array to hold vehicles currently being displayed
     public $selectAll = false; # Boolean to track the select all checkbox
@@ -44,7 +45,7 @@ class Index extends Component
 
     public function render()
     {
-        $vehicles = getUser()->vehicles()->search('name', $this->search)->paginate($this->perPage);
+        $vehicles = $this->owner->vehicles()->orderBy('created_at', $this->orderby)->search('name', $this->search)->paginate($this->perPage);
         $this->currentPageVehicles = $vehicles->pluck('id')->toArray();
 
         $vehiclesCount = $this->owner->vehicles()->count();

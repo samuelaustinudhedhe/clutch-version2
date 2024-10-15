@@ -30,7 +30,7 @@
                                 <div class="tooltip-arrow" data-popper-arrow></div>
                             </div>
                         </div>
-                        <div class="mb-6 mb-6 gap-4 text-sm sm:grid-cols-2 2xl:grid-cols-3 grid">
+                        <div class="mb-6 gap-4 text-sm sm:grid-cols-2 2xl:grid-cols-3 grid">
                             <x-radio id="active" name="status" value="active" wire:model="status" color="green">
 
                                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"

@@ -27,7 +27,7 @@
                     </div>
                 </x-label>
                 <x-select wire:model="storeData.details.vin.type" name="Vehicle Identification Type"
-                    title="Vehicle Identification Type">
+                    title="Vehicle Identification Type" loadJS="true">
                     @foreach ($vits as $key => $description)
                         <option title="{{ $description }}" value="{{ $key }}">
                             {{ $key }}</option>
@@ -70,8 +70,11 @@
         </div>
         <div class="w-full">
             <x-label for="year">Year of production</x-label>
-            <x-xinput id="year" type="select" wire:model="storeData.details.year" />
-
+            <x-select id="year" wire:model="storeData.details.year">
+                @for ($year = date('Y') + 1; $year >= 1900; $year--)
+                    <option value="{{ $year }}">{{ $year }}</option>
+                @endfor
+            </x-select>
             <x-input-error for="storeData.details.year" />
         </div>
     </x-div>
@@ -79,9 +82,9 @@
     <x-div class="grid gap-x-4 sm:grid-cols-2 !pb-2">
 
         {{-- Location --}}
-        <x-location id="storeData.location.pickup.full" name="Vehicle Pickup Location" label="Pickup Location"
+        <x-location id="storeData.location.pickup.full" name="Vehicle Pickup Location" label="Pickup"
             wire:model="storeData.location.pickup.full" loadJS=true />
-        <x-location id="storeData.location.drop_off.full" name="Vehicle drop_off Location" label="drop_off Location"
+        <x-location id="storeData.location.drop_off.full" name="Vehicle drop_off Location" label="Drop-off"
             wire:model="storeData.location.drop_off.full" loadJS=false />
 
     </x-div>

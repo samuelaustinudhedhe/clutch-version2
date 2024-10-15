@@ -127,7 +127,7 @@ class Vehicle extends Model
      */
     public function getHumanPriceAttribute()
     {
-        return app_currency_symbol()  . number_format($this->getPrice()->amount, 2);
+        return humanifyPrice($this->getPrice()->amount);
     }
 
     /**
@@ -140,7 +140,7 @@ class Vehicle extends Model
      */
     public function getHumanSalePriceAttribute()
     {
-        return app_currency_symbol()  . number_format($this->sale_price, 2);
+        return humanifyPrice($this->sale_price);
     }
 
     /**
@@ -153,7 +153,7 @@ class Vehicle extends Model
      */
     public function getHumanDiscountedPriceAttribute()
     {
-        return app_currency_symbol() . number_format($this->discountedPrice(), 2);
+        return humanifyPrice($this->discountedPrice());
     }
 
     /**
@@ -215,6 +215,10 @@ class Vehicle extends Model
         return $amount;
     }
 
+    public function getDiscountDaysAttribute(){
+         return $this->getPrice()->discount->days ?? 1;
+    }
+
     /**
      * Determine if the vehicle is on sale.
      *
@@ -225,7 +229,7 @@ class Vehicle extends Model
     public function getOnSaleAttribute()
     {
         $price = $this->getPrice();
-        return $price->on_sale ?? false;
+        return $price->on_sale === "true" || $price->on_sale === 1;
     }
 
     /**
@@ -268,7 +272,7 @@ class Vehicle extends Model
     {
         $taxAmount = $this->tax() * $multiplier;
         if ($human) {
-            return app_currency_symbol() . number_format($taxAmount, 2);
+            return humanifyPrice($taxAmount);
         }
         return $taxAmount;
     }
@@ -301,7 +305,7 @@ class Vehicle extends Model
         if (!$human) {
             return $basePrice * $multiplier;
         } else {
-            return app_currency_symbol() . number_format($basePrice * $multiplier, 2);
+            return humanifyPrice($basePrice * $multiplier);
         }
     }
 
@@ -387,6 +391,20 @@ class Vehicle extends Model
     {
         return $this->getDetails()->year ?? null;
     }
+
+
+    /**
+     * Retrieve the description attribute from the vehicle's details.
+     *
+     * This accessor method retrieves the description of the vehicle from the JSON-decoded
+     * details attribute. If the description is not set, it returns null.
+     *
+     * @return string|null The description of the vehicle, or null if not set.
+     */
+    public function getDescriptionAttribute(){
+        return $this->details->description ?? null;
+    }
+    
 
     /**
      * Get the exterior attribute from the vehicle's details.
@@ -542,6 +560,41 @@ class Vehicle extends Model
     public function getOwnerAttribute()
     {
         return $this->ownerable;
+    }
+
+    /**
+     * Retrieve the gallery attribute for the vehicle.
+     *
+     * This method returns the gallery associated with the vehicle, specifically for the 'car' category.
+     *
+     * @return mixed The gallery data for the 'car' category.
+     */
+    public function getGalleryAttribute(){
+        return $this->gallery('car');
+    }
+    
+    /**
+     * Retrieve the featured image attribute for the vehicle.
+     *
+     * This accessor method returns the featured image associated with the vehicle,
+     * specifically for the 'car' category.
+     *
+     * @return mixed The featured image data for the 'car' category.
+     */
+    public function getFeaturedImageAttribute(){
+        return $this->featuredImage('car');
+    }
+
+    /**
+     * Retrieve the URL of the featured image for the vehicle.
+     *
+     * This accessor method returns the URL of the featured image associated with the vehicle,
+     * specifically for the 'car' category.
+     *
+     * @return string The URL of the featured image for the 'car' category.
+     */
+    public function getFeaturedImageUrlAttribute(){
+        return $this->featuredImage('car')->url;
     }
 
     /**

@@ -9,8 +9,8 @@
     display: none;
 }
 
-/* Scrollbar */
-body {
+html,body{
+    min-width: 340px !important;
     scrollbar-width: thin;
     scrollbar-color: theme('colors.gray.600') theme('colors.transparent');
 }
