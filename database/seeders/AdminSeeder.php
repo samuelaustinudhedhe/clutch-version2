@@ -32,9 +32,12 @@ class AdminSeeder extends Seeder
 
         // Loop through each role and create an admin user
         foreach ($roles as $role) {
+            // Check if the role is 'super-admin' and set the name to 'Webmaster'
+            $name = $role->slug === 'superadmin' ? 'Webmaster' : $role->name . ' Admin';
+
             // Create admin users and assign roles
             Admin::create([
-                'name' => $role->name.' '.'Admin', // Admin user's name
+                'name' => $name, // Admin user's name
                 'email' => strtolower($role->name) . '@clutch.africa', // Admin user's email
                 'password' => Hash::make('3233ClutchWW'), // Admin user's password (hashed)
                 'role' => $role->slug, // Admin user's role
