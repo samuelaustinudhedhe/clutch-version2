@@ -290,7 +290,7 @@ class Onboarding extends Component
                         'string',
                         function ($attribute, $value, $fail) {
                             $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                            if (!file_exists($filePath)) {
                                 $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
                             }
                         },
@@ -299,33 +299,19 @@ class Onboarding extends Component
 
                 // Conditionally add rules based on the 'drive' value
                 if ($this->storeData['drive'] === 'true') {
-                    $rules['internationalPassport.file.path'] = [
+                    $rules['*.file.path'] = [
                         'required',
                         'string',
                         function ($attribute, $value, $fail) {
                             $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
-                            }
-                        },
-                    ];
-                    $rules['proofOfAddress.file.path'] = [
-                        'required',
-                        'string',
-                        function ($attribute, $value, $fail) {
-                            $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
-                            }
-                        },
-                    ];
-                    $rules['driversLicense.file.path'] = [
-                        'required',
-                        'string',
-                        function ($attribute, $value, $fail) {
-                            $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            if (!file_exists($filePath)) {
+                                $fail('The file at ' . $value . ' does not exist in the tmp directory.');
+                            } else {
+                                $fileInfo = new \finfo(FILEINFO_MIME_TYPE);
+                                $mimeType = $fileInfo->file($filePath);
+                                if (!in_array($mimeType, ['image/jpeg', 'image/png', 'application/pdf'])) {
+                                    $fail('The file at ' . $value . ' is not a valid image or PDF.');
+                                }
                             }
                         },
                     ];
