@@ -1,4 +1,4 @@
-<div class="flex items-start p-6 py-8 bg-white dark:bg-gray-900 w-full">
+<div class="flex items-start py-8 bg-white dark:bg-gray-900 w-full">
 
     <div class="container max-w-screen-md mx-auto px-4 md:px-8 md:max-h-[calc(100vh-200px)] md:overflow-auto ">
 

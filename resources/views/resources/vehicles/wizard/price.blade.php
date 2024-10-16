@@ -8,8 +8,8 @@
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none !text-lg">
                         ₦
                     </div>
-                    <x-xinput id="amount" type="text" wire:model.lazy="storeData.price.amount"
-                        class="!ps-8 !text-lg py-2" numberFormat="true" placeholder="" />
+                    <x-price-input id="amount" type="text" wire:model.lazy="storeData.price.amount"
+                        class="!ps-8 !text-lg py-2" loadJS="true" placeholder="" />
                 </div>
                 <span class="!text-lg text-gray-600 dark:text-gray-400">
                     /day
@@ -30,7 +30,7 @@
                 </svg>
                 <span class="w-full">No sale</span>
             </x-radio>
-            <x-radio id="onsale" name="on_sale" value="true" wire:model.live="storeData.price.on_sale" checked
+            <x-radio id="onsale" name="on_sale" value="true" wire:model.lazy="storeData.price.on_sale" checked
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -52,8 +52,8 @@
                         <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none !text-lg">
                             ₦
                         </div>
-                        <x-xinput id="sale" type="text" wire:model.lazy="storeData.price.sale"
-                            class="!ps-8 !text-lg py-2" numberFormat="true" placeholder="" />
+                        <x-price-input id="sale" type="text" wire:model.live="storeData.price.sale"
+                            class="!ps-8 !text-lg py-2" placeholder="" />
                     </div>
                     <span class="!text-lg text-gray-600 dark:text-gray-400">
                         /day
@@ -61,7 +61,7 @@
                 </div>
                 @if (isset($storeData['price']['sale']) &&
                         isset($storeData['price']['amount']) &&
-                        str_replace(',', '', $storeData['price']['sale']) >= str_replace(',', '', $storeData['price']['amount']))
+                        str_replace(',', '', $storeData['price']['sale']) > str_replace(',', '', $storeData['price']['amount']))
                     <span class="text-red-500 text-sm">Sale price must be less than the amount.</span>
                 @endif
                 <x-input-error for="storeData.price.sale" />
@@ -74,32 +74,38 @@
                     Conditional Discount?
                 </x-slot>
                 <x-slot name="content">
-                    Discount is applied if the user Rents for more than 
+                    Discount is applied if the user Rents for more than
                     <span>{{ isset($storeData['price']['discount']['days']) ? ($storeData['price']['discount']['days'] < 2 ? $storeData['price']['discount']['days'] . ' day' : ($storeData['price']['discount']['days'] > 6 ? '1 week' : $storeData['price']['discount']['days'] . ' days')) : 'eg. 1 day' }}</span>
                 </x-slot>
             </x-tooltip>
-            <div class="mt-4 mb-2 gap-4 text-sm sm:grid-cols-5 grid">
-                <x-radio id="daily" name="discount_days" selected value="1"
-                    wire:model.live="storeData.price.discount.days" showIcon="false" class="!p-2">
-                    Daily
-                </x-radio>
-                <x-radio id="2days" name="discount_days" value="2"
-                    wire:model.live="storeData.price.discount.days" showIcon="false" class="!p-2">
-                    2 days
-                </x-radio>
-                <x-radio id="3days" name="discount_days" value="3"
-                    wire:model.live="storeData.price.discount.days" checked showIcon="false" class="!p-2">
-                    3 days
-                </x-radio>
-                <x-radio id="5days" name="discount_days" value="5"
-                    wire:model.live="storeData.price.discount.days" checked showIcon="false" class="!p-2">
-                    5 days
-                </x-radio>
-                <x-radio id="1weeks" name="discount_days" value="7"
-                    wire:model.live="storeData.price.discount.days" checked showIcon="false" class="!p-2">
-                    1 week
-                </x-radio>
-                <x-input-error for="storeData.price.discount.days" />
+            <div class="space-y-4">
+                <div class="mt-4 mb-2 gap-4 text-sm sm:grid-cols-5 grid">
+
+                    <x-radio id="daily" name="discount_days" selected value="1"
+                        wire:model.live="storeData.price.discount.days" showIcon="false" class="!p-2">
+                        Daily
+                    </x-radio>
+                    <x-radio id="2days" name="discount_days" value="2"
+                        wire:model.live="storeData.price.discount.days" showIcon="false" class="!p-2">
+                        2 days
+                    </x-radio>
+                    <x-radio id="3days" name="discount_days" value="3"
+                        wire:model.live="storeData.price.discount.days" checked showIcon="false" class="!p-2">
+                        3 days
+                    </x-radio>
+                    <x-radio id="5days" name="discount_days" value="5"
+                        wire:model.live="storeData.price.discount.days" checked showIcon="false" class="!p-2">
+                        5 days
+                    </x-radio>
+                    <x-radio id="1weeks" name="discount_days" value="7"
+                        wire:model.live="storeData.price.discount.days" checked showIcon="false" class="!p-2">
+                        1 week
+                    </x-radio>
+                    <x-input-error for="storeData.price.discount.days" />
+                </div>
+                <div class="text-sm text-green-600 dark:text-green-400"> The discount is applied if the vehicle is rented for 
+                    <span class="font-bold"> {{ countDays($storeData['price']['discount']['days']) }} </span> or more 
+                </div>
             </div>
 
         @endif

@@ -1,21 +1,20 @@
 <?php
 
+use App\Models\Admin;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Get the default image for the model.
+ * Retrieve the default image for a model.
  *
- * This function should return a default image URL or path when no specific image is associated with the model.
+ * This function returns a default image URL or path when no specific image is associated with the model.
  *
- * @param int $placeholder (placeholder number)
- * @param array $dimension = ['width'=>'200', 'height'=>'200']
- * @return string The URL or path of the default image.
+ * @param string $placeholder The placeholder identifier for the image. Defaults to 'image'.
+ * @return \App\Models\Attachment|\Illuminate\Support\Collection<TKey, TValue>.
  */
-function getPlaceHolder($placeholder = 'default')
+function getPlaceHolder($placeholder = 'image')
 {
-     // Return the URL or path of the default image
-    $placeHolder = "/assets/images/placeholders/$placeholder";
-    return $placeHolder;
+    // Return the URL or path of the default image
+    return (new Admin)->getPlaceholder($placeholder);
 }
 
 

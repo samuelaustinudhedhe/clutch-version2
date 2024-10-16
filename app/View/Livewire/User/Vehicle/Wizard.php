@@ -3,15 +3,10 @@
 namespace App\View\Livewire\User\Vehicle;
 
 use App\Models\Vehicle;
-use App\Traits\WithSteps;
 use App\View\Livewire\Resources\Vehicles\Wizard as VehiclesWizard;
-
-use Livewire\WithFileUploads;
 
 class Wizard extends VehiclesWizard
 {
-    use WithSteps, WithFileUploads;
-
     public $user;
     public $vehicleData = [];
     public $images = [
@@ -85,7 +80,7 @@ class Wizard extends VehiclesWizard
      */
     public function submissionRedirect()
     {
-        $route = 'user.vehicle.index';
+        $route = 'user.vehicles.index';
         $message = 'Vehicle created and awaiting approval';
         return redirect()->route($route)->with('success', $message);
     }
@@ -121,7 +116,7 @@ class Wizard extends VehiclesWizard
                     'storeData.details.make' => 'required|string',
                     'storeData.details.manufacturer' => 'required|string',
                     'storeData.details.model' => 'required|string',
-                    'storeData.details.year' => 'required|integer|min:1900|max:' . date('Y'),
+                    'storeData.details.year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
                     'storeData.location.*.full' => [
                         'required',
                         'string',
@@ -202,28 +197,28 @@ class Wizard extends VehiclesWizard
             case 4:
                 // Validation rules for step 4 (KYC)
                 $rules = [
-                    // 'storeData.details.safety.abs' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.traction_control' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.stability_control' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.lane_departure_warning' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.lane_keeping_assist' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.forward_collision_warning' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.parking_sensors' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.camera_360' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.driver_attention_monitor' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.airbags' => 'required|string|in:front,front & sides,front, sides & curtain',
-                    // 'storeData.details.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.crumple_zones' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.isofix_mounts' => 'required|string|in:yes,no',
-                    // 'storeData.details.security.alarm_system' => 'required|string|in:yes,no',
-                    // 'storeData.details.security.immobilizer' => 'required|string|in:yes,no',
-                    // 'storeData.details.security.remote_central_locking' => 'required|string|in:yes,no',
-                    // 'storeData.details.security.gps_tracking' => 'required|string|in:yes,no',
+                    'storeData.safety.abs' => 'required|string|in:yes,no',
+                    'storeData.safety.traction_control' => 'required|string|in:yes,no',
+                    'storeData.safety.stability_control' => 'required|string|in:yes,no',
+                    'storeData.safety.lane_departure_warning' => 'required|string|in:yes,no',
+                    'storeData.safety.lane_keeping_assist' => 'required|string|in:yes,no',
+                    'storeData.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
+                    'storeData.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
+                    'storeData.safety.forward_collision_warning' => 'required|string|in:yes,no',
+                    'storeData.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
+                    'storeData.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
+                    'storeData.safety.parking_sensors' => 'required|string|in:yes,no',
+                    'storeData.safety.camera_360' => 'required|string|in:yes,no',
+                    'storeData.safety.driver_attention_monitor' => 'required|string|in:yes,no',
+                    'storeData.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
+                    'storeData.safety.airbags' => 'required|string|in:front,front-sides,front-sides-curtain',
+                    'storeData.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
+                    'storeData.safety.crumple_zones' => 'required|string|in:yes,no',
+                    'storeData.safety.isofix_mounts' => 'required|string|in:yes,no',
+                    'storeData.security.alarm_system' => 'required|string|in:yes,no',
+                    'storeData.security.immobilizer' => 'required|string|in:yes,no',
+                    'storeData.security.remote_central_locking' => 'required|string|in:yes,no',
+                    'storeData.security.gps_tracking' => 'required|string|in:yes,no',
                 ];
 
                 $names = [

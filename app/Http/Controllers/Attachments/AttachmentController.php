@@ -19,43 +19,43 @@ class AttachmentController extends Controller
      *
      * This function utilizes the Intervention Image library to read an image
      * from file paths, binary data, base64-encoded data, Data URI, or other supported sources.
-     * The function supports optional custom decoders for specific input formats.
+     * The function supports optional custom decoders for specific image formats.
      *
-     * @param mixed $input The image source (e.g., file path, binary data, base64).
-     * @param array|string|null $decoders (optional) Decoders to process the input data.
+     * @param mixed $image The image source (e.g., file path, binary data, base64).
+     * @param array|string|null $decoders (optional) Decoders to process the image data.
      *        This can be a string, array of decoder class names, or DecoderInterface instance(s).
-     *        If not specified, it will use default decoders based on the input.
+     *        If not specified, it will use default decoders based on the image.
      * @param string $driverType (optional) The image processing driver to use ('gd' or 'imagick').
      *        Defaults to 'gd'.
      *
-     * @return \Intervention\Image\Image The image resource created from the input.
+     * @return \Intervention\Image\Image The image resource created from the image.
      *
-     * @throws \Intervention\Image\Exception\DecoderException If the input cannot be decoded.
+     * @throws \Intervention\Image\Exception\DecoderException If the image cannot be decoded.
      */
-    public function read($input, $decoders = null, $driverType = 'gd')
+    public function read($image, $decoders = null, $driverType = 'gd')
     {
         // Choose driver based on the provided type ('gd' or 'imagick')
         $driver = ($driverType === 'imagick')
             ? new ImagickDriver()
             : new GdDriver();
-    
+
         // Create a new ImageManager with the selected driver
         $manager = new ImageManager($driver);
-    
+
         try {
-            // Check if the input is readable
-            if (!is_readable($input)) {
+            // Check if the image is readable
+            if (!is_readable($image)) {
                 return false;
             }
-    
+
             // If decoders are provided, pass them while reading the image
             if (!empty($decoders)) {
-                $image = $manager->read($input, $decoders);
+                $image = $manager->read($image, $decoders);
             } else {
                 // Use default decoding mechanism
-                $image = $manager->read($input);
+                $image = $manager->read($image);
             }
-    
+
             return $image;
         } catch (DecoderException $e) {
             // Handle decoding exception, maybe log or rethrow as necessary
@@ -244,32 +244,40 @@ class AttachmentController extends Controller
      */
     public static function create($name, $description, $file, $mimeType, $is_featured = false, string $type, $attachable, $authorable, $path)
     {
-        // Get the MIME type of the file
-        $fileInfo = getimagesize($file);
+        $is_application = in_array($mimeType, Attachment::$documentMimeTypes);
 
-        // Check if the MIME type is not available
-        if ($fileInfo === false || !isset($fileInfo['mime'])) {
-            // Log the error or handle it as needed
-            error_log("Failed to get MIME type for file: $file");
-
-            // Return an error or exit the function
-            return null; // or throw an exception if preferred
-        }
-
-        $width = $fileInfo[0] ?? null;
-        $height = $fileInfo[1] ?? null;
-        $ratio = ($height > 0) ? ($width / $height) : null;
-        $dimension = [
-            'width' => $width,
-            'height' => $height,
-            'ratio' => $ratio,
-        ];
-
-        // Collect metadata about the file
         $metadata = [
             'size' => filesize($file),
-            'dimension' => $dimension,
         ];
+
+        if (!$is_application) {
+            // Get the MIME type of the file
+            $fileInfo = getimagesize($file);
+
+            // Check if the MIME type is not available
+            if ($fileInfo === false || !isset($fileInfo['mime'])) {
+                // Log the error or handle it as needed
+                \Log::info("Failed to get MIME type for file: $file");
+
+                // Return an error or exit the function
+                return null; // or throw an exception if preferred
+            }
+
+            $width = $fileInfo[0] ?? null;
+            $height = $fileInfo[1] ?? null;
+            $ratio = ($height > 0) ? ($width / $height) : null;
+            $dimension = [
+                'width' => $width,
+                'height' => $height,
+                'ratio' => $ratio,
+            ];   
+            
+            // Collect metadata about the file
+            $metadata = [
+                'size' => filesize($file),
+                'dimension' => $dimension,
+            ];
+        }
 
         // Create the Attachment using the raw method
         $attachment = self::createRaw(

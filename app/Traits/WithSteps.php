@@ -120,8 +120,8 @@ trait WithSteps
     {
         $step = $this->rulesForStep();
         if (!empty($step['rules'])) {
-            $messages = $steps['messages']?? [];
-            $names = $steps['names']?? [];
+            $messages = $step['messages']?? [];
+            $names = $step['names']?? [];
             $this->validate($step['rules'], $messages, $names);
         }
     }

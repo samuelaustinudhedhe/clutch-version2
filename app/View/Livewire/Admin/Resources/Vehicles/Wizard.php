@@ -5,7 +5,6 @@ namespace App\View\Livewire\Admin\Resources\Vehicles;
 use App\Models\Admin;
 use App\Models\User;
 use App\Models\Vehicle;
-use App\Traits\WithSteps;
 use App\View\Livewire\Resources\Vehicles\Wizard as VehiclesWizard;
 
 
@@ -34,12 +33,12 @@ class Wizard extends VehiclesWizard
     public function mount()
     {
         // Retrieve the owner of the current session or context and assign it to the user property.
-        $this->user = $this->getOwner();
+        $this->user = getAdmin();
         // Define the steps for the wizard process.
         $this->defineSteps();
 
         // Define the store for storing data during the wizard process.
-        $this->defineStore(true);
+        $this->defineStore();
 
         // Define the data structure for storing vehicle-related data.
         //$this->defineStoreData();
@@ -47,6 +46,7 @@ class Wizard extends VehiclesWizard
         // Load existing vehicle types and subtypes from the Vehicle model.
         $this->vehicleData['types'] = Vehicle::types(); // Fetch vehicle types
         $this->vehicleData['vits'] = Vehicle::$vits; // Fetch vehicle subtypes
+        $this->selectedUser = $this->storeData['owner'] ?? null;
 
         // Load file details from the stored data file, if available.
         $files = $this->getStoredData()['files'] ?? [];
@@ -81,8 +81,10 @@ class Wizard extends VehiclesWizard
      */
     public function getOwner()
     {
-        if (!empty($this->selectedUser)) {
-            return getUser(user: $this->selectedUser); // Get the selected user
+        $owner = $this->storeData['owner'] ?? null;
+        //get user form selected user id 
+        if (!empty($owner)) {
+            return User::findOrFail($owner); // Get the selected user
         }
         return getUser() ?? getAdmin(); // Get the current user or the admin
     }
@@ -103,6 +105,14 @@ class Wizard extends VehiclesWizard
         //     session()->flash('error', 'Vehicle not found.');
         // }
     }
+
+    public function updatedSelectedUser()
+    {
+        $this->storeData['owner'] = $this->selectedUser;
+        $this->getOwner(); // Update the user property with the new owner details
+    }
+    
+
 
     /**
      * Generates validation rules, messages, and field names for the current step in a multi-step form.

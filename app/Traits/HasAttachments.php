@@ -45,29 +45,27 @@ trait HasAttachments
     }
 
     /**
-     * Fetch the featured image associated with the model.
-     *
-     * @return \App\Models\Attachment|string
-     */
-    public function featuredImage($placeholder = 'car')
-    {
-        $image = $this->gallery()->where('is_featured', true)->first();
-        return $image ?? getPlaceHolder($placeholder);
-    }
-
-    /**
      * Fetch images associated with the model.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Collection|string
      */
-    public function images($placeholder = 'car')
+    public function images($placeholder = 'image')
     {
         $types = [
             Attachment::TYPE_IMAGE,
             Attachment::TYPE_GALLERY_IMAGE,
         ];
-        $images = $this->attachments()->ofType($types)->search('mime_type', 'image')->get();
-        return $images ?? getPlaceHolder($placeholder);
+
+        // Get all attachments of the specified types
+        $images = $this->attachments()->ofType($types)->get();
+
+        // Filter images by checking if their MIME type is in the imageMimeTypes array
+        $filteredImages = $images->filter(function ($attachment) {
+            return Attachment::isImageMimeType($attachment->mime_type);
+        });
+
+        // Return the filtered images if any exist, otherwise return the placeholder
+        return $filteredImages->isNotEmpty() ? $filteredImages : $this->getPlaceholder($placeholder, true);
     }
 
     /**
@@ -78,6 +76,56 @@ trait HasAttachments
     public function gallery($placeholder = 'car')
     {
         return $this->images($placeholder);
+    }
+
+    /**
+     * Fetch the featured image associated with the model.
+     *
+     * @return \App\Models\Attachment|string
+     */
+    public function featuredImage($placeholder = 'image')
+    {
+        $image = $this->gallery($placeholder);
+
+        // check if image is an attachment
+        if (!is_string($image)) {
+            return $image->where('is_featured', true)->first();
+        }
+
+        return $image;
+    }
+
+    /**
+     * Get a placeholder image based on the type.
+     * Placeholder images must be in SVG format and should be named "default_{type}_placeholder.svg"
+     *
+     * @param string $type
+     * @param bool $collection
+     * @return \App\Models\Attachment|\Illuminate\Support\Collection<TKey, TValue>
+     */
+    public function getPlaceholder($type = 'image', $collection = true)
+    {
+        // Define the types of placeholders
+        $placeholderTypes = Attachment::$placeholderTypes;
+
+        // Check if the type is valid
+        if (!array_key_exists($type, $placeholderTypes)) {
+            throw new InvalidArgumentException("Invalid placeholder type: $type");
+        }
+
+        // Attempt to retrieve the placeholder from the database
+        $placeholder = Attachment::where('type', $placeholderTypes[$type])->first();
+
+        // Determine the return type based on the $collection parameter
+        if ($placeholder) {
+            return $collection ? collect([$placeholder]) : $placeholder;
+        }
+
+        // Return a default path if no placeholder is found
+        $defaultPath = "/assets/images/placeholders/{$type}.svg";
+        $defaultAttachment = new Attachment(['file_path' => $defaultPath]);
+
+        return $collection ? collect([$defaultAttachment]) : $defaultAttachment;
     }
 
     /**

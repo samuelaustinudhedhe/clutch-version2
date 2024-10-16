@@ -63,6 +63,16 @@ class Attachment extends Model
         'image/webp',
     ];
 
+    public static $placeholderTypes = [
+        'image' => 'default_image_placeholder',
+        'car' => 'default_car_placeholder',
+        'document' => 'default_document_placeholder',
+        'video' => 'default_video_placeholder',
+        'gallery' => 'default_gallery_placeholder',
+        'audio' => 'default_audio_placeholder',
+        'map' => 'default_map_placeholder',
+    ];
+
     // Define constants for attachment types
     const TYPE_IMAGE = 'image';
     const TYPE_PHOTO = 'photo';    //
@@ -71,7 +81,7 @@ class Attachment extends Model
     const TYPE_PROOF_OF_PAYMENT = 'proof_of_payment';
 
     // Define constants for document and specific documents types    
-    const TYPE_DOCUMENT = 'document';    
+    const TYPE_DOCUMENT = 'document';
     const TYPE_REGISTRATION_DOCUMENT = 'registration_document';
     const TYPE_PROOF_OF_OWNERSHIP_DOCUMENT = 'proof_of_ownership_document';
     const TYPE_INSURANCE_DOCUMENT = 'insurance_document';
@@ -79,7 +89,7 @@ class Attachment extends Model
     // define constants for video and audio types
     const TYPE_VIDEO = 'video';
     const TYPE_AUDIO = 'audio';
-    
+
 
     /**
      * Get all defined file types.
@@ -95,6 +105,17 @@ class Attachment extends Model
         return array_filter($constants, function ($key) {
             return strpos($key, 'TYPE_') === 0;
         }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * Check if a given MIME type is an image MIME type.
+     *
+     * @param string $mimeType The MIME type to check.
+     * @return bool True if the MIME type is an image MIME type, false otherwise.
+     */
+    public static function isImageMimeType($mimeType)
+    {
+        return in_array($mimeType, self::$imageMimeTypes);
     }
 
     /**
@@ -137,7 +158,7 @@ class Attachment extends Model
         if (is_array($types)) {
             return $query->whereIn('type', $types);
         }
-    
+
         return $query->where('type', $types);
     }
     /**
@@ -150,10 +171,20 @@ class Attachment extends Model
      */
     public function getUrlAttribute()
     {
+
         $filePath = $this->file_path;
+
+        // Check if the file path is a valid URL
         if (filter_var($filePath, FILTER_VALIDATE_URL)) {
             return $filePath;
         }
+
+        // Check if the file path is a public asset
+        if (strpos($filePath, '/assets/') === 0) {
+            return $filePath;
+        }
+
+        // Generate a URL using the public disk storage
         return Storage::url($filePath);
     }
 }

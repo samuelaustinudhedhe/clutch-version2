@@ -1,5 +1,5 @@
-<div class="max-w-screen-2xl m-auto flex flex-col min-h-screen">
-    <x-div class="lg:flex justify-between items-center lg:mx-6 mx-2 !py-4 lg:!py-6 space-y-4 lg:space-y-0">
+<div class="max-w-screen-2xl m-auto flex flex-col min-h-screen space-y-4 lg:space-y-6 px-4 mb-4 lg:mb-6 lg:mx-6">
+    <x-div class="lg:flex justify-between items-center !py-4 lg:!py-6 space-y-4 my-0 lg:space-y-0">
         <div class="flex items-center lg:max-w-28 w-full">
             <h1 class="text-xl xl:text-2xl font-bold whitespace-nowrap">My Vehicles</h1>
         </div>
@@ -20,15 +20,15 @@
         </div>
     </x-div>
 
-    <div class="flex-grow mx-auto p-6">
+    <div class="">
         <!-- Vehicle Listing -->
         <!-- Vehicle Card -->
         @if ($vehicles)
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 @foreach ($vehicles as $vehicle)
-                    <a href="{{ route('user.vehicles.edit', $vehicle->id) }}" class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <a href="{{ route('vehicles.show', $vehicle->id) }}" target="_blank" class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                         <img class="w-full h-48 object-cover"
-                            src="{{ $vehicle->featuredImage()->url ?? $vehicle->featuredImage() }}" alt="Vehicle Image">
+                            src="{{ $vehicle->featured_image->url }}" alt="Vehicle Image">
                         <div class="p-4">
                             <h3 class="text-lg font-semibold">{{ $vehicle->name }}</h3>
                             <p class="text-gray-600 dark:text-gray-400">Pickup:

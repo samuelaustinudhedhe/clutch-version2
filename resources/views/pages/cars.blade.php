@@ -1240,7 +1240,7 @@
                     class="space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <div class="relative mb-4 max-h-72 overflow-hidden rounded-md">
                         <!-- Carousel wrapper -->
-                        <img src="{{ $vehicle->featuredImage('car.jpg') }}" class="h-72 object-cover rounded-md"
+                        <img src="{{ $vehicle->featuredImage('car') }}" class="h-72 object-cover rounded-md"
                             alt="{{ $vehicle->name }}" />
                         <div class="absolute right-0 top-0 p-1 z-50">
                             <button type="button" data-tooltip-target="tooltip-add-to-favorites-9"

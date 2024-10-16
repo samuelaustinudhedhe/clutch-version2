@@ -89,7 +89,7 @@
                                     </td>
                                     <th scope="row" class="px-4 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <a href="{{ route('admin.vehicles.show', $vehicle->id) }}" class="flex items-center mr-3">
-                                            <img src="{{ $vehicle->featuredImage('car.jpg')->url ??  $vehicle->featuredImage('car.jpg') }}" alt="{{ $vehicle->featuredImage()->name ?? $vehicle->name }}" class="h-12 w-16 object-cover mr-3 rounded-md">
+                                            <img src="{{ $vehicle->featured_image_url}}" alt="{{ $vehicle->featured_image->name ?? $vehicle->name }}" class="h-12 w-16 object-cover mr-3 rounded-md">
                                             {{ $vehicle->name }}
                                         </a>
                                     </th>

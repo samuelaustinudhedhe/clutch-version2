@@ -1,6 +1,6 @@
 @props(['id', 'taClass' => 'bg-white dark:bg-gray-800', 'icon' => false, 'trigger' => 'hover'])
 
-<div {{ $attributes->merge(['class' => 'flex items-center gap-1 group']) }}
+<div {{ $attributes->merge(['class' => 'flex items-center gap-1 group']) }} x-init="initTooltips()"
     @if (!$icon) data-tooltip-target="{{ $id }}-tooltip" data-tooltip-trigger="{{ $trigger }}"  @endif>
     {{ $trigger }}
     @if ($icon)

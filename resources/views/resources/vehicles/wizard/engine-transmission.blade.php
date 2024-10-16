@@ -4,9 +4,9 @@
             <div class="w-full">
                 <x-label for="engine_type">Engine Type</x-label>
                 <x-select id="engine_type" wire:model="storeData.details.engine.type">
-                    <option value="">Select Engine Type</option>
                     <option value="Internal Combustion Engine (ICE)">Internal Combustion Engine (ICE)</option>
                     <option value="Gasoline">Gasoline</option>
+                    <option selected value="Petrol Engine">Petrol Engine</option>
                     <option value="Diesel">Diesel</option>
                     <option value="Natural Gas">Natural Gas</option>
                     <option value="Ethanol">Ethanol</option>
@@ -28,7 +28,7 @@
                     <option value="1.0L - 1.5L">1.0L - 1.5L (1000cc - 1500cc)</option>
                     <option value="1.6L - 2.0L">1.6L - 2.0L (1600cc - 2000cc)</option>
                     <option value="2.1L - 2.5L">2.1L - 2.5L (2100cc - 2500cc)</option>
-                    <option value="2.6L - 3.0L">2.6L - 3.0L (2600cc - 3000cc)</option>
+                    <option selected value="2.6L - 3.0L">2.6L - 3.0L (2600cc - 3000cc)</option>
                     <option value="3.1L - 4.0L">3.1L - 4.0L (3100cc - 4000cc)</option>
                     <option value="4.0L or Above">Large (Over 4.0L or Above 4000cc)</option>
                 </x-select>
@@ -40,10 +40,9 @@
 
             <div class="w-full">
                 <x-label for="fuel_type">Fuel Type</x-label>
-                <x-select id="fuel_type" wire:model="storeData.details.fuel.type">
-                    <option value="" disabled selected>Select Fuel Type</option>
+                <x-select id="fuel_type" wire:model="storeData.details.fuel.type" title="- Select Fuel Type -">
                     <option value="Gasoline">Gasoline</option>
-                    <option value="Petrol">Petrol</option>
+                    <option selected value="Petrol">Petrol</option>
                     <option value="E85 (Ethanol blend)">E85 (Ethanol blend)</option>
                     <option value="Regular Diesel">Regular Diesel</option>
                     <option value="Biodiesel">Biodiesel</option>
@@ -61,12 +60,11 @@
             </div>
             <div class="w-full">
                 <x-label for="fuel_economy">Fuel Economy</x-label>
-                <x-select id="fuel_economy" wire:model="storeData.details.fuel.economy">
-                    <option value="" disabled selected>Select Fuel Economy</option>
+                <x-select id="fuel_economy" wire:model="storeData.details.fuel.economy" title="- Fuel Economy -">
                     <option value="Below 15">Below 15 MPG (Very Poor)</option>
                     <option value="15-19">15-19 MPG (Poor)</option>
                     <option value="20-24">20-24 MPG (Below Average)</option>
-                    <option value="25-29">25-29 MPG (Average)</option>
+                    <option selected value="25-29">25-29 MPG (Average)</option>
                     <option value="30-34">30-34 MPG (Above Average)</option>
                     <option value="35-39">35-39 MPG (Good)</option>
                     <option value="40 Above">40 MPG and Above (Excellent)</option>
@@ -86,7 +84,7 @@
                 <x-label for="transmission_type">Transmission Type</x-label>
                 <x-select id="transmission_type" wire:model="storeData.details.transmission.type">
                     <option value="manual">Manual</option>
-                    <option value="automatic">Automatic</option>
+                    <option selected value="automatic">Automatic</option>
                     <option value="semi-automatic">Semi-Automatic</option>
                 </x-select> <x-input-error for="storeData.details.transmission.type" />
             </div>
@@ -101,7 +99,7 @@
                 <x-select id="transmission_gears" wire:model="storeData.details.transmission.gears">
                     <option value="3">3</option>
                     <option value="4">4</option>
-                    <option value="5">5</option>
+                    <option selected value="5">5</option>
                     <option value="6">6</option>
                     <option value="7">7</option>
                 </x-select> <x-input-error for="storeData.details.transmission.gears" />
@@ -109,7 +107,7 @@
             <div class="w-full">
                 <x-label for="transmission_drivetrain">Drivetrain Type</x-label>
                 <x-select id="transmission_drivetrain" wire:model="storeData.details.transmission.drivetrain">
-                    <option value="fwd">FWD</option>
+                    <option selected value="fwd">FWD</option>
                     <option value="rwd">RWD</option>
                     <option value="awd">AWD</option>
                     <option value="4wd">4WD</option>

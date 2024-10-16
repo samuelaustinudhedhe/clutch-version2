@@ -38,7 +38,7 @@ class CreateNewUser implements CreatesNewUsers
             'records' => $this->activityLog(),
         ]);
 
-        Mail::to($user->email)->send(new WelcomeMail($user, 'cant send password'));
+        Mail::to($user->email)->send(new WelcomeMail($user, 'Can not be sent for security reasons'));
 
         return $user;
     }

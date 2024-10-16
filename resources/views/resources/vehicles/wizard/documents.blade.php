@@ -6,17 +6,17 @@
                 class="!text-base dark:!text-gray-200 !text-gray-800 font-normal">Registration</x-label>
             <div class="flex items-center gap-6">
                 <div class="w-full sm:w-1/2">
-                    <x-date id="issued_date" wire:model.lazy="storeData.documents.reigistration.issued_date" placeholder="issued date" max="{{ now()->format('d/m/Y') }}" min="{{ now()->subYears(1)->format('d/m/Y') }}" loadJS=true/>
-                    <x-input-error for="storeData.documents.reigistration.issued_date" />
+                    <x-date id="issued_date" wire:model.lazy="storeData.documents.registration.issued_date" placeholder="issued date" max="{{ now()->format('d/m/Y') }}" min="{{ now()->subYears(1)->format('d/m/Y') }}" loadJS=true/>
+                    <x-input-error for="storeData.documents.registration.issued_date" />
                 </div>
                 <div class="w-full sm:w-1/2">
                     @php
-                        $issuedDate = \Carbon\Carbon::parse($storeData['documents']['reigistration']['issued_date'] ?? now());
-                        $expirationMinDate = $issuedDate->copy()->addYear()->format('d/m/Y');
-                        $expirationMaxDate = $issuedDate->copy()->addYear()->format('d/m/Y');
+                        $issuedDate = \Carbon\Carbon::parse($storeData['documents']['registration']['issued_date'] ?? now());
+                        $expirationMinDate = $issuedDate->copy()->addMonths(11)->format('m/d/Y');
+                        $expirationMaxDate = $issuedDate->copy()->addMonths(13)->format('m/d/Y');
                     @endphp
-                    <x-date id="expiration_date" wire:model="storeData.documents.reigistration.expiration_date" placeholder="expiration date" max="{{ $expirationMaxDate }}" min="{{ $expirationMinDate }}" />
-                    <x-input-error for="storeData.documents.reigistration.expiration_date" />
+                    <x-date id="expiration_date" wire:model="storeData.documents.registration.expiration_date" placeholder="expiration date" max="{{ $expirationMaxDate }}" min="{{ $expirationMinDate }}" />
+                    <x-input-error for="storeData.documents.registration.expiration_date" />
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
 
             <div class="{{ $registration['uploaded'] ? 'sm:w-[calc(100%-120px)]' : 'w-full' }}">
                 <x-xinput id="registration" wire:model="registration.new" class="w-full text-sm cursor-pointer !p-0"
-                    type="file" accept=".jpg,.jpeg,.png,.pdf" />
+                    type="file" accept=".webp,.jpg,.jpeg,.png,.pdf" />
 
                 <p class="mt-1 mx-2 text-2xs font-normal text-gray-500 dark:text-gray-300" id="registration_help">
                     WEBP,
@@ -72,7 +72,7 @@
 
             <div class="{{ $proofOfOwnership['uploaded'] ? 'sm:w-[calc(100%-120px)]' : 'w-full' }}">
                 <x-xinput id="proofOfOwnership" wire:model="proofOfOwnership.new"
-                    class="w-full text-sm cursor-pointer !p-0" type="file" accept=".jpg,.jpeg,.png,.pdf" />
+                    class="w-full text-sm cursor-pointer !p-0" type="file" accept=".webp,.jpg,.jpeg,.png,.pdf" />
 
                 <p class="mt-1 text-2xs font-normal text-gray-500 dark:text-gray-300" id="proofOfOwnership_help">
                     WEBP,
@@ -95,7 +95,7 @@
         </x-tooltip>
 
         <div class="mb-2 gap-4 text-sm sm:grid-cols-2 grid">
-            <x-radio id="noInsurance" name="has_insurance" value="invalid" wire:model.live="storeData.document.insurance.status"
+            <x-radio id="noInsurance" name="has_insurance" value="invalid" wire:model.live="storeData.documents.insurance.status"
                 showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -104,7 +104,7 @@
                 </svg>
                 <span class="w-full">No i do not</span>
             </x-radio>
-            <x-radio id="yesInsurance" name="has_insurance" value="valid" wire:model.live="storeData.document.insurance.status"
+            <x-radio id="yesInsurance" name="has_insurance" value="valid" wire:model.live="storeData.documents.insurance.status"
                 checked showIcon="false" class="!p-2">
                 <svg class="w-6 h-6 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -117,7 +117,7 @@
         </div>
 
 
-        @if (isset($storeData['document']['insurance']['status']) && $storeData['document']['insurance']['status'] === 'valid')
+        @if (isset($storeData['documents']['insurance']['status']) && $storeData['documents']['insurance']['status'] === 'valid')
 
         <hr class="my-6 border-gray-300 dark:border-gray-600">
             <div class="items-center w-full sm:flex space-x-6 mb-2 mt-6">
@@ -138,7 +138,7 @@
 
                 <div class="{{ $insurance['uploaded'] ? 'sm:w-[calc(100%-120px)]' : 'w-full' }}">
                     <x-xinput id="insurance" wire:model="insurance.new" class="w-full text-sm cursor-pointer !p-0"
-                        type="file" accept=".jpg,.jpeg,.png,.pdf" />
+                        type="file" accept=".webp,.jpg,.jpeg,.png,.pdf" />
 
                     <p class="mt-1 text-2xs font-normal text-gray-500 dark:text-gray-300" id="insurance_help">
                         WEBP,
@@ -151,7 +151,7 @@
             {{-- Insurance Note --}}
             <div class="mt-6">
                 <x-label for="insurance">Insurance Note</x-label>
-                <x-textarea id="insurance_details" wire:model="storeData.insurance.note" height="150px"
+                <x-textarea id="insurance_details" wire:model="storeData.documents.insurance.note" height="150px"
                     placeholder="Describe your insurace coverage" />
             </div>
         @else
