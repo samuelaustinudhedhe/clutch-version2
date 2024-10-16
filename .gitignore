@@ -5,6 +5,9 @@
 /public/storage
 /storage/*.key
 /vendor
+artisan
+note..php
+cmd
 .env    
 .env.backup
 .env.production
