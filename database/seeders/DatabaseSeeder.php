@@ -29,15 +29,15 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminSeeder::class);
         
         # Call the UserSeeder to seed the users table
-        $this->call(UserSeeder::class);
+        //$this->call(UserSeeder::class);
 
         # Call the VehiclesSeeder to seed the vehicles table
-        $this->call(VehicleSeeder::class);
+        //$this->call(VehicleSeeder::class);
         
         # Call the AttachmentSeeder to seed the authors table
-        $this->call(AttachmentSeeder::class);
+        //$this->call(AttachmentSeeder::class);
         
         # Call the NotificationSeeder to seed the authors table
-        $this->call(NotificationSeeder::class);
+        //$this->call(NotificationSeeder::class);
     }
 }
