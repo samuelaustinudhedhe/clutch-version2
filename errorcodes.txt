@@ -1,0 +1,7 @@
+Error Code: 29-023_L  when the Location is not found on Google map
+Your location is not found on the map. (Code: 29-023_L)
+
+Error Code: 30-023_L  when the address is missing street, city, state, or country
+There seems to be an issue with the address provided. <br> Kindly use the suggestion box and enter your complete address. (Code: 30-023_L)
+
+

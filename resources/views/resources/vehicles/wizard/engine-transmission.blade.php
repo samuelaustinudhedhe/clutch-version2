@@ -3,7 +3,7 @@
     <x-div class="grid gap-4 sm:grid-cols-2 grid-cols-1">
             <div class="w-full">
                 <x-label for="engine_type">Engine Type</x-label>
-                <x-select id="engine_type" wire:model="storeData.details.engine.type">
+                <x-select id="engine_type" wire:model="storeData.details.engine.type" loadJS=true>
                     <option value="Internal Combustion Engine (ICE)">Internal Combustion Engine (ICE)</option>
                     <option value="Gasoline">Gasoline</option>
                     <option selected value="Petrol Engine">Petrol Engine</option>
@@ -72,7 +72,7 @@
                 <x-input-error for="storeData.details.fuel.economy" />
             </div>
             <div class="w-full">
-                <x-label for="millage">Millage</x-label>
+                <x-label for="millage">Millage (optional)</x-label>
                 <x-xinput id="millage" type="number" wire:model="storeData.details.millage" />
                 <x-input-error for="storeData.details.millage" />
             </div>
@@ -89,7 +89,7 @@
                 </x-select> <x-input-error for="storeData.details.transmission.type" />
             </div>
             <div class="w-full">
-                <x-label for="engine_hp">Horsepower</x-label>
+                <x-label for="engine_hp">Horsepower (optional)</x-label>
                 <x-xinput id="engine_hp" type="number" wire:model="storeData.details.engine.hp" />
                 <x-input-error for="storeData.details.engine.hp" />
             </div>

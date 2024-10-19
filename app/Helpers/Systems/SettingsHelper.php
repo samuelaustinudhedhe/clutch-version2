@@ -48,20 +48,31 @@ if (!function_exists('app_url')) {
     /*
      | Get the application URL from the settings table.
      |
+     | @param string $path The path to append to the base URL.
+     | @param bool $strip Whether to strip the URL to its domain.
      | @param bool $echo Whether to echo the result or return it.
      | @return string The application URL.
      |
      */
-    function app_url(bool $strip = true, bool $echo = true)
+    function app_url(string $path = '', bool $strip = false, bool $echo = true)
     {
         $setting = DB::table('settings')->where('key', 'app_url')->first();
         $data = $setting ? $setting->value : config('app.url');
 
+        // Ensure the path starts with a slash
+        if ($path && $path[0] !== '/') {
+            $path = '/' . $path;
+        }
+
+        // Replace dots with slashes in the path
+        $path = str_replace('.', '/', $path);
 
         if ($strip === true) {
-            //Strip the url of all but domain name or IP Address and Convert all characters to lowercase
-            $data = preg_replace("#^[^:/.]|[:/]+#i", "", preg_replace("{/$}", "", urldecode(strtolower($data))));
+            // Strip the URL of all but the domain name or IP Address and convert all characters to lowercase
+            $data = preg_replace("#^https?://#i", "", urldecode(strtolower($data)));
         }
+
+        $data .= $path;
 
         if ($echo) {
             echo $data;
@@ -70,6 +81,7 @@ if (!function_exists('app_url')) {
         }
     }
 }
+
 if (!function_exists('app_admin_slug')) {
     /*
      | Get the application Admin URL from the settings table.

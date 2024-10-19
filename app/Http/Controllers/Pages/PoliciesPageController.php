@@ -87,6 +87,20 @@ class PoliciesPageController extends PageController
     }
 
     /**
+     * Display the Guidelines page.
+     *
+     * This method reads the guidelines.md file from the resources/markdown directory,
+     * converts its content from Markdown to HTML, and returns the guidelines view with
+     * the rendered HTML content.
+     *
+     * @return View The view displaying the Guidelines.
+     */
+    public function guidelines()
+    {
+        return $this->index('guidelines', 'pages.policies.guidelines');
+    }
+
+    /**
      * Check if the application has the Terms and Privacy Policy feature enabled.
      *
      * This method checks if the Jetstream package has the Terms and Privacy Policy feature enabled.

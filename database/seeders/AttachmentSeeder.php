@@ -62,7 +62,7 @@ class AttachmentSeeder extends Seeder
             'mime_type' => $mimeType,
             'description' => "Placeholder for " . str_replace('_', ' ', $type),
             'status' => 'active',
-            'is_featured' => false,
+            'is_featured' => true,
             'metadata' => json_encode(['width' => 100, 'height' => 100]),
             'attachable_type' => 'App\Models',
             'attachable_id' => 1,

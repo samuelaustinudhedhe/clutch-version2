@@ -91,7 +91,7 @@
         @endisset
 
     </x-div>
-    
+
     {{-- Right --}}
     <x-div class="w-full">
 
@@ -165,7 +165,8 @@
                 <div class="flex items-center gap-4">
                     <div class="relative w-20 h-20 ">
                         <img class="w-20 h-20 rounded-full border border-gray-200 shadow-sm dark:border-gray-700"
-                            src="{{ $this->getOwner()->profile_photo_url }}" alt="{{ $this->getOwner()->name . ' Photo' }}">
+                            src="{{ $this->getOwner()->profile_photo_url }}"
+                            alt="{{ $this->getOwner()->name . ' Photo' }}">
 
                         <div class="flex items-center space-x-1 absolute bottom-0 left-1/2 transform -translate-x-1/2">
                             <span
@@ -219,71 +220,44 @@
         </div>
 
     </x-div>
-    <x-div class="!space-y-4">
-        <h3 class="text-lg font-light">Description:</h3>
-        <p class="text-sm">{{ $storeData['details']['description'] }}</p>
-    </x-div>
+    
+    {{-- Documents --}}
+    @isset($storeData['files'])
+        <x-div>
+            <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Uploaded Documents</h3>
+            <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
+                Vehicle document you uploaded for this vehicle.
+            </p>
+            @foreach (['proof_of_ownership', 'registration', 'insurance'] as $key)
+                {{-- Documents --}}
+                @isset($storeData['files'][$key])
+                    <div class="flex items-center justify-between py-4 px-4">
+                        <div class="lg:flex w-full">
+                            <div class="w-full lg:w-2/5 text-sm font-medium text-gray-900 dark:text-white capitalize">
+                                {{ str_replace('_', ' ', $key) ?? '' }}
+                            </div>
+                        </div>
 
-    <x-div class="!space-y-4">
-        <h3 class="text-lg font-light">Features</h3>
-        <div class="flex flex-wrap gap-4 justify-center items-start mt-2">
+                        @if (str_contains($storeData['files'][$key]['mime_type'], 'image'))
+                            <img class="mb-4 min-w-20 min-h-14 max-w-20 max-h-14 rounded border-2 border-gray-200 dark:border-white sm:mb-0 object-cover"
+                                src="{{ isset($storeData['files'][$key]) ? Storage::url($storeData['files'][$key]['path']) : '' }}"
+                                alt="Uploaded Proof of Address">
+                        @else
+                            <div
+                                class="overflow-hidden  rounded border-2 border-gray-200 dark:border-white w-20 h-14 transition-transform duration-500 transform translate-x-0">
 
-            @foreach (['security', 'exterior', 'interior', 'engine', 'transmission', 'safety'] as $key)
-                <div
-                    class="w-full rounded-lg border border-gray-100 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 md:p-6">
-                    <h4 class="text-base font-semibold text-gray-900 dark:text-white capitalize">
-                        {{ str_replace('_', ' ', $key) }}</h4>
-
-                    <div class="mt-2 divide-y divide-gray-200 dark:divide-gray-700 dark:border-gray-800">
-                        @foreach ($storeData['details'][$key] as $item => $value)
-                            <dl class="flex items-center justify-between gap-4 py-2">
-                                <dt class="text-xs font-medium text-gray-900 dark:text-white capitalize">
-                                    {{ str_replace('_', ' ', $item) ?? '' }}
-                                </dt>
-                                <dd class="text-sm font-normal text-gray-500 dark:text-gray-400 capitalize">
-                                    {{ str_replace('-', ', ', $value) ?? '' }}</dd>
-                            </dl>
-                        @endforeach
+                                <embed src="{{ Storage::url($storeData['files'][$key]['path']) }}" type="application/pdf"
+                                    class="max-w-[94px] max-h-[70px] min-w-[94px] min-h-[70px] mt-[-2px] ml-[-2px]"
+                                    width="94px" height="70px" />
+                            </div>
+                        @endif
                     </div>
-                </div>
+                @endisset
             @endforeach
-        </div>
 
-    </x-div>
+        </x-div>
+    @endisset
 
-    <x-div>
-        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Uploaded Documents</h3>
-        <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
-            Vehicle document you uploaded for this vehicle.
-        </p>
-        @foreach (['proof_of_ownership', 'registration', 'insurance'] as $key)
-            {{-- Documents --}}
-            @isset($storeData['files'][$key])
-                <div class="flex items-center justify-between py-4 px-4">
-                    <div class="lg:flex w-full">
-                        <div class="w-full lg:w-2/5 text-sm font-medium text-gray-900 dark:text-white capitalize">
-                            {{ str_replace('_', ' ', $key) ?? '' }}
-                        </div>
-                    </div>
-
-                    @if (str_contains($storeData['files'][$key]['mime_type'], 'image'))
-                        <img class="mb-4 min-w-20 min-h-14 max-w-20 max-h-14 rounded border-2 border-gray-200 dark:border-white sm:mb-0 object-cover"
-                            src="{{ isset($storeData['files'][$key]) ? Storage::url($storeData['files'][$key]['path']) : '' }}"
-                            alt="Uploaded Proof of Address">
-                    @else
-                        <div
-                            class="overflow-hidden  rounded border-2 border-gray-200 dark:border-white w-20 h-14 transition-transform duration-500 transform translate-x-0">
-
-                            <embed src="{{ Storage::url($storeData['files'][$key]['path']) }}" type="application/pdf"
-                                class="max-w-[94px] max-h-[70px] min-w-[94px] min-h-[70px] mt-[-2px] ml-[-2px]"
-                                width="94px" height="70px" />
-                        </div>
-                    @endif
-                </div>
-            @endisset
-        @endforeach
-
-    </x-div>
     @isset($storeData['documents']['insurance']['note'])
         <x-div class="!space-y-4">
             <h3 class="text-lg font-light">Insurance Note:</h3>
@@ -291,5 +265,37 @@
         </x-div>
     @endisset
 
+
+    <x-div class="!space-y-4">
+        <h3 class="text-lg font-light">Description:</h3>
+        <p class="text-sm">{{ $storeData['details']['description'] }}</p>
+    </x-div>
+
+
+    <div class="columns-1 md:columns-2 gap-4 mt-4 space-y-4">
+        @foreach (['safety', 'security', 'exterior', 'interior', 'engine', 'transmission'] as $key)
+            <div
+                class="break-inside-avoid p-4 rounded-lg border border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Section Header -->
+                <h4 class="text-base font-semibold text-gray-900 dark:text-white capitalize">
+                    {{ str_replace('_', ' ', $key) }}
+                </h4>
+
+                <!-- Dynamically Display Each Section's Content -->
+                <div class="mt-2 divide-y divide-gray-200 dark:divide-gray-700 dark:border-gray-800">
+                    @foreach ($storeData['details'][$key] as $item => $value)
+                        <dl class="flex items-center justify-between gap-4 py-2">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 capitalize">
+                                {{ str_replace('_', ' ', $item) ?? '' }}
+                            </dt>
+                            <dd class="text-sm font-normal text-gray-900 dark:text-white capitalize">
+                                {{ str_replace('-', ', ', $value) ?? '' }}
+                            </dd>
+                        </dl>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
+    </div>
 
 </div>

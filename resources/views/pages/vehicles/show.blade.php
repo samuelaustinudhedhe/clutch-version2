@@ -1,61 +1,8 @@
 <div class="max-w-screen-xl m-auto">
 
     {{-- Gallery Section --}}
-    <section>
-        <div id="indicators-carousel" class="relative w-full" data-carousel="static" x-init="initCarousels()">
-            <!-- Carousel wrapper -->
-            <div class="relative min-h-[280px] overflow-hidden lg:rounded-lg rounded-none md:h-[500px]">
-                <!-- Item 1 -->
-                @php
-                    $vehicleGallery = $vehicle->gallery->sortByDesc('is_featured');
-                @endphp
-                @foreach ($vehicleGallery as $image)
-                    <img class=" w-full h-full object-cover duration-700 ease-in-out"
-                        @if ($image->is_featured) data-carousel-item="active"
-                        @else
-                            data-carousel-item @endif
-                        src="{{ $image->url }}" alt="{{ $image->name ?? 'Vehicle Image ' . $loop->index }}">
-                @endforeach
-            </div>
-            <!-- Slider indicators -->
-            <div class="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
-                @foreach ($vehicleGallery as $index => $image)
-                    <button type="button" class="w-3 h-3 rounded-full" aria-current="true"
-                        aria-label="Slide {{ $index }}" data-carousel-slide-to="{{ $index }}"></button>
-                @endforeach
-            </div>
-
-            <!-- Slider controls -->
-            <button type="button"
-                class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                data-carousel-prev>
-                <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-200/30 group-hover:bg-white/50 dark:group-hover:bg-gray-200/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                    <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 1 1 5l4 4" />
-                    </svg>
-                    <span class="sr-only">Previous</span>
-                </span>
-            </button>
-            <button type="button"
-                class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                data-carousel-next>
-                <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-200/30 group-hover:bg-white/50 dark:group-hover:bg-gray-200/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                    <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 9 4-4-4-4" />
-                    </svg>
-                    <span class="sr-only">Next</span>
-                </span>
-            </button>
-        </div>
-
-    </section>
-
+    <x-carousel :images="$vehicle->gallery->sortByDesc('is_featured')" />
+        
     {{-- Content Section --}}
     <div class="mx-2 xl:mx-0 mt-2 md:mt-4 xl:mt-6">
         <div class="flex flex-wrap md:flex-nowrap gap-4">
@@ -131,8 +78,7 @@
                     {{--  --}}
                     <div class="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
-                            viewBox="0 0 24 24" class="text-gray-700 dark:text-gray-200" role="img"
-                            version="1.1">
+                            viewBox="0 0 24 24" class="text-gray-700 dark:text-gray-200" role="img" version="1.1">
                             <path fill="currentColor" fill-rule="evenodd"
                                 d="M14.32 5.75h1.16c.45 0 .86-.23 1.11-.6s.3-.84.13-1.25l-.35-.86a1.83 1.83 0 0 0-1.7-1.14H9.29c-.75 0-1.42.45-1.7 1.15l-.35.86c-.17.41-.12.88.13 1.25s.66.59 1.11.59h1.16v.992A3.484 3.484 0 0 0 6.34 9.6l-.89 4.85q-.12.615-.03 1.2a2.88 2.88 0 0 0-1.92 2.7v.8c0 1.58 1.28 2.87 2.86 2.87h11.21a2.88 2.88 0 0 0 2.87-2.86v-.8c0-1.48-1.16-2.73-2.63-2.85-.28-.02-.55.17-.65.44a2.44 2.44 0 0 1-2.68 1.59l-.92-.15c-.63-.1-1.26-.13-1.88-.11-.03 0-.69.01-1.3.11l-.91.15c-.79.13-1.57-.13-2.13-.7-.25-.25-.43-.54-.55-.85a.4.4 0 0 0-.04-.11 2.5 2.5 0 0 1-.07-1.19l.89-4.86A2.24 2.24 0 0 1 9.77 8h4.39c1.08 0 2 .77 2.2 1.83l.68 3.71a.626.626 0 0 0 1.23-.23l-.68-3.71a3.484 3.484 0 0 0-3.27-2.856zm-1.24 0h-2.2v.99h2.2zm-3.79-2.6c-.24 0-.45.14-.54.37l-.35.86.08.12h7c.01 0 .05 0 .07-.04l-.34-.94a.58.58 0 0 0-.54-.36H9.29zM5.81 16.84c-.62.23-1.06.83-1.06 1.51v.8c0 .89.72 1.61 1.61 1.61h11.2c.89 0 1.61-.72 1.61-1.61v-.8c0-.69-.44-1.29-1.07-1.52-.75 1.4-2.28 2.18-3.84 1.93l-.91-.15c-.54-.09-1.1-.12-1.64-.1-.01 0-.61.01-1.14.1l-.91.15c-1.2.19-2.37-.2-3.22-1.07-.26-.25-.47-.54-.63-.85"
                                 clip-rule="evenodd"></path>

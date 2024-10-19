@@ -24,8 +24,7 @@
         {{ $slot }}
 
         @livewireScripts
-        @stack('scripts')
-        <script async src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places&callback=initAddressAutocomplete&callback=initMap"></script>
+
     </body>
 
 </html>

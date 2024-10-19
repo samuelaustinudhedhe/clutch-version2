@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('update')) {
-    function update($table, $id, $data) {
+    function update($table, $id, $data)
+    {
         return DB::table($table)
             ->where('id', $id)
             ->update($data);
@@ -20,7 +21,8 @@ if (!function_exists('updateUser')) {
      * 
      * @return int The number of affected rows.
      */
-    function updateUser($id, $data) {
+    function updateUser($id, $data)
+    {
         return update('users', $id, $data);
     }
 }
@@ -34,7 +36,8 @@ if (!function_exists('updateVehicle')) {
      * 
      * @return int The number of affected rows.
      */
-    function updateVehicle($id, $data) {
+    function updateVehicle($id, $data)
+    {
         return update('vehicles', $id, $data);
     }
 }
@@ -48,7 +51,8 @@ if (!function_exists('updateAttachment')) {
      * 
      * @return int The number of affected rows.
      */
-    function updateAttachment($id, $data) {
+    function updateAttachment($id, $data)
+    {
         return update('attachments', $id, $data);
     }
 }
@@ -62,7 +66,27 @@ if (!function_exists('updateTrip')) {
      * 
      * @return int The number of affected rows.
      */
-    function updateTrip($id, $data) {
+    function updateTrip($id, $data)
+    {
         return update('trips', $id, $data);
+    }
+}
+
+
+if (!function_exists('getPerson')) {
+    /**
+     * Retrieves a person record, prioritizing admin over user.
+     *
+     * @param string $attribute The attribute to search by.
+     * @param mixed $person The person identifier to search for.
+     * 
+     * @return mixed|null The admin or user record if found, otherwise null.
+     */
+    function getPerson($attribute = '', $person = null)
+    {
+        // Get the Admin
+        $person =  getAdmin($person, $attribute) ?? getUser($attribute, $person);
+        // Add the 'who' attribute to the person
+        return $person;
     }
 }

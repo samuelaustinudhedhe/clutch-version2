@@ -81,15 +81,23 @@ trait HasAttachments
     /**
      * Fetch the featured image associated with the model.
      *
-     * @return \App\Models\Attachment|string
+     * This method attempts to retrieve the featured image from the model's gallery.
+     * If no image is marked as featured, it returns the first image in the gallery.
+     * If no images are available, it returns a placeholder image.
+     *
+     * @param string $placeholder The type of placeholder to return if no images are found.
+     *                            Defaults to 'image'.
+     * @return \App\Models\Attachment|string The featured image attachment, the first image,
+     *                                       or a placeholder string if no images are available.
      */
     public function featuredImage($placeholder = 'image')
     {
         $image = $this->gallery($placeholder);
 
-        // check if image is an attachment
+        // Check if image is an attachment
         if (!is_string($image)) {
-            return $image->where('is_featured', true)->first();
+            $featuredImage = $image->where('is_featured', true)->first();
+            return $featuredImage ?: $image->first(); // Return the first image if no featured image is found 
         }
 
         return $image;

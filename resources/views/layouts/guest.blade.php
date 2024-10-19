@@ -41,9 +41,8 @@
 
         {{-- Livewire Scripts --}}
         @livewireScripts
-        @stack('scripts') 
 
         {{-- Google Map --}}
-        <script async src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places&callback=initAddressAutocomplete&callback=initMap"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places"></script>
     </body>
 </html>

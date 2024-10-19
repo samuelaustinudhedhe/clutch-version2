@@ -20,7 +20,9 @@ class Index extends Component
 
     public function render()
     {
-        $vehicles = Vehicle::search('name', $this->search)->paginate($this->perPage);
+        $vehicles = Vehicle::orderBy('created_at', 'desc')
+        ->search('name', $this->search)
+        ->paginate($this->perPage);
         $vehiclesCount = Vehicle::all()->count();
         return view('pages.vehicles.index', [
             'vehicles' => $vehicles,

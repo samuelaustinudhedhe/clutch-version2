@@ -14,7 +14,7 @@ if (!function_exists('getUser')) {
      *
      * @param string|null $attribute The attribute to retrieve from the user user. If null, the entire user user object is returned.
      * @param \App\Models\User|null|int $user The user user object. If null, the currently authenticated user user is retrieved.
-     * @return mixed The currently authenticated user user, a specific attribute of the user user, or null if the attribute does not exist.
+     * @return object|string|null The currently authenticated user user, a specific attribute of the user user, or null if the attribute does not exist.
      */
     function getUser($attribute = null, $user = null)
     {

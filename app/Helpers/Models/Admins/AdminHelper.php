@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -29,13 +30,17 @@ if (!function_exists('getAdmin')) {
      */
     function getAdmin($admin = null, $attribute = null)
     {
-        if (!$admin || $admin === 'current') {
-            $admin = guardAdmin()->user();
+        if (is_numeric($admin)) {
+            // If $admin is a numeric ID, retrieve the admin by ID
+            $admin = Admin::find($admin);
+        } elseif ((!$admin || !is_object($admin)) || $admin === 'current') {
+            // If $admin is null or 'current', get the currently authenticated admin
+            $admin = Auth::guard('admin')->user();
         }
-
+    
         if ($attribute) {
             return $admin->$attribute ?? null;
         }
-        return $admin;
+        return $admin ?? null;
     }
 }

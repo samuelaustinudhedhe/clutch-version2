@@ -57,7 +57,7 @@
     <x-div class="grid gap-4 sm:grid-cols-2">
         <div class="sm:col-span-2 flex gap-4">
             <div class="w-full">
-                <x-label for="interior_color">Exterior Color</x-label>
+                <x-label for="interior_color">Interior Color</x-label>
                 <x-xinput id="interior_color" type="text" wire:model="storeData.details.interior.color" />
                 <x-input-error for="storeData.details.interior.color" />
             </div>

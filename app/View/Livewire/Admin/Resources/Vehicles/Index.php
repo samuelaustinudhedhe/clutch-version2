@@ -43,10 +43,36 @@ class Index extends Component
         $this->selectAll = false;
     }
 
+    public function changeVehicleStatus($vehicleId, $newStatus, $passedTense )
+    {
+        $vehicle = Vehicle::find($vehicleId);
+        if ($vehicle) {
+            $vehicle->status = $newStatus;
+            $vehicle->save();
+            $this->dispatch('notify', 'Vehicle '.$passedTense.' successfully.', 'success');
+            //session()->flash('message', 'Vehicle status updated successfully.');
+        } else {
+            //session()->flash('error', 'Vehicle not found.');
+            $this->dispatch('notify', 'Vehicle not found.', 'error');
+        }
+    }
+
+    public function deleteVehicles($vehicleId){
+
+        $this->changeVehicleStatus($vehicleId, 'delete', 'deleted');
+        $this->resetSelection();
+        $this->dispatch('notify', 'Vehicles deleted successfully.', 'success');
+        //session()->flash('message', 'Vehicles deleted successfully.');
+    }
 
     public function render()
     {
-        $vehicles = Vehicle::search('name', $this->search)->paginate($this->perPage);
+        //add a feature to show only to superadmins etc t show vehicles that are deleted
+        $vehicles = Vehicle::where('status', '!=', 'delete') // Exclude vehicles with status 'delete'
+        ->search('name', $this->search)
+        ->orderBy('created_at', 'desc')
+        ->paginate($this->perPage);
+            
         $this->currentPageVehicles = $vehicles->pluck('id')->toArray();
 
         $vehiclesCount = Vehicle::all()->count();

@@ -175,9 +175,9 @@
                                 class="ml-2 text-sm font-light text-gray-500 dark:text-gray-400">By submitting this
                                 form, you confirm that you have read and agree to our <a
                                     class="font-normal text-gray-900 underline hover:no-underline dark:text-white"
-                                    href="{{ route('terms.show') }}">Terms of Service</a> and <a
+                                    href="{{ route('policies.terms') }}">Terms of Service</a> and <a
                                     class="font-normal text-gray-900 underline hover:no-underline dark:text-white"
-                                    href="{{ route('privacy.show') }}">Privacy Statement</a>.</label>
+                                    href="{{ route('policies.privacy') }}">Privacy Statement</a>.</label>
                         </div>
                     </div>
                     <button type="submit"

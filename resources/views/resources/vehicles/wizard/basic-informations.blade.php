@@ -50,17 +50,23 @@
 
         {{-- Make and Manufacturer  --}}
         <div class="w-full">
-            <x-label for="make">Make</x-label>
+            <x-label for="reg_number">Plate Number</x-label>
+            <x-xinput id="reg_number" type="text" wire:model="storeData.details.reg_number" />
+
+            <x-input-error for="storeData.details.reg_number" />
+        </div>
+        <div class="w-full">
+            <x-label for="make">Make / Manufacturer</x-label>
             <x-xinput id="make" type="text" wire:model="storeData.details.make" />
 
             <x-input-error for="storeData.details.make" />
         </div>
-        <div class="w-full">
+        {{-- <div class="w-full">
             <x-label for="manufacturer">Manufacturer</x-label>
             <x-xinput id="manufacturer" type="text" wire:model="storeData.details.manufacturer" />
 
             <x-input-error for="storeData.details.manufacturer" />
-        </div>
+        </div> --}}
         <div class="w-full">
             <x-label for="model">Model</x-label>
             <x-xinput id="model" type="text" wire:model="storeData.details.model"

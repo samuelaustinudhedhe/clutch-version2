@@ -269,7 +269,7 @@ class Wizard extends VehiclesWizard
             1 => 'Vehicle Information',
             2 => 'Vehicle Details',
             3 => 'Engine & Transmission',
-            4 => 'Safety, Security & Service',
+            4 => 'Vehicle Features',
             5 => 'Faults & Modifications',
             6 => 'Vehicle Images',
             7 => 'Vehicle Documents',

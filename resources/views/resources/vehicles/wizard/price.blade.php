@@ -75,7 +75,7 @@
                 </x-slot>
                 <x-slot name="content">
                     Discount is applied if the user Rents for more than
-                    <span>{{ isset($storeData['price']['discount']['days']) ? ($storeData['price']['discount']['days'] < 2 ? $storeData['price']['discount']['days'] . ' day' : ($storeData['price']['discount']['days'] > 6 ? '1 week' : $storeData['price']['discount']['days'] . ' days')) : 'eg. 1 day' }}</span>
+                    <span>{{ countDays($storeData['price']['discount']['days']??1) }}</span>
                 </x-slot>
             </x-tooltip>
             <div class="space-y-4">
@@ -104,7 +104,7 @@
                     <x-input-error for="storeData.price.discount.days" />
                 </div>
                 <div class="text-sm text-green-600 dark:text-green-400"> The discount is applied if the vehicle is rented for 
-                    <span class="font-bold"> {{ countDays($storeData['price']['discount']['days']) }} </span> or more 
+                    <span class="font-bold"> {{ countDays($storeData['price']['discount']['days']??1) }} </span> or more 
                 </div>
             </div>
 

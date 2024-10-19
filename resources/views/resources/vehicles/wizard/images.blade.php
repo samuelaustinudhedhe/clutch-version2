@@ -1,8 +1,12 @@
 <div
     class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-    <div class="mb-2 flex items-center gap-1">
+    <div class="mb-2 items-center gap-1">
         <p class="text-lg text-gray-900 dark:text-white">
             Vehicle Gallery
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+            Upload vehicle images showing the front, left, right, and rear views at a size of 2880 by 1400 pixels. 
+            Ensure a generous portion of the background is included to enhance the presentation's quality
         </p>
     </div>
 
@@ -26,7 +30,7 @@
                     title="{{ $images['featuredIndex'] === $index ? 'Featured Image' : 'Dimensions: ' . ($dimensions ? $dimensions[0] . ' x ' . $dimensions[1] . ' px' : 'Dimensions not available') . ', Size: ' . ($fileSize ? $fileSize : 'Size not available') }}"
                     wire:click="setFeaturedImage({{ $index }})">
                     <img src="{{ Storage::url($image['path']) ?? placeholder('car.png') }}"
-                        alt="Vehicle Image {{ $index + 1 }}" class="w-full  rounded-lg h-full object-cover">
+                        alt="Vehicle Image {{ $index + 1 }}" class="w-full rounded-lg h-full lg:h-48 object-cover">
 
                     <button type="button" wire:click="removeImage({{ $index }})"
                         class="absolute text-red-600 dark:text-red-500 hover:text-red-500 dark:hover:text-red-400 bottom-1 left-1">
@@ -49,7 +53,7 @@
                 <label for="dropzone-image"
                     class="flex flex-col items-center justify-center w-full h-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                     :class="{ 'bg-gray-100 dark:bg-gray-600': isDropping }">
-                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <div class="flex flex-col items-center justify-center text-center py-3">
                         <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -61,7 +65,7 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400">Images
                             (MAX. 1MB)</p>
                     </div>
-                    <x-xinput id="dropzone-image" type="file" wire:model="images.newUploads" multiple class="hidden" accept=".jpg,.jpeg,.png" x-ref="fileInput" />                
+                    <x-xinput id="dropzone-image" type="file" wire:model="images.newUploads" multiple class="hidden" accept=".jpg,.jpeg,.png,.webp" x-ref="fileInput" />                
                 </label>
             </div>
         </div>

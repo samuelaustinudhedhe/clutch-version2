@@ -20,4 +20,24 @@ class PageController extends Controller
         return view('pages.home');
     }
 
+    /**
+     * This function is responsible for displaying the about page.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    public function aboutShow()
+    {
+        return view('pages.about');
+    }
+
+    /**
+     * This function is responsible for displaying the contact page.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    public function contactShow()
+    {
+        return view('pages.contact');
+    }
+
 }

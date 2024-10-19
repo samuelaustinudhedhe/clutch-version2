@@ -23,6 +23,13 @@ class Notify extends Component
         $this->type = $type;
         $this->setClass();
     }
+    
+    #[On('flashNotify')]
+    public function flashNotify($message, $type)
+    {
+        session()->flash('message', $message);
+        session()->flash('message_type', $type);
+    }
 
     private function setClass()
     {
