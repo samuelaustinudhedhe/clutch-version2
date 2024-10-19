@@ -725,7 +725,7 @@
                                     <span class="hidden">Previous</span>
                                 </span>
                             </button>
-                            <span class="text-sm text-base font-medium text-gray-500 dark:text-gray-400"><span
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400"><span
                                     id="carousel-current-item">1</span> of <span
                                     id="carousel-total-items">{{ count($vehicle->images())?? '' }}</span></span>
                             <button type="button"
@@ -764,7 +764,7 @@
                     <div>
                         <a href=""
                             class="text-lg capitalize font-semibold leading-tight text-gray-900 hover:underline dark:text-white">{{ $vehicle->name }}</a>
-                        <p class="text-base font-normal text-gray-500 dark:text-gray-400 text-sm">
+                        <p class="font-normal text-gray-500 dark:text-gray-400 text-sm">
                             {{ $vehicle->rating }}</p>
                     </div>
 
@@ -1264,7 +1264,7 @@
                     <div>
                         <a href="{{ route('vehicles.show', $vehicle->id) }}"
                             class="text-lg capitalize font-semibold leading-tight text-gray-900 hover:underline dark:text-white">{{ $vehicle->name }}</a>
-                        <p class="text-base font-normal text-gray-500 dark:text-gray-400 text-sm">
+                        <p class="font-normal text-gray-500 dark:text-gray-400 text-sm">
                             {{ $vehicle->rating }}</p>
                     </div>
 
