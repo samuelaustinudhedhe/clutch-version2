@@ -67,7 +67,7 @@
                         </form>
                     </div>
 
-                    <div class="mt-10">
+                    {{-- <div class="mt-10">
                         <div class="relative">
                             <div class="absolute inset-0 flex items-center" aria-hidden="true">
                                 <div class="w-full border-t border-gray-200"></div>
@@ -106,7 +106,7 @@
                             </a>
 
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

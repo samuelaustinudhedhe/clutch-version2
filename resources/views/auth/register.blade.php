@@ -50,11 +50,11 @@
                         <span class="text-sm text-gray-500 dark:text-gray-400"> &copy; <?php echo date('Y') . ' ' . app_name(false) /*return app name*/; ?>.</span>
                     </li>
                     <li>
-                        <a href="/about/"
+                        <a href="{{ app_url('pages/about') }}"
                             class="text-sm text-gray-500 hover:underline hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">About</a>
                     </li>
                     <li>
-                        <a href="/contact/"
+                        <a href="{{ app_url('pages/contact') }}"
                             class="text-sm text-gray-500 hover:underline hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Contact</a>
                     </li>
                 </ul>
@@ -148,8 +148,8 @@
                             class="font-medium text-blue-600 hover:underline dark:text-blue-500">Sign in here</a>
                     </p>
                 </form>
-            
-                <div class="flex items-center">
+                {{-- Comment goole and apple signup cause they are none functionals --}}
+                {{-- <div class="flex items-center">
                     <div class="w-full h-0.5 bg-gray-200 dark:bg-gray-700"></div>
                     <div class="px-5 text-center text-gray-500 dark:text-gray-400">or</div>
                     <div class="w-full h-0.5 bg-gray-200 dark:bg-gray-700"></div>
@@ -198,7 +198,7 @@
                         </svg>
                         Sign up with Apple
                     </a>
-                </div>
+                </div> --}}
 
             </div>
         </div>

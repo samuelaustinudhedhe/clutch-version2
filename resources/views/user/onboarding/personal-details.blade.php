@@ -19,6 +19,7 @@
         @error('photo')
             <span class="error">{{ $message }}</span>
         @enderror
+        <x-input-error for="photo.file.path" />
     </x-div>
 
     <x-div>

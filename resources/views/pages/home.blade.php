@@ -1,66 +1,75 @@
 <x-guest-layout>
-    {{-- Hero --}}
-      <section class="text-gray-600 dark:text-gray-400 body-font">
-        <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
-          <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
-            <h1 class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900 dark:text-gray-100">Before they sold out
-              <br class="hidden lg:inline-block">readymade gluten
-            </h1>
-            <p class="mb-8 leading-relaxed dark:text-gray-300">Copper mug try-hard pitchfork pour-over freegan heirloom neutra air plant cold-pressed tacos poke beard tote bag. Heirloom echo park mlkshk tote bag selvage hot chicken authentic tumeric truffaut hexagon try-hard chambray.</p>
-            <div class="flex justify-center">
-              <button class="inline-flex text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg">Button</button>
-              <button class="ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">Button</button>
+
+    <section
+        class="lg:h-[40rem] grid items-center bg-[url('/assets/images/banners/x7x7faceliftrearview.jpeg')] bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-overlay">
+        <div class="relative py-8 px-4 mx-auto max-w-screen-xl text-white lg:py-16 xl:px-0 z-1">
+            <div class="mb-6 max-w-screen-md lg:mb-0 mx-auto text-center">
+                <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-tight text-white md:text-5xl lg:text-6xl">
+                    Your perfect ride is just a click away.
+                </h1>
+                <p class="mb-6 font-light text-gray-300 lg:mb-8 md:text-lg lg:text-xl">
+                    From weekend adventures to business trips and daily errands, Clutch pairs you with friendly
+                    local hosts offering the ideal vehicle for any situation.
+                </p>
             </div>
-          </div>
-          <div class="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
-            <img class="object-cover object-center rounded" alt="hero" src="https://dummyimage.com/720x600">
-          </div>
+
+            <form action="/vehicles" class="max-w-lg mx-auto mt-20">
+                <label for="default-search"
+                    class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
+
+                        <svg class="w-6 h-6  text-gray-500 dark:text-gray-400" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
+                        </svg>
+
+                    </div>
+                    <x-location loadJS="true" id="search-by-location" class="p-4 ps-12 pe-24 !text-lg"
+                        placeholder="Enter address" required />
+                    <button type="submit"
+                        class="text-white absolute end-2.5 bottom-3.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+                </div>
+
+            </form>
+
         </div>
-      </section>
-    {{-- listing --}}
-    <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
-          <div class="flex flex-wrap w-full mb-20">
-            <div class="lg:w-1/2 w-full mb-6 lg:mb-0">
-              <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">Pitchfork Kickstarter Taxidermy</h1>
-              <div class="h-1 w-20 bg-blue-500 rounded"></div>
+    </section>
+    {{-- partners --}}
+    <section class="border-t border-b border-gray-100 dark:border-gray-700 bg-slate-200 dark:bg-slate-600">
+        <div class="max-w-screen-xl px-4 py-8 mx-auto sm:py-12">
+            
+            <div
+                class="grid grid-cols-2 gap-8 sm:gap-12 md:grid-cols-3 lg:grid-cols-4">
+
+                <a href="#" class="flex items-center justify-center">
+                    <img class="w-auto max-h-8 min-h-6 "
+                        src="/assets/images/logos/talk-of-naija.png" alt="Talk Of Naija Logo">
+                </a>
+
+                <a href="#" class="flex items-center justify-center">
+                    <img class="w-auto max-h-8 min-h-6"
+                        src="/assets/images/logos/tech-crunch.png"
+                        alt="Tech Crunch Logo">
+                </a>
+
+                <a href="#" class="flex items-center justify-center">
+                    <img class="w-auto max-h-8 min-h-6 dark:invert"
+                        src="/assets/images/logos/techpoint.png"
+                        alt="Tech Point Logo">
+                </a>
+
+                <a href="#" class="flex items-center justify-center">
+                    <img class="w-auto max-h-8 min-h-6"
+                        src="/assets/images/logos/vanguard.png"
+                        alt="Vanguard Logo">
+                </a>
+
             </div>
-            <p class="lg:w-1/2 w-full leading-relaxed text-gray-500">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify, subway tile poke farm-to-table. Franzen you probably haven't heard of them man bun deep jianbing selfies heirloom prism food truck ugh squid celiac humblebrag.</p>
-          </div>
-          <div class="flex flex-wrap -m-4">
-            <div class="xl:w-1/4 md:w-1/2 p-4">
-              <div class="bg-gray-100 p-6 rounded-lg">
-                <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://dummyimage.com/720x400" alt="content">
-                <h3 class="tracking-widest text-blue-500 text-xs font-medium title-font">SUBTITLE</h3>
-                <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Chichen Itza</h2>
-                <p class="leading-relaxed text-base">Fingerstache flexitarian street art 8-bit waistcoat. Distillery hexagon disrupt edison bulbche.</p>
-              </div>
-            </div>
-            <div class="xl:w-1/4 md:w-1/2 p-4">
-              <div class="bg-gray-100 p-6 rounded-lg">
-                <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://dummyimage.com/721x401" alt="content">
-                <h3 class="tracking-widest text-blue-500 text-xs font-medium title-font">SUBTITLE</h3>
-                <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Colosseum Roma</h2>
-                <p class="leading-relaxed text-base">Fingerstache flexitarian street art 8-bit waistcoat. Distillery hexagon disrupt edison bulbche.</p>
-              </div>
-            </div>
-            <div class="xl:w-1/4 md:w-1/2 p-4">
-              <div class="bg-gray-100 p-6 rounded-lg">
-                <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://dummyimage.com/722x402" alt="content">
-                <h3 class="tracking-widest text-blue-500 text-xs font-medium title-font">SUBTITLE</h3>
-                <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Great Pyramid of Giza</h2>
-                <p class="leading-relaxed text-base">Fingerstache flexitarian street art 8-bit waistcoat. Distillery hexagon disrupt edison bulbche.</p>
-              </div>
-            </div>
-            <div class="xl:w-1/4 md:w-1/2 p-4">
-              <div class="bg-gray-100 p-6 rounded-lg">
-                <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://dummyimage.com/723x403" alt="content">
-                <h3 class="tracking-widest text-blue-500 text-xs font-medium title-font">SUBTITLE</h3>
-                <h2 class="text-lg text-gray-900 font-medium title-font mb-4">San Francisco</h2>
-                <p class="leading-relaxed text-base">Fingerstache flexitarian street art 8-bit waistcoat. Distillery hexagon disrupt edison bulbche.</p>
-              </div>
-            </div>
-          </div>
         </div>
-      </section>
+    </section>
 </x-guest-layout>

@@ -206,6 +206,16 @@ class Onboarding extends Component
                 $rules = [
                     'storeData.phone.home.country_code' => 'required|string|regex:/^\+\d+$/',
                     'storeData.phone.home.number' => 'required|digits_between:4,11',
+                    'photo.file.path' => [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath) || !getimagesize($filePath)) {
+                                $fail('The image file is not valid. re-upload the image file.');
+                            }
+                        },
+                    ],
                     'storeData.date_of_birth' => [
                         'required',
                         'string',
@@ -285,13 +295,20 @@ class Onboarding extends Component
                         'digits_between:9,13',
                         new CheckNIN($this->storeData['nin']),
                     ],
+
                     'nin.file.path' => [
                         'required',
                         'string',
                         function ($attribute, $value, $fail) {
                             $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            if (!file_exists($filePath)) {
+                                $fail('The file at ' . $value . ' does not exist in the tmp directory.');
+                            } else {
+                                $fileInfo = new \finfo(FILEINFO_MIME_TYPE);
+                                $mimeType = $fileInfo->file($filePath);
+                                if (!in_array($mimeType, ['image/jpeg', 'image/png', 'application/pdf'])) {
+                                    $fail('The file at ' . $value . ' is not a valid image or PDF.');
+                                }
                             }
                         },
                     ],
@@ -304,18 +321,14 @@ class Onboarding extends Component
                         'string',
                         function ($attribute, $value, $fail) {
                             $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
-                            }
-                        },
-                    ];
-                    $rules['proofOfAddress.file.path'] = [
-                        'required',
-                        'string',
-                        function ($attribute, $value, $fail) {
-                            $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            if (!file_exists($filePath)) {
+                                $fail('The file at ' . $value . ' does not exist in the tmp directory.');
+                            } else {
+                                $fileInfo = new \finfo(FILEINFO_MIME_TYPE);
+                                $mimeType = $fileInfo->file($filePath);
+                                if (!in_array($mimeType, ['image/jpeg', 'image/png', 'application/pdf'])) {
+                                    $fail('The file at ' . $value . ' is not a valid image or PDF.');
+                                }
                             }
                         },
                     ];
@@ -324,8 +337,30 @@ class Onboarding extends Component
                         'string',
                         function ($attribute, $value, $fail) {
                             $filePath = storage_path('app/public/' . $value);
-                            if (!file_exists($filePath) || !getimagesize($filePath)) {
-                                $fail('The file at ' . $value . ' is not a valid image in the tmp directory.');
+                            if (!file_exists($filePath)) {
+                                $fail('The file at ' . $value . ' does not exist in the tmp directory.');
+                            } else {
+                                $fileInfo = new \finfo(FILEINFO_MIME_TYPE);
+                                $mimeType = $fileInfo->file($filePath);
+                                if (!in_array($mimeType, ['image/jpeg', 'image/png', 'application/pdf'])) {
+                                    $fail('The file at ' . $value . ' is not a valid image or PDF.');
+                                }
+                            }
+                        },
+                    ];
+                    $rules['proofOfAddress.file.path'] = [
+                        'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            $filePath = storage_path('app/public/' . $value);
+                            if (!file_exists($filePath)) {
+                                $fail('The file at ' . $value . ' does not exist in the tmp directory.');
+                            } else {
+                                $fileInfo = new \finfo(FILEINFO_MIME_TYPE);
+                                $mimeType = $fileInfo->file($filePath);
+                                if (!in_array($mimeType, ['image/jpeg', 'image/png', 'application/pdf'])) {
+                                    $fail('The file at ' . $value . ' is not a valid image or PDF.');
+                                }
                             }
                         },
                     ];

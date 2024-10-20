@@ -41,7 +41,7 @@
         Array.from($datepickerEl.attributes).forEach(attr => {
             if (attr.name.startsWith('wire:')) {
                 $datepickerEl.addEventListener('hide', function() {
-                    @this.set(`${attr.value}`, $datepickerEl.value);
+                    $wire.set(`${attr.value}`, $datepickerEl.value);
                 });
             }
         });

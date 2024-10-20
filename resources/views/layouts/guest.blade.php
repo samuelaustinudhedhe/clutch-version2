@@ -43,6 +43,15 @@
         @livewireScripts
 
         {{-- Google Map --}}
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places"></script>
+        <script async src="https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places&callback=initAddressAutocomplete&callback=initMap"></script>
+        {{-- <script>
+            if (typeof initMap === 'function') {
+                var script = document.createElement('script');
+                script.src = "https://maps.googleapis.com/maps/api/js?key={{ getGoogleMapKey() }}&loading=async&libraries=places&callback=initMap";
+                script.async = true;
+                script.defer = true;
+                document.body.appendChild(script);
+            }
+        </script> --}}
     </body>
 </html>

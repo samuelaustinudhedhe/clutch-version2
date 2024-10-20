@@ -12,8 +12,10 @@ class Index extends Component
 
     public $search = '';
     public $perPage = 50;
+    public $search_by_location;
 
-    public function mount() {
+    public function mount($location = null) {
+        $this->search_by_location = request()->query('location');
 
     }
 

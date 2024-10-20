@@ -1,112 +1,11 @@
 <div class="max-w-screen-4xl  dark:bg-gray-900 md:py-12 mx-auto py-8">
     <!-- Heading & Filters -->
-    <section class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
-        <div>
-            <nav class="flex" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                    <li class="inline-flex items-center">
-                        <a href="#"
-                            class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-white">
-                            <svg class="me-2.5 h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                    d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                            </svg>
-                            Home
-                        </a>
-                    </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            <svg class="h-5 w-5 text-gray-400 rtl:rotate-180" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m9 5 7 7-7 7" />
-                            </svg>
-                            <span
-                                class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400 md:ms-2">Vehicles</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
-            <h2 class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Vehicles</h2>
-        </div>
-        <div class="flex items-center space-x-4">
-            <!-- Add an input field for location search -->
-            <x-search id="search-by-location" class="!md:w-[400px]" placeholder="Search by location" />
-            <button data-modal-toggle="filterModal" data-modal-target="filterModal" type="button"
-                class="flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">
-                <svg class="-ms-0.5 me-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                    height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                        d="M18.796 4H5.204a1 1 0 0 0-.753 1.659l5.302 6.058a1 1 0 0 1 .247.659v4.874a.5.5 0 0 0 .2.4l3 2.25a.5.5 0 0 0 .8-.4v-7.124a1 1 0 0 1 .247-.659l5.302-6.059c.566-.646.106-1.658-.753-1.658Z" />
-                </svg>
-                Filters
-                <svg class="-me-0.5 ms-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                    height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="m19 9-7 7-7-7" />
-                </svg>
-            </button>
-            <button id="sortDropdownButton1" data-dropdown-toggle="dropdownSort1" type="button"
-                class="flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">
-                <svg class="-ms-0.5 me-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                    height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 4v16M7 4l3 3M7 4 4 7m9-3h6l-6 6h6m-6.5 10 3.5-7 3.5 7M14 18h4" />
-                </svg>
-                Sort
-                <svg class="-me-0.5 ms-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                    height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="m19 9-7 7-7-7" />
-                </svg>
-            </button>
-            <div id="dropdownSort1"
-                class="z-50 hidden w-40 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700"
-                data-popper-placement="bottom">
-                <ul class="p-2 text-left text-sm font-medium text-gray-500 dark:text-gray-400"
-                    aria-labelledby="sortDropdownButton">
-                    <li>
-                        <a href="#"
-                            class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
-                            The most popular </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
-                            Newest </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
-                            Increasing price </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
-                            Decreasing price </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
-                            No. reviews </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
-                            Discount % </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
 
     {{-- Content --}}
-    <section class="w-full flex md:max-h-[calc(100vh-100px)] h-screen flex-col-reverse lg:flex-row">
+    <section class="w-full flex flex-wrap flex-row-reverse lg:flex-nowrap md:max-h-[calc(100vh-100px)] h-screen">
 
         <!-- PRODUCT CARDS -->
-        <div class="w-full lg:w-3/5 lg:max-w-[840px] flex flex-col justify-between">
+        <div class="grid w-full lg:min-w-[640px] lg:max-w-[740px] order-2 ">
             {{-- Cars List --}}
 
             <div class="w-full overflow-hidden lg:overflow-y-scroll lg:px-4 lg:mr-1">
@@ -115,18 +14,16 @@
                         <x-div class="md:flex my-[6px] rounded-lg !p-0">
 
                             <div class="w-full md:h-[176px] md:w-[291px]  relative">
-                                <!-- Carousel wrapper -->
-                                <x-img
-                                    src="{{ is_string($vehicle->featuredImage('car')) ? $vehicle->featuredImage('car') : $vehicle->featuredImage('car')->url }}"
-                                    class="h-full w-full object-cover " alt="{{ $vehicle->name }}" />
+                                <x-img src="{{ $vehicle->featured_image_url }}" class="h-full w-full object-cover "
+                                    alt="{{ $vehicle->name }}" />
                                 <div class="absolute right-0 top-0 p-1">
                                     <button type="button" data-tooltip-target="tooltip-add-to-favorites-9"
                                         class="rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                                         <span class="sr-only"> Add to Favorites </span>
                                         <svg class="h-6 w-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                             fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2"
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
                                                 d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z" />
                                         </svg>
                                     </button>
@@ -141,7 +38,7 @@
 
                             <div class="w-full md:w-2/3 p-2 h-full flex flex-col justify-between">
                                 <div class="space-y-2 px-2 pb-2">
-                                    <h3 class="md:text-xl font-bold capitalize">{{ $vehicle->name }}</h3>
+                                    <h3 class="md:text-xl font-normal capitalize">{{ $vehicle->name }}</h3>
 
                                     <div class="flex items-center">
                                         {{ $vehicle->rating }}
@@ -156,11 +53,10 @@
                                         <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2"
-                                                d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                                            <path stroke="currentColor" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2"
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
                                                 d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
                                         </svg>
 
@@ -175,7 +71,7 @@
                                             save {{ $vehicle->human_discounted_price }}
                                         </span>
                                     @endif
-                                    <div class="flex font-semibold justify-end w-full items-baseline gap-2">
+                                    <div class="flex font-normal justify-end w-full items-baseline gap-2">
                                         @if ($vehicle->on_sale)
                                             <span class="flex line-through text-gray-600 dark:text-gray-400  text-sm">
                                                 {{ $vehicle->human_price }}
@@ -202,28 +98,34 @@
             </div>
 
             {{-- Pagination --}}
-            <div class="mt-6">
+            <div class="mt-6 ml-4 mr-8">
                 {{ $vehicles->links('vendor.pagination.simple') }}
 
             </div>
 
         </div>
 
-        <div class="w-full lg:w-2/5 xl:w-[calc(100%-840px)] min-h-full max-h-screen lg:max-h-full">
+        <div class="w-full min-h-full max-h-screen lg:max-h-full">
             @php
                 $mapVehicles = $vehicles->map(function ($vehicle) {
+                    // Generate a small random offset for latitude and longitude
+                    $latOffset = mt_rand(-10, 10) / 10000; // Random offset between -0.001 and 0.001
+                    $lngOffset = mt_rand(-10, 10) / 10000; // Random offset between -0.001 and 0.001
+                    $ly = true;
+                    $price = $vehicle->price->sale ?? $vehicle->price->amount;
                     return [
-                        'lat' => $vehicle->location->pickup->latitude ?? '',
-                        'lng' => $vehicle->location->pickup->longitude ?? '',
-                        'price' => formatPrice($vehicle->price->sale),
-                        'regular_price' => formatPrice($vehicle->price->amount),
-                        'image' => $vehicle->featuredImage('car')->url,
+                        'id' => $vehicle->id,
+                        'lat' => ($vehicle->location->pickup->latitude ?? 0) + $latOffset,
+                        'lng' => ($vehicle->location->pickup->longitude ?? 0) + $lngOffset,
+                        'price' => humanifyPrice($price), // Ensure the price is formatted correctly
+                        'image' => $vehicle->featured_image_url,
                         'name' => $vehicle->name,
-                        'rating' => $vehicle->rating ?? 5.0,
+                        'rating' => $vehicle->rating ??'5.0',
                         'host_rating' =>
                             $vehicle->owner->rating > 4.9 ? 'All Star Host' : $vehicle->owner->rating . ' ★',
                         'location' => $vehicle->location->pickup->city ?? '',
-                        'discount' => $vehicle->price->on_sale ? $vehicle->price->amount - $vehicle->price->sale : 0,
+                        'discount' => $vehicle->discount(),
+                        'discount_note' => 'Discount applies if rented '.(!$ly ? ' for ' : ' ') . countDays(($vehicle->discount_days ?? 1), $ly),
                         'extra_fees' => $vehicle->extra_fees ?? 0,
                         'trips' => '200 trips',
                         'pickup_city' => $vehicle->location->pickup->city ?? '',
@@ -239,6 +141,7 @@
                     border: 1px solid #ccc;
                     text-align: center;
                     font-weight: bold;
+                    font-size: 10px;
                 }
 
                 .gm-style-iw-d,
@@ -257,7 +160,8 @@
                 }
             </style>
 
-            <div wire:ignore id="map" class="h-full w-full" style="background-image: url('{{ getPlaceholder('map') }}'); background-position: center center; background-size: cover;"></div>
+            <div wire:ignor id="map" class="h-full w-full "></div>
+            
             {{-- The map JS --}}
             <script>
                 let openInfoWindow = null; // Track the currently open InfoWindow
@@ -278,7 +182,7 @@
                         zoom: 10,
                         center: defaultCenter,
                         styles: mapStyle, // Apply custom map style
-                        disableDefaultUI: true, // Remove all map controls
+                        disableDefaultUI: false, // Remove all map controls
                         gestureHandling: 'greedy', // Allow zooming without holding Ctrl
                     };
 
@@ -299,21 +203,21 @@
                                     lat: position.coords.latitude,
                                     lng: position.coords.longitude,
                                 };
-                                smoothPanAndZoom(userLocation, 15); // Center map on user location with smooth animation
+                                smoothPanAndZoom(userLocation, 12); // Center map on user location with smooth animation
                             },
                             function() {
-                                console.log('Geolocation denied or unavailable. Centering map on Nigeria.');
-                                smoothPanAndZoom(defaultCenter, 15); // Center on Nigeria as fallback
+                                console.log('Geolocation denied or unavailable. Centering map on Abuja, Nigeria.');
+                                smoothPanAndZoom(defaultCenter, 10); // Center on Nigeria as fallback
                             }
                         );
                     }
 
                     // Handle the manual search by address when the user presses "Enter"
-                    input.addEventListener('keydown', function(event) {
-                        if (event.key === 'Enter') {
-                            geocodeAddress();
-                        }
-                    });
+                    // input.addEventListener('keydown', function(event) {
+                    //     if (event.key === 'Enter') {
+                    //         geocodeAddress();
+                    //     }
+                    // });
 
                     // Listen to place changes for autocomplete
                     autocomplete.addListener('place_changed', function() {
@@ -339,7 +243,7 @@
                             map: map,
                             icon: {
                                 url: '', // No icon for now, will be set based on zoom level
-                                scaledSize: new google.maps.Size(vehicle.price.length * 8.5, 28),
+                                scaledSize: new google.maps.Size(vehicle.price.length * 8, 28),
                             },
                             label: {
                                 text: `${vehicle.price}`,
@@ -353,64 +257,61 @@
                         // InfoWindow content with HTML and inline styling
                         var infowindow = new google.maps.InfoWindow({
                             content: `                                
-                                <div class="max-w-xs bg-white rounded-lg shadow-md overflow-hidden">
+                                <a  href="/vehicles/${vehicle.id}" >
+                                <div class="min-w-[320px] w-[320px] max-w-[320px] max-h-[330px] min-h-[330px] bg-white rounded-lg shadow-md overflow-hidden">
 
                                     <!-- Car Image -->
                                     <div class="relative">
-                                        <img src="${vehicle.image}" alt="${vehicle.name}" class="w-full h-40 object-cover">
+                                        <img src="${vehicle.image}" alt="${vehicle.name}" width="320" hight="170" class="w-full h-[170px] object-cover">
                                         <!-- Favorite Icon (Heart) -->
                                     </div>
 
                                     <!-- Car Details -->
-                                    <div class="p-4">
+                                    <div class="mx-4 mt-1 mb-4 text-gray-600">
                                         <!-- Car Title -->
-                                        <h2 class="text-lg font-bold text-gray-900 truncate w-full max-w-xs">${vehicle.name.substring(0, 24)}</h2>
+                                        <div class="text-xl font-bold text-gray-900 truncate w-full max-w-xs">${vehicle.name.substring(0, 24)}</div>
                                         <!-- Rating and Host Details -->
-                                        <div class="flex items-center mt-2 space-x-2 text-sm text-gray-600">
-                                            <!-- Rating -->
-                                            <div class="flex items-center">
-                                                <span class="text-indigo-500">${vehicle.rating}</span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500 ml-1" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                                </svg>
-                                            </div>
+                                        <div class="flex items-center mt-[4px] space-x-2 font-medium text-[16px]">
+                                            ${vehicle.rating}
+                                            <svg class="w-4 h-4 mt-[-3px] text-gray-800 dark:text-indigo-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                                            </svg>
+
                                             <!-- Number of Trips -->
                                             <span>(${vehicle.trips})</span>
-                                            <!-- Host Badge -->
-                                            <div class="flex items-center space-x-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 2L1 21h22L12 2z" />
-                                                </svg>
-                                                <span>${vehicle.host_rating}</span>
-                                            </div>
+
                                         </div>
 
                                         <!-- Location -->
-                                        <div class="flex items-center text-gray-600 text-sm mt-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd" d="M10 2a6 6 0 00-6 6c0 4.284 6 10 6 10s6-5.716 6-10a6 6 0 00-6-6zM5 8a5 5 0 1110 0 5 5 0 01-10 0z" clip-rule="evenodd" />
+                                        <div class="flex items-center text-xs font-bold mt-1.5">
+                                            <svg class="w-[14px] h-[14px] text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m17 21-5-4-5 4V3.889a.92.92 0 0 1 .244-.629.808.808 0 0 1 .59-.26h8.333a.81.81 0 0 1 .589.26.92.92 0 0 1 .244.63V21Z"/>
                                             </svg>
-                                            <span>${vehicle.pickup_city}</span>
+
+                                            ${vehicle.pickup_city}
                                         </div>
 
                                         <!-- Price Section -->
-                                        <div class="mt-3">
+                                        <div class="mt-2 flex items-center justify-between">
+                                            
                                             <!-- Save Amount -->
-                                            <div class="bg-green-100 text-green-600 text-xs font-semibold px-2 py-1 rounded-full inline-block">
-                                                Save ${vehicle.discount}
-                                            </div>
+                                            ${vehicle.discount > 0 ? `
+                                                <div class="bg-green-100 text-green-600 text-xs min-w-[60px] max-w-[60px] font-semibold px-2 py-1 rounded-lg inline-block">
+                                                    ${vehicle.discount}% off
+                                                </div>
+                                            ` : ''}
 
                                             <!-- Price -->
-                                            <div class="flex items-center mt-1">
-                                                <span class="line-through text-gray-500 text-sm">${vehicle.regular_price}</span>
-                                                <span class="text-lg font-bold text-gray-900 ml-2">${vehicle.price}/day</span>
+                                            <div class="text-right w-full ml-2">
+                                                <div class="text-base font-bold text-gray-900">${vehicle.price}/day</div>                                            
+                                                <p class="text-gray-500 underline text-xs mt-1">${vehicle.discount_note}</p>
                                             </div>
 
                                             <!-- Excluded Fees -->
-                                            <p class="text-gray-500 text-xs mt-1">${vehicle.extra_fees} excl. taxes & fees</p>
                                         </div>
                                     </div>
                                 </div>
+                                </a>
                                 `,
                         });
 
@@ -423,7 +324,7 @@
                             openInfoWindow = infowindow;
 
                             // Smoothly zoom in and center the map on the clicked vehicle's location
-                            smoothPanAndZoom(marker.getPosition(), 16); // Center and zoom to level 16
+                            smoothPanAndZoom(marker.getPosition(), 11); // Center and zoom to level 16
                         });
 
                         // Store the marker for later use
@@ -480,7 +381,7 @@
                     }, function(results, status) {
                         if (status === 'OK') {
                             smoothPanAndZoom(results[0].geometry.location,
-                                15); // Smoothly pan and zoom to the searched location
+                                14); // Smoothly pan and zoom to the searched location
                         } else {
                             alert('Geocode was not successful for the following reason: ' + status);
                         }
