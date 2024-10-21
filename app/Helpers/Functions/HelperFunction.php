@@ -66,15 +66,16 @@ if (!function_exists('error')) {
      * Handles error codes by invoking the appropriate method from the ErrorPageController.
      *
      * @param int $code The HTTP status code to handle.
+     * @param string $message An optional message to be displayed with the error page. Default is an empty string.
      * @return never This function does not return a value. It either returns a response or aborts the request.
      */
-    function error($code = ''): never
+    function error($code , $message = ''): never
     {
         // Get an instance of the ErrorPageController
         $error = app('App\Http\Controllers\Pages\ErrorPageController');
 
         // Handle the error code by calling the dynamic method on the controller
-        echo $error->showErrorPage($code);
+        echo $error->showErrorPage($code, $message);
 
         // Ensure the function never returns
         exit;

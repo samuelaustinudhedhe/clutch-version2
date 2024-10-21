@@ -5,9 +5,17 @@
                 <div class="self-center">
                     <h1 class="text-9xl font-bold text-gray-700 dark:text-gray-600">500</h1>
                     <h1 class="mb-4 text-2xl font-bold text-gray-700 dark:text-gray-600">Internal Server Error</h1>
-                    <p class="mb-4 text-3xl font-bold tracking-tight text-gray-900 lg:mb-10 sm:text-4xl dark:text-white">
-                        Something went wrong on our end. Please try again later.
-                    </p>
+
+                    @if ($message)
+                        <p class="mb-4 text-3xl font-bold tracking-tight text-gray-900 lg:mb-10 sm:text-4xl dark:text-white">
+                            {{ $message }}
+                        </p>
+                    @else
+                        <p class="mb-4 text-3xl font-bold tracking-tight text-gray-900 lg:mb-10 sm:text-4xl dark:text-white">
+                            Something went wrong on our end. Please try again later.
+                        </p>
+                    @endif
+
                     <p class="mb-4 text-gray-500 dark:text-gray-400">Here are some helpful links to try now:</p>
                     <ul class="flex items-center space-x-4 text-gray-500 dark:text-gray-400">
                         <li>

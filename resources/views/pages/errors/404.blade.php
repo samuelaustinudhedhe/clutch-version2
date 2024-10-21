@@ -6,9 +6,16 @@
                 <h1 class="mb-4 text-3xl font-extrabold tracking-tight sm:text-4xl text-blue-700 dark:text-blue-500">
                     404 Not Found
                 </h1>
-                <p class="mb-8 font-medium text-gray-500 sm:text-2xl dark:text-gray-400">
-                    Whoops! That page doesn’t exist.
-                </p>
+
+                @if ($message)
+                    <p class="mb-8 font-medium text-gray-500 sm:text-2xl dark:text-gray-400">
+                        {{ $message }}
+                    </p>
+                @else
+                    <p class="mb-8 font-medium text-gray-500 sm:text-2xl dark:text-gray-400">
+                        Whoops! That page doesn’t exist.
+                    </p>
+                @endif
 
                 <form action="#" method="post" class="max-w-md mx-auto">
                     <div class="items-center mb-3 space-y-4 sm:flex sm:space-y-0">

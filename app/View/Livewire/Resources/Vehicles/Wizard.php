@@ -19,6 +19,8 @@ abstract class Wizard extends Component
 
     public $storeAllData;
     public $index;
+    public $makesAndModels;
+    public $vehicleType;
 
     /**
      * Retrieve the owner of the vehicle.
@@ -98,7 +100,7 @@ abstract class Wizard extends Component
      * Initializes the storage path and data for the vehicle wizard.
      *
      * This function sets the path for storing vehicle data in a JSON file,
-     * retrieves any previously stored data, and initializes the current step
+     * retrieves any previously stored data, initializes the current step and vehicle type.
      * of the wizard process.
      *
      * @return void
@@ -113,6 +115,12 @@ abstract class Wizard extends Component
 
         // Initialize Current Step
         $this->currentStep = $this->storeData['current_step'] ?? 0;
+
+        // Initialize Vehicle Type
+        $this->vehicleType = $this->storeData['vehicle_type']?? 'cars';
+
+        // Initialize Makes and Models
+        $this->makesAndModels = Vehicle::getMakesAndModels($this->vehicleType, true);
     }
 
     /**
@@ -196,6 +204,10 @@ abstract class Wizard extends Component
 
         if (!isset($this->storeData['price']['discount']['days'])) {
             $this->storeData['price']['discount']['days'] = 1;
+        }
+
+        if (!isset($this->storeData['price']['on_sale'])) {
+            $this->storeData['price']['on_sale'] = 'false';
         }
         
         // set only if a user is using the wizard and a user is logged in
@@ -624,6 +636,9 @@ abstract class Wizard extends Component
         // Save the vehicle record to the database
         $vehicle->save();
 
+        //delete json after successful submission
+        $this->deleteStoredData();
+        
         // Redirect or reset after successful submission
         $this->submissionRedirect();
     }

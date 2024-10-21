@@ -283,6 +283,15 @@ trait WithSteps
             $this->storeData = json_decode(Storage::get($this->storePath), true);
         }
     }
+
+
+    public function deleteStoredData(){
+        
+        Storage::delete($this->storePath);
+        $this->storeData = [];
+        $this->currentStep = 0;
+    }
+
     /**
      * Update the current step if the stored current step is greater than the current step.
      *

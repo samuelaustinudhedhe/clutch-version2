@@ -281,7 +281,7 @@
 
                     </div>
                     <div
-                        class="absolute w-1 h-12 {{ $currentStep >= 8 ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600' }} left-1/2 transform -translate-x-1/2 top-full">
+                        class="absolute w-1 h-12 {{ $currentStep >= 9 ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600' }} left-1/2 transform -translate-x-1/2 top-full">
                     </div>
                 </div>
                 <div>
@@ -291,7 +291,7 @@
             </li>
             
             {{-- Review --}}
-            <li class="flex items-center space-x-4" wire:click="goToStep(10)">
+            <li class="flex items-center space-x-4" wire:click="">
                 <div class="relative">
                     <div
                         class="w-8 h-8 flex items-center justify-center {{ $currentStep >= 10 ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600' }} rounded-full">

@@ -6,7 +6,7 @@ use App\Traits\HasAttachments;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Storage;
 
 class Vehicle extends Model
 {
@@ -65,6 +65,24 @@ class Vehicle extends Model
         'BINA' => 'Boat Identification Number Assignment'
     ];
 
+    /**
+     * Retrieves brands and models for a specific vehicle type.
+     *
+     * This method fetches the brands and models associated with a given vehicle type.
+     * It uses the 'vehicleMakesAndModels' helper function to retrieve the data.
+     *
+     * @param string $type The type of vehicle in plural (e.g., 'cars', 'trucks', 'motorcycles').
+     * @param bool $associative Optional. Determines the format of the returned data.
+     *                          If true, returns an associative array. If false, returns an indexed array.
+     *                          Default is false.
+     *
+     * @return array An array containing the brands and models for the specified vehicle type.
+     *               The structure of the array depends on the $associative parameter.
+     */
+    public static function getMakesAndModels($type = 'cars', $associative = false)
+    {
+        return vehicleMakesAndModels($type, $associative);
+    }
 
     /**
      * Decode and retrieve the VIN attribute.
@@ -215,8 +233,9 @@ class Vehicle extends Model
         return $amount;
     }
 
-    public function getDiscountDaysAttribute(){
-         return $this->getPrice()->discount->days ?? 1;
+    public function getDiscountDaysAttribute()
+    {
+        return $this->getPrice()->discount->days ?? 1;
     }
 
     /**
@@ -401,10 +420,11 @@ class Vehicle extends Model
      *
      * @return string|null The description of the vehicle, or null if not set.
      */
-    public function getDescriptionAttribute(){
+    public function getDescriptionAttribute()
+    {
         return $this->details->description ?? null;
     }
-    
+
 
     /**
      * Get the exterior attribute from the vehicle's details.
@@ -569,10 +589,11 @@ class Vehicle extends Model
      *
      * @return mixed The gallery data for the 'car' category.
      */
-    public function getGalleryAttribute(){
+    public function getGalleryAttribute()
+    {
         return $this->gallery('car');
     }
-    
+
     /**
      * Retrieve the featured image attribute for the vehicle.
      *
@@ -581,7 +602,8 @@ class Vehicle extends Model
      *
      * @return mixed The featured image data for the 'car' category.
      */
-    public function getFeaturedImageAttribute(){
+    public function getFeaturedImageAttribute()
+    {
         return $this->featuredImage('car');
     }
 
@@ -593,7 +615,8 @@ class Vehicle extends Model
      *
      * @return string The URL of the featured image for the 'car' category.
      */
-    public function getFeaturedImageUrlAttribute(){
+    public function getFeaturedImageUrlAttribute()
+    {
         return $this->featuredImage('car')->url;
     }
 

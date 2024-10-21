@@ -57,20 +57,41 @@
         </div>
         <div class="w-full">
             <x-label for="make">Make / Manufacturer</x-label>
-            <x-xinput id="make" type="text" wire:model="storeData.details.make" />
-
+            @isset($makesAndModels)
+                <x-select id="make" wire:model.live="storeData.details.make" title="Select Make / Manufacturer"
+                    loadJS="true">
+                    @foreach ($makesAndModels as $make => $models)
+                        <option value="{{ $make }}">{{ $make }}</option>
+                    @endforeach
+                </x-select>
+            @else
+                <x-xinput id="make" type="text" wire:model="storeData.details.make" />
+            @endisset
             <x-input-error for="storeData.details.make" />
         </div>
+        
         {{-- <div class="w-full">
             <x-label for="manufacturer">Manufacturer</x-label>
             <x-xinput id="manufacturer" type="text" wire:model="storeData.details.manufacturer" />
 
             <x-input-error for="storeData.details.manufacturer" />
         </div> --}}
+
         <div class="w-full">
             <x-label for="model">Model</x-label>
-            <x-xinput id="model" type="text" wire:model="storeData.details.model"
-                value="{{ $vehicleDetails['model'] ?? '' }}" />
+            @if (isset($makesAndModels) && isset($storeData['details']['make']) && !empty($storeData['details']['make']))
+                
+                <x-select id="model" wire:model="storeData.details.model" title="Select Model" loadJS="true">
+                    @foreach ($makesAndModels[$storeData['details']['make']] as $model)
+                        <option value="{{ $model }}">{{ $model }}</option>
+                    @endforeach
+                </x-select>
+
+            @else
+                {{-- Fall back Input Field for Vehicle Model --}}
+                <x-xinput id="model" type="text" wire:model="storeData.details.model" value="{{ $vehicleDetails['model'] ?? '' }}" />
+
+            @endif
 
             <x-input-error for="storeData.details.model" />
         </div>

@@ -1,4 +1,6 @@
-@props(['images'])
+@props(['images',
+    'containerClass' => ''
+])
 
 <div x-data="{            
     currentSlideIndex: 1,
@@ -16,7 +18,7 @@
             this.currentSlideIndex = 1;                
         }            
     },        
-}" class="relative w-full overflow-hidden">
+}" class="relative w-full overflow-hidden border border-gray-200 dark:border-gray-700 xl:rounded-b-lg mt-[-1px]">
 
     <!-- previous button -->
     <button type="button" class="absolute left-5 top-1/2 z-20 flex rounded-full -translate-y-1/2 items-center justify-center bg-white/40 p-2 text-neutral-600 transition hover:bg-white/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:outline-offset-0 dark:bg-neutral-950/40 dark:text-neutral-300 dark:hover:bg-neutral-950/60 dark:focus-visible:outline-white" aria-label="previous slide" x-on:click="previous()">
@@ -33,10 +35,10 @@
     </button>
    
     <!-- slides -->
-    <div class="relative min-h-[50svh] w-full overflow-hidden lg:rounded-lg rounded-none md:h-[500px]">
+    <div class="relative min-h-[30svh] h-[40vh] lg:min-h-[50svh] md:h-[500px] w-full overflow-hidden rounded-none {{ $containerClass }} ">
         @foreach ($images as $index => $image)
             <div x-show="currentSlideIndex === {{ $index + 1 }}" class="absolute inset-0" x-transition.opacity.duration.1000ms>
-                <img class="absolute w-full h-full inset-0 object-cover text-neutral-600 dark:text-neutral-300" src="{{ $image['url'] }}" alt="{{ $image['alt'] }}" />
+                <x-img class="absolute w-full h-full inset-0 object-cover text-neutral-600 dark:text-neutral-300" src="{{ $image['url'] }}" alt="{{ $image['alt'] }}" />
             </div>
         @endforeach
     </div>

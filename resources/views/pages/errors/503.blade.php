@@ -25,7 +25,13 @@
     <div class="text-center">
         <h1 class="text-9xl font-bold text-gray-800 bounce">503</h1>
         <p class="text-2xl md:text-3xl font-light leading-normal">Service Unavailable</p>
-        <p class="mt-4">We are currently undergoing maintenance. Please check back later.</p>
+
+        @if ($message)
+            <p class="mt-4">{{ $messgae }}</p>
+        @else
+            <p class="mt-4">We are currently undergoing maintenance. Please check back later.</p>
+        @endif
+        
         <a href="{{ url('/') }}" class="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105">Go to Homepage</a>
     </div>
 </body>
