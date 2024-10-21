@@ -8,9 +8,10 @@
 
                     {{ app_name() }}
                 </a>
-                <p class="my-4 font-light text-gray-500 dark:text-gray-400">{{ app_name() }} is a open-source library
-                    of over 400+ web components and interactive elements built with the utility classes from Tailwind
-                    CSS.</p>
+                <p class="my-4 font-light text-gray-500 dark:text-gray-400">{{ app_name() }} A Peer to Peer car
+                    sharing marketplace car owners (Hosts) to users. It’s a collaborative way to monetize idle cars,
+                    offering affordable rentals to personal users to move around.
+                </p>
                 <ul class="flex mt-5 space-x-6">
                     <li>
                         <a href="#"
@@ -134,11 +135,11 @@
     <x-devider gap="0" />
 
     <div class="grid md:flex items-center md:justify-between w-full p-6 mx-auto max-w-screen-2xl text-center gap-2">
-        <div class="block text-sm">© 2023-{{ date('Y') }} <a
-                href="#" class="hover:underline">{{ app_name() }}™</a>. All Rights Reserved.</div>
+        <div class="block text-sm">© 2023-{{ date('Y') }} <a href="#"
+                class="hover:underline">{{ app_name() }}™</a>. All Rights Reserved.</div>
         <div class="inline-flex justify-center flex-nowrap gap-1 text-gray-500 dark:text-gray-400">
-            <x-a href="{{ route('policies.terms') }}" color="gray">Terms Of Service</x-a> • 
-            <x-a href="{{ route('policies.privacy') }}" color="gray">Privacy Policy</x-a> • 
+            <x-a href="{{ route('policies.terms') }}" color="gray">Terms Of Service</x-a> •
+            <x-a href="{{ route('policies.privacy') }}" color="gray">Privacy Policy</x-a> •
             <x-a href="{{ route('policies.cookie') }}" color="gray">Cookie Policy</x-a>
         </div>
     </div>
