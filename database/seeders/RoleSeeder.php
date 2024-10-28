@@ -43,7 +43,7 @@ class RoleSeeder extends Seeder
                 'name' => 'Administrator',
                 'slug' => 'administrator',
                 'guard' => 'admin',
-                'permissions' => array_merge($user_basic_permissions, ['publish_posts', 'manage_users', 'manage_categories', 'view_analytics','view_tickets', 'resolve_tickets']),
+                'permissions' => array_merge($user_basic_permissions, ['publish_posts', 'manage_users', 'manage_categories', 'view_analytics', 'view_tickets', 'resolve_tickets']),
             ],
             [
                 'name' => 'SuperAdmin',
@@ -82,6 +82,12 @@ class RoleSeeder extends Seeder
                 'permissions' => ['manage_invoices', 'view_financial_reports'],
             ],
             [
+                'name' => 'Admin',
+                'slug' => 'admin',
+                'guard' => 'admin',
+                'permissions' => [],
+            ],
+            [
                 'name' => 'Subscriber',
                 'slug' => 'subscriber',
                 'guard' => 'web',
@@ -111,7 +117,7 @@ class RoleSeeder extends Seeder
             foreach ($role['permissions'] as $permissionSlug) {
                 $permission = Permission::where('slug', $permissionSlug)->first();
                 if ($permission) {
-                    $permissionRoles = $permission['roles'] ?: []; 
+                    $permissionRoles = $permission['roles'] ?: [];
                     if (!in_array($role['slug'], $permissionRoles)) {
                         $permissionRoles[] = $role['slug'];
                         Permission::where('id', $permission['id'])->update(['roles' => $permissionRoles]);

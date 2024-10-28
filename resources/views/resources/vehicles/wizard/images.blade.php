@@ -70,5 +70,6 @@
             </div>
         </div>
     </div>
-    <x-input-error for="images" />
+    <x-input-error for="images.newUploads" />
+    <x-input-error for="images.uploaded" />
 </div>

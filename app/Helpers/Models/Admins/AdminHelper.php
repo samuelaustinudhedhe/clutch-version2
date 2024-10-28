@@ -44,3 +44,30 @@ if (!function_exists('getAdmin')) {
         return $admin ?? null;
     }
 }
+
+
+if (!function_exists('getAdminsByRoles')) {
+    /**
+     * Retrieves admins with all specified roles.
+     *
+     * @param array|string $roles The role(s) to search for.
+     * @return \Illuminate\Support\Collection The collection of admins with all the specified roles.
+     */
+    function getAdminsByRoles($roles)
+    {
+        // Ensure roles is an array
+        $roles = (array) $roles;
+
+        // Get all admins (including admins)
+        $admins = Admin::all();
+
+        // Filter admins who have all the specified roles
+        return $admins->filter(function ($admin) use ($roles) {
+            // Get the admin's roles as an array
+            $adminRoles = is_array($admin->role) ? $admin->role : [$admin->role];
+            
+            // Check if the admin has all the specified roles
+            return empty(array_diff($roles, $adminRoles));
+        });
+    }
+}

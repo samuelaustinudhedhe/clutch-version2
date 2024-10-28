@@ -16,7 +16,7 @@ class Header extends Component
 
     public function mount()
     {
-        $this->user =getUser();
+        $this->user = getUser();
         $this->unreadNotification = $this->user->unreadNotifications;
 
         // $this->refreshNotifications();

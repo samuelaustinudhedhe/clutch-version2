@@ -1,13 +1,13 @@
 <x-guest-layout>
 
     <section
-        class="lg:h-[40rem] grid items-center bg-[url('/assets/images/banners/x7x7faceliftrearview.jpeg')] bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-overlay">
+        class=" h-[40rem] lg:h-[40rem] grid items-center bg-[url('/assets/images/banners/x7x7faceliftrearview.jpeg')] bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-overlay">
         <div class="relative py-8 px-4 mx-auto max-w-screen-xl text-white lg:py-16 xl:px-0 z-1">
             <div class="mb-6 max-w-screen-md lg:mb-0 mx-auto text-center">
                 <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-tight text-white md:text-5xl lg:text-6xl">
                     Your perfect ride is just a click away.
                 </h1>
-                <p class="mb-6 font-light text-gray-300 lg:mb-8 md:text-lg lg:text-xl">
+                <p class="mb-6 hidden md:block font-light text-gray-300 lg:mb-8 md:text-lg lg:text-xl">
                     From weekend adventures to business trips and daily errands, Clutch pairs you with friendly
                     local hosts offering the ideal vehicle for any situation.
                 </p>
@@ -39,12 +39,13 @@
 
         </div>
     </section>
+
     {{-- partners --}}
     <section class="border-t border-b border-gray-100 dark:border-gray-700 bg-slate-200 dark:bg-slate-600">
         <div class="max-w-screen-xl px-4 py-8 mx-auto sm:py-12">
             
             <div
-                class="grid grid-cols-2 gap-8 sm:gap-12 md:grid-cols-3 lg:grid-cols-4">
+                class="grid grid-cols-2 gap-8 sm:gap-12 md:grid-cols-4">
 
                 <a href="#" class="flex items-center justify-center">
                     <img class="w-auto max-h-8 min-h-6 "

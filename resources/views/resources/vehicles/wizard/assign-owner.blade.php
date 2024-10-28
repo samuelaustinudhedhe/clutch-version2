@@ -44,7 +44,7 @@
 
 
         </div>
-
+        <x-input-error for="selectedUser" />
 
         <table class="min-w-full bg-white dark:bg-gray-800">
             <thead>

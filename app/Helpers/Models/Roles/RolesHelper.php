@@ -34,68 +34,43 @@ if (!function_exists('getRolesByPermission')) {
     /**
      * Get the roles associated with a specific permission.
      *
-     * @param string $permissionName The name (slug) of the permission.
-     * @return \Illuminate\Database\Eloquent\Collection|null A collection of roles if the permission exists, or null if it does not.
+     * @param string $permissionSlug The slug of the permission.
+     * @return \Illuminate\Database\Eloquent\Collection A collection of roles that have the specified permission.
      */
-    function getRolesByPermission($permissionName)
+    function getRolesByPermission($permissionSlug)
     {
-        // Find the permission by its slug
-        $permission = Permission::where('slug', $permissionName)->first();
-
-        // If the permission exists, return the associated roles
-        if ($permission) {
-            return $permission->roles;
-        }
-
-        // Return null if the permission does not exist
-        return null;
+        return Role::withPermission($permissionSlug);
     }
 }
 
 if (!function_exists('roleHasPermission')) {
 
     /**
-     * Check if a role has a certain permission.
+     * Check if a role has a certain permission or permissions.
      *
-     * This function checks whether a given role slug is associated with a specific permission slug.
-     * It first retrieves the role from the database using the provided role slug.
-     * If the role exists, it then checks if the specified permission slug (or an array of permission slugs) is associated with that role.
+     * This function checks whether a given role has the specified permission(s).
+     * It first retrieves the role from the database using the provided role identifier.
+     * If the role exists, it then checks if the specified permission(s) are associated with that role.
      *
-     * @param string $roleSlug The slug of the role to check.
-     * @param string|array $permissionSlugs The slug(s) of the permission(s) to check against.
-     * @return bool|null True if the role has the specified permission, false otherwise. Returns null if the role does not exist.
+     * @param string|int $roleIdentifier The identifier of the role to check (slug, ID, or name).
+     * @param string|array $permissions The slug(s) of the permission(s) to check against.
+     * @return bool|null True if the role has the specified permission(s), false otherwise. Returns null if the role does not exist.
      */
-    function roleHasPermission(string $role, $permissions)
+    function roleHasPermission($roleIdentifier, $permissions)
     {
-        // Retrieve the role by its slug
-        $role = getRoleBy($role);
+        // Retrieve the role by its identifier
+        $role = getRoleBy($roleIdentifier);
 
         // If the role does not exist, return null
         if (!$role) {
             return null;
         }
 
-        // Retrieve permission slugs associated with the role
-        $role = $role->permissions;
-
-        // If the permission slugs parameter is an array, check each permission in the array
-        if (is_array($permissions)) {
-            foreach ($permissions as $slug) {
-                // If any permission is not associated with the role, return false
-                if (!in_array($slug, $role)) {
-                    return false;
-                }
-            }
-            // If all permissions are associated with the role, return true
-            return true;
-        }
-
-        // Check if the single permission slug is associated with the role
-        return in_array($permissions, $role);
+        // Check if the role has all the specified permissions
+        return $role::hasPermission($role->slug, $permissions);
     }
 }
-
-if (!function_exists('getRolesWithPermissions')) {
+if (!function_exists('getRolesByPermissions')) {
 
     /**
      * Get a list of roles that have certain permission or permissions.
@@ -106,36 +81,13 @@ if (!function_exists('getRolesWithPermissions')) {
      * @param mixed $permissions The slug or array of slugs of the permissions to check against.
      * @return \Illuminate\Database\Eloquent\Collection The collection of roles with the specified permissions.
      */
-    function getRoleWithPermissions($permissions)
-    {
-        // Ensure permissions is an array
-        if (!is_array($permissions)) {
-            $permissions = [$permissions];
-        }
-
-        // Get all roles
-        $roles = Role::all();
-
-        // Initialize a collection to store roles with specified permissions
-        $rolesWithPermissions = collect();
-
-        // Iterate through each role to check if it has the specified permissions
-        foreach ($roles as $role) {
-            // Fetch the role's permissions
-            $rolePermissions = $role->permissions;
-
-            // Check if the role has all the specified permissions
-            $hasAllPermissions = !array_diff($permissions, $rolePermissions);
-
-            // If the role has all the specified permissions, add it to the collection
-            if ($hasAllPermissions) {
-                $rolesWithPermissions->push($role);
-            }
-        }
-
-        return $rolesWithPermissions;
+    function getRolesByPermissions($permissions)
+    {     
+        // Use the Role model's withPermissions method to fetch roles with the specified permissions
+        return Role::withPermissions($permissions);
     }
 }
+
 
 if (!function_exists('getRoleByPermission')) {
 
@@ -150,48 +102,42 @@ if (!function_exists('getRoleByPermission')) {
      */
     function getRoleByPermission($permission)
     {
-        // Get all roles
-        $roles = Role::all();
-
-        // Iterate through each role to check if it has the specified permission
-        foreach ($roles as $role) {
-            // Fetch the role's permissions
-            $rolePermissions = $role->permissions;
-
-            // Check if the role has the specified permission
-            if (in_array($permission, $rolePermissions)) {
-                return $role;
-            }
-        }
-
-        // Return null if no role with the specified permission is found
-        return null;
+        return Role::withPermissions($permission)->first();
     }
 }
 
+
 if (!function_exists('hasRole')) {
+
     /**
-     * Checks if a user has a specific role.
+     * Check if a person has a specific role or any of the given roles.
      *
-     * @param Object $user
-     * @param array|string $roles
-     * @return bool
+     * This function verifies whether the provided person has the specified role(s).
+     * It first retrieves the person object using the getPerson function.
+     * If the person doesn't exist, it returns null.
+     * For multiple roles (provided as an array), it checks if the person has any of those roles.
+     * For a single role (provided as a string), it checks for an exact match.
+     *
+     * @param mixed $person The person to check. This can be any valid input for the getPerson function.
+     * @param string|array $roles The role(s) to check against. Can be a single role as a string or multiple roles as an array.
+     * @return bool|null Returns true if the person has the role(s), false if not, or null if the person doesn't exist.
      */
-    function hasRole($user, $roles)
+    function hasRole($person, $roles)
     {
-        // If there is no authenticated user, return null
-        if (!$user) {
+        $person = getPerson(person:$person);
+        // If there is no authenticated user or admin, return null
+        if (!$person) {
             return null;
         }
 
         // Get the role slug of the user
-        $userRole = $user->role;
+        $personRole = $person->role;
 
         // If roles parameter is an array, check each role
         if (is_array($roles)) {
             foreach ($roles as $role) {
                 // If any of the roles is found in the user's role, return true
-                if ($userRole === $role) {
+                if ($personRole === $role) {
                     return true;
                 }
             }
@@ -200,6 +146,6 @@ if (!function_exists('hasRole')) {
         }
 
         // If roles parameter is a string, check if it matches the user's role
-        return $userRole === $roles;
+        return $personRole === $roles;
     }
 }

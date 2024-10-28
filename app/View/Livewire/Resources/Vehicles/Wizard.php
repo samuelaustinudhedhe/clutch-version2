@@ -117,7 +117,7 @@ abstract class Wizard extends Component
         $this->currentStep = $this->storeData['current_step'] ?? 0;
 
         // Initialize Vehicle Type
-        $this->vehicleType = $this->storeData['vehicle_type']?? 'cars';
+        $this->vehicleType = $this->storeData['vehicle_type'] ?? 'cars';
 
         // Initialize Makes and Models
         $this->makesAndModels = Vehicle::getMakesAndModels($this->vehicleType, true);
@@ -209,7 +209,7 @@ abstract class Wizard extends Component
         if (!isset($this->storeData['price']['on_sale'])) {
             $this->storeData['price']['on_sale'] = 'false';
         }
-        
+
         // set only if a user is using the wizard and a user is logged in
         if (getUser()) {
             // Define the keys for address details
@@ -228,7 +228,7 @@ abstract class Wizard extends Component
             }
         }
     }
-    
+
     /**
      * Generates validation rules, messages, and field names for the current step in a multi-step form.
      *
@@ -246,23 +246,37 @@ abstract class Wizard extends Component
         $rules = [];
         $names = [];
         $messages = [];
+        $step = $this->currentStep;
 
-        switch ($this->currentStep) {
+        // Define validation rules, messages, and field names based on the current step
+        switch ($step) {
             case 0:
                 // Validation rules for step 0
                 break;
             case 1:
                 $rules = [
-                    'storeData.details.description' => 'min:60|max:900|string',
+                    'storeData.details.description' => 'required|min:60|max:900|string',
                     'storeData.details.vin.type' => 'string|in:' . implode(',', array_keys($this->vehicleData['vits'])),
-                    'storeData.details.vin.number' => 'required|string|min:5|max:40',
+                    'storeData.details.vin.number' => 'string|min:5|max:40',
                     'storeData.details.make' => 'required|string',
                     // 'storeData.details.manufacturer' => 'required|string',
                     'storeData.details.reg_number' => 'required|string',
                     'storeData.details.model' => 'required|string',
                     'storeData.details.year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
-                    'storeData.location.*.full' => [
+                    'storeData.location.pickup.full' => [
                         'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            // Custom validation logic to check if the location exists using Google Maps API
+                            $response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($value) . "&key=" . getGoogleMapKey());
+                            $response = json_decode($response, true);
+
+                            if (empty($response['results'])) {
+                                $fail('The ' . $attribute . ' is not a valid location.');
+                            }
+                        },
+                    ],
+                    'storeData.location.drop_off.full' => [
                         'string',
                         function ($attribute, $value, $fail) {
                             // Custom validation logic to check if the location exists using Google Maps API
@@ -286,7 +300,7 @@ abstract class Wizard extends Component
                     'storeData.details.reg_number' => 'plate number',
                     'storeData.details.model' => 'model',
                     'storeData.details.year' => 'year',
-                    'storeData.location' => 'location',
+                    'storeData.location.*.full' => 'location',
                 ];
                 break;
             case 2:
@@ -294,10 +308,10 @@ abstract class Wizard extends Component
                 $rules = [
                     'storeData.details.exterior.color' => 'required|string|max:50',
                     'storeData.details.exterior.type' => 'required|string|max:50',
-                    'storeData.details.exterior.doors' => 'required|integer|min:0|max:6',
-                    'storeData.details.exterior.windows' => 'required|integer|min:0|max:6',
+                    'storeData.details.exterior.doors' => 'required|integer|min:0',
+                    'storeData.details.exterior.windows' => 'required|integer|min:0',
                     'storeData.details.interior.color' => 'required|string|max:50',
-                    'storeData.details.interior.seats' => 'required|integer|min:1|max:10',
+                    'storeData.details.interior.seats' => 'required|integer|min:1',
                     'storeData.details.interior.upholstery' => 'required|string|in:leather,fabric,vinyl,suede,alcantara',
                     'storeData.details.interior.ac' => 'required|string|in:yes,no',
                     'storeData.details.interior.heater' => 'required|string|in:yes,no',
@@ -342,28 +356,28 @@ abstract class Wizard extends Component
             case 4:
                 // Validation rules for step 4 (KYC)
                 $rules = [
-                    // 'storeData.details.safety.abs' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.traction_control' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.stability_control' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.lane_departure_warning' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.lane_keeping_assist' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.forward_collision_warning' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.parking_sensors' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.camera_360' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.driver_attention_monitor' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.airbags' => 'required|string|in:front,front & sides,front, sides & curtain',
-                    // 'storeData.details.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.crumple_zones' => 'required|string|in:yes,no',
-                    // 'storeData.details.safety.isofix_mounts' => 'required|string|in:yes,no',
-                    // 'storeData.details.security.alarm_system' => 'required|string|in:yes,no',
-                    // 'storeData.details.security.immobilizer' => 'required|string|in:yes,no',
-                    // 'storeData.details.security.remote_central_locking' => 'required|string|in:yes,no',
-                    // 'storeData.details.security.gps_tracking' => 'required|string|in:yes,no',
+                    'storeData.details.safety.abs' => 'required|string|in:yes,no',
+                    'storeData.details.safety.traction_control' => 'required|string|in:yes,no',
+                    'storeData.details.safety.stability_control' => 'required|string|in:yes,no',
+                    'storeData.details.safety.lane_departure_warning' => 'required|string|in:yes,no',
+                    'storeData.details.safety.lane_keeping_assist' => 'required|string|in:yes,no',
+                    'storeData.details.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
+                    'storeData.details.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
+                    'storeData.details.safety.forward_collision_warning' => 'required|string|in:yes,no',
+                    'storeData.details.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
+                    'storeData.details.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
+                    'storeData.details.safety.parking_sensors' => 'required|string|in:yes,no',
+                    'storeData.details.safety.camera_360' => 'required|string|in:yes,no',
+                    'storeData.details.safety.driver_attention_monitor' => 'required|string|in:yes,no',
+                    'storeData.details.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
+                    'storeData.details.safety.airbags' => 'required|string|in:front,front-sides,front-sides-curtain',
+                    'storeData.details.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
+                    'storeData.details.safety.crumple_zones' => 'required|string|in:yes,no',
+                    'storeData.details.safety.isofix_mounts' => 'required|string|in:yes,no',
+                    'storeData.details.security.alarm_system' => 'required|string|in:yes,no',
+                    'storeData.details.security.immobilizer' => 'required|string|in:yes,no',
+                    'storeData.details.security.remote_central_locking' => 'required|string|in:yes,no',
+                    'storeData.details.security.gps_tracking' => 'required|string|in:yes,no',
                 ];
 
                 $names = [
@@ -391,6 +405,144 @@ abstract class Wizard extends Component
                     'storeData.details.security.gps_tracking' => 'GPS tracking',
                 ];
                 break;
+            case 5:
+                // Validation rules for step 5 (Faults & Modifications)
+                $rules = [
+                    // Add Faults & Modifications validation rules here
+                ];
+
+                $names = [
+                    // Add Faults & Modifications field names here
+                ];
+                break;
+            case 6:
+                // Validation rules for step 6 (photos)
+                $rules = [
+                    'images.uploaded' => 'required|array|min:4|max:20',
+                ];
+
+                $names = [
+                    'images.newUploads' => 'Vehicle image',
+                ];
+
+                $messages = [
+                    'images.uploaded.required' => 'Please upload at least four (4) HD images.',
+                    'images.uploaded.array' => 'The uploaded images are not in valid format. Please refresh you browser to fix the issue.',
+                    'images.uploaded.min' => 'Please upload at least four (4) HD images.',
+                    'images.uploaded.max' => 'You can upload a maximum of 20 images.',
+                    'images.newUploads.required' => 'Please upload at least one image.',
+                    'images.newUploads.image' => 'The file must be an image.',
+                    'images.newUploads.mimes' => 'The image must be a JPEG, JPG, or PNG file.',
+                    'images.newUploads.max' => 'Each image must not exceed 4MB in size.',
+                ];
+                break;
+            case 7:
+                // Validation rules for step 7 (vehicle documentation)
+                $rules = [
+                    // Add vehicle documentation) validation rules here
+                    // Registration
+                    'storeData.documents.registration.issued_date' => 'required|date_format:m/d/Y|before_or_equal:today',
+                    'storeData.documents.registration.expiration_date' => 'required|date_format:m/d/Y|after:storeData.documents.registration.issued_date',
+                    'registration.new' => 'required_without:registration.uploaded|max:2048', // 2MB max
+
+                    // Proof of Ownership
+                    'proofOfOwnership.new' => 'required_without:proofOfOwnership.uploaded|max:2048', // 2MB max
+
+                    // Insurance
+                    'storeData.documents.insurance.status' => 'required|in:valid,invalid',
+                    'insurance.new' => 'required_if:storeData.documents.insurance.status,valid|max:2048', // 2MB max
+                ];
+                $messages = [
+                    // ... existing messages ...
+
+                    'storeData.documents.registration.issued_date.required' => 'The registration issued date is required.',
+                    'storeData.documents.registration.issued_date.date_format' => 'The registration issued date must be in the format MM/DD/YYYY.',
+                    'storeData.documents.registration.issued_date.before_or_equal' => 'The registration issued date must be today or earlier.',
+                    'storeData.documents.registration.expiration_date.required' => 'The registration expiration date is required.',
+                    'storeData.documents.registration.expiration_date.date_format' => 'The registration expiration date must be in the format MM/DD/YYYY.',
+                    'storeData.documents.registration.expiration_date.after' => 'The registration expiration date must be after the issued date.',
+                    'registration.new.required_without' => 'Please upload a registration document.',
+                    'registration.new.max' => 'The registration must not be larger than 5MB.',
+
+                    'proofOfOwnership.new.required_without' => 'Please upload a proof of ownership document.',
+                    'proofOfOwnership.new.max' => 'The proof of ownership must not be larger than 5MB.',
+
+                    'storeData.documents.insurance.status.required' => 'Please specify if you have insurance coverage.',
+                    'storeData.documents.insurance.status.in' => 'The insurance status must be valid or invalid.',
+                    'insurance.new.required_if' => 'Please upload an insurance document if you have coverage.',
+                    'insurance.new.max' => 'The insurance document must not be larger than 5MB.',
+                ];
+                $names = [
+                    // Add vehicle documentation) field names here
+                    'storeData.documents.registration.issued_date' => 'Registration Issued Date',
+                    'storeData.documents.registration.expiration_date' => 'Registration Expiration Date',
+                    'registration.new' => 'Registration Document',
+                    'proofOfOwnership.new' => 'Proof of Ownership Document',
+                    'storeData.documents.insurance.status' => 'Insurance Status',
+                    'insurance.new' => 'Insurance Document',
+                ];
+                break;
+            case 8:
+                // Validation rules for step 8 (pricing)
+                $rules = [
+                    'storeData.price.amount' => ['required', 'numeric', 'min:0', 'max:1000000'],
+                    'storeData.price.on_sale' => ['required', 'in:true,false'],
+                    'storeData.price.sale' => [
+                        'required_if:storeData.price.on_sale,true',
+                        'numeric',
+                        'min:0',
+                        'max:1000000',
+                        function ($attribute, $value, $fail) {
+                            if (
+                                $this->storeData['price']['on_sale'] === 'true' &&
+                                $value >= $this->storeData['price']['amount']
+                            ) {
+                                $fail('The sale price must be less than the regular price.');
+                            }
+                        },
+                    ],
+                    'storeData.price.discount.days' => ['required', 'in:1,2,3,5,7'],
+                ];
+
+                $names = [
+                    'storeData.price.amount' => 'Regular Price',
+                    'storeData.price.on_sale' => 'On Sale',
+                    'storeData.price.sale' => 'Sale Price',
+                    'storeData.price.discount.days' => 'Discount Days',
+                ];
+
+                $messages = [
+                    'storeData.price.amount.required' => 'The regular price is required.',
+                    'storeData.price.amount.numeric' => 'The regular price must be a number.',
+                    'storeData.price.amount.min' => 'The regular price must be at least 0.',
+                    'storeData.price.amount.max' => 'The regular price cannot exceed 1,000,000.',
+                    'storeData.price.on_sale.required' => 'Please specify if the vehicle is on sale.',
+                    'storeData.price.on_sale.in' => 'The on sale value must be either true or false.',
+                    'storeData.price.sale.required_if' => 'The sale price is required when the vehicle is on sale.',
+                    'storeData.price.sale.numeric' => 'The sale price must be a number.',
+                    'storeData.price.sale.min' => 'The sale price must be at least 0.',
+                    'storeData.price.sale.max' => 'The sale price cannot exceed 1,000,000.',
+                    'storeData.price.discount.days.required' => 'Please select the number of days for the discount.',
+                    'storeData.price.discount.days.in' => 'The selected discount days value is invalid.',
+                ];
+
+                break;
+            case 9:
+
+                if (getAdmin()) { // Assuming this is the step for assigning owner
+                    $rules = [
+                        'selectedUser' => ['required', 'exists:users,id'],
+                    ];
+
+                    $names = [
+                        'selectedUser' => 'Selected User',
+                    ];
+
+                    $messages = [
+                        'selectedUser.required' => 'Please select a user to assign the vehicle to.',
+                    ];
+                }
+                break;
             default:
                 break;
         }
@@ -415,6 +567,7 @@ abstract class Wizard extends Component
             // Get the original file name of the image
             $fileName = $newImage->getClientOriginalName();
             $error = ''; // Initialize an error message variable
+            $newImageInfo = getimagesize($newImage->getRealPath());
 
             // Check if the file is a valid image
             if (strpos($newImage->getMimeType(), 'image/') === false) {
@@ -423,6 +576,10 @@ abstract class Wizard extends Component
             // Check if the file size exceeds the 4MB limit
             elseif ($newImage->getSize() > 1024 * 1024 * 4) {
                 $error = "The file " . $fileName . " exceeds the maximum size of 4MB.";
+            }
+            // check if the image dimension is above 960x470
+            elseif ($newImageInfo[0] < 960 || $newImageInfo[1] < 470) {
+                $error = "The image " . $fileName . " dimension doesn't meet the minimum required pixels of 960x470.";
             }
             // Check if the image already exists in the uploaded images
             else {
@@ -517,6 +674,11 @@ abstract class Wizard extends Component
         $this->images['uploaded'] = $files;
         // Update the images array in the storeData property
         $this->storeData['files']['images'] = $this->images['uploaded'];
+        //unset the the entire images.newUploads array
+        if (isset($this->images['newUploads'])) {
+            unset($this->images['newUploads']);
+        }
+
         // Save the updated storeData to the JSON file
         Storage::put($this->storePath, json_encode($this->storeData));
     }
@@ -636,9 +798,12 @@ abstract class Wizard extends Component
         // Save the vehicle record to the database
         $vehicle->save();
 
+        // Check if the user role is owner, if not, update user role to owner
+        $this->updateOwnerRole($owner);
+
         //delete json after successful submission
         $this->deleteStoredData();
-        
+
         // Redirect or reset after successful submission
         $this->submissionRedirect();
     }
@@ -659,6 +824,23 @@ abstract class Wizard extends Component
             ],
             'email' => $owner->email // Use the owner's email
         ];
+    }
+
+    /**
+     * Updates the role of a user to 'owner' if they don't already have this role.
+     * Also sets the user's status to inactive if their role is updated.
+     *
+     * @param User|Admin $owner The user or admin object to update
+     * @return void
+     */
+    private function updateOwnerRole($owner)
+    {
+        if ($owner instanceof User && !$owner->hasRole('owner')) {
+            $owner->assignRole('owner');
+            // Update the user status to inactive if the user was just updated to owner
+            $owner->status = User::STATUS_INACTIVE;
+            $owner->save();
+        }
     }
 
     /**
@@ -708,7 +890,7 @@ abstract class Wizard extends Component
         return Vehicle::create([
             'name' => $vehicleName,          // Set the vehicle's name
             'price' => $data['price'],       // Set the vehicle's price
-            'status' => 'pending',           // Set the initial status to pending
+            'status' => getAdmin()?'active':'pending',// Set the initial status to pending based on who is adding the vehicle (admin or owner)
             'location' => $data['location'], // Set the vehicle's location
             'details' => $data['details'],   // Set the vehicle's details
             'documents' => $data['documents'], // Set the vehicle's documents
@@ -797,9 +979,6 @@ abstract class Wizard extends Component
         $name = "{$vehicle->name}'s {$imageName} " . $toWord;
         $description = "{$user->name}'s " . $toWord . " {$imageName} of {$vehicle->name}";
 
-        // Define the resizing options for the image.
-
-
         // Upload the image using the Attachment Upload controller.
         Upload::Image(
             name: $name,
@@ -816,14 +995,29 @@ abstract class Wizard extends Component
         );
     }
 
+    /**
+     * Defines the image resizing configuration for uploaded vehicle images.
+     *
+     * This function returns an array with settings for resizing vehicle images.
+     * It specifies the target dimensions and positioning options for the resized image.
+     *
+     * @return array An associative array containing the following keys:
+     *               - 'width': The target width of the resized image (integer).
+     *               - 'height': The target height of the resized image (integer).
+     *               - 'type': The type of resizing (string).
+     *               - 'option': An array of additional options, including:
+     *                           - 'position': The positioning of the image within the new dimensions (string).
+     */
     public function resizingImage(): array
     {
-        return [
+        $data = [
             'width' => 1440,
             'height' => 700,
-            'type' => 'coverDown',
+            // 'type' => 'coverDown', 
             'option' => ['position' => 'center']
         ];
+
+        return $data;
     }
 
     /**

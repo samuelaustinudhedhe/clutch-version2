@@ -26,7 +26,7 @@ class Edit extends Component
     public $search = '';
 
     protected $rules = [
-        'description' => 'nullable|string|max:255',
+        'description' => 'required|string|max:255',
     ];
 
     /**
@@ -63,6 +63,7 @@ class Edit extends Component
 
         $this->role->update([
             'description' => $this->description,
+            'permissions' => $this->selectedPermissions,
         ]);
 
         $this->updateUsersOrAdmins($this->role);
@@ -100,16 +101,16 @@ class Edit extends Component
      */
     public function delete()
     {
-        if ($this->role->slug === 'administrator' || $this->role->slug === 'superadmin') {
+        if (in_array($this->role->slug , Role::INDELIBLE)) {
             // Display an error message or prevent deletion
             session()->flash('message', 'Cannot delete the role.');
             return redirect()->route('admin.roles.index');
         }
 
         if ($this->guard == 'admin') {
-            Admin::where('role', $this->role->slug)->update(['role' => 'default']);
+            Admin::where('role', $this->role->slug)->update(['role' => Role::DEFAULT_ADMIN_ROLE]);
         } else {
-            User::where('role', $this->role->slug)->update(['role' => 'subscriber']);
+            User::where('role', $this->role->slug)->update(['role' => Role::DEFAULT_USER_ROLE]);
         }
 
         $this->role->delete();

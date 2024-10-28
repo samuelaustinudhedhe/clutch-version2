@@ -79,6 +79,11 @@ class User extends Authenticatable
         'verification' => 'object',
     ];
 
+    const STATUS_ACTIVE = 'active';
+    const STATUS_SUSPENDED ='suspended';
+    const STATUS_ONBOARDING = 'onboarding';
+    const STATUS_DELETED = 'deleted';
+    const STATUS_INACTIVE = 'inactive';
 
 
     /**

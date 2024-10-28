@@ -194,24 +194,26 @@ class Vehicle extends Model
      * This method calculates the discount percentage if the vehicle is on sale.
      * If not on sale, it returns 0.
      *
-     * @return float The discount percentage or 0 if not on sale.
+     * @param bool $symbol Whether to include the percentage symbol in the return value.
+     * @return string|int The discount percentage (with or without the % symbol) or 0 if not on sale.
      */
-    public function discount($symbol = false)
+    public function discount(bool $symbol = false): string|int
     {
         $price = $this->getPrice();
-        $sale = $price->sale ?? 0;
         $on_sale = $price->on_sale ?? false;
         $amount = $price->amount ?? 0;
-        $discount = '';
-        if ($symbol) {
-            $symbol = '%';
+        $sale = $price->sale ?? 0;
+
+        if ($amount <= 0 || !$on_sale) {
+            return $symbol ? '0%' : 0;
         }
 
-        if ($on_sale) {
-            $discount = round((($amount - $sale) / $amount) * 100);
-        }
-        return $discount >= 0 ? $discount . $symbol : 0 . $symbol;
+        $discount = round((($amount - $sale) / $amount) * 100);
+
+        return $symbol ? $discount . '%' : $discount;
     }
+
+
     /**
      * Calculate the discounted price based on the sale and original price.
      *
@@ -287,6 +289,19 @@ class Vehicle extends Model
         return $taxAmount;
     }
 
+    /**
+     * Calculate the total tax amount for the vehicle.
+     *
+     * This method calculates the total tax by multiplying the base tax amount
+     * with a given multiplier. It can return the result as a human-readable
+     * string or as a raw numeric value.
+     *
+     * @param float $multiplier The multiplier to apply to the base tax amount.
+     * @param bool $human Optional. Whether to return the tax as a human-readable string.
+     *                    Defaults to true.
+     * @return string|float The total tax amount, either as a formatted string
+     *                      (if $human is true) or as a raw numeric value.
+     */
     public function calcTotalTax($multiplier, $human = true)
     {
         $taxAmount = $this->tax() * $multiplier;
@@ -618,6 +633,49 @@ class Vehicle extends Model
     public function getFeaturedImageUrlAttribute()
     {
         return $this->featuredImage('car')->url;
+    }
+
+
+    /**
+     * Set the price attribute for the vehicle.
+     *
+     * This method formats and sanitizes the price data before storing it.
+     * It handles various price-related fields including sale status, amount, sale price,
+     * currency, and discount information.
+     *
+     * @param array $value An associative array containing price-related data.
+     *                     Expected keys:
+     *                     - 'on_sale' (bool): Whether the vehicle is on sale.
+     *                     - 'amount' (string|int): The regular price of the vehicle.
+     *                     - 'sale' (string|int): The sale price of the vehicle, if applicable.
+     *                     - 'currency' (string): The currency code for the price.
+     *                     - 'discount' (array): Contains discount information.
+     *                       - 'days' (int): Number of days for the discount period.
+     *
+     * @return void
+     */
+    public function setPriceAttribute($value)
+    {
+        // Helper function to clean and convert price values
+        $cleanPrice = function($price) {
+            if (is_null($price)) return null;
+            return (int) str_replace(',', '', $price);
+        };
+
+        // Check that each key exists and has the right type
+        $formattedPrice = [
+            'on_sale' => filter_var($value['on_sale'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'amount' => $cleanPrice($value['amount'] ?? null) ?? 50000,
+            'sale' => $cleanPrice($value['sale'] ?? null) ?? 0,
+            'currency' => $value['currency'] ?? app_currency(),
+            'discount' => [
+                'days' => (int) ($value['discount']['days'] ?? 1),
+            ],
+            // add more as needed
+        ];
+
+        // Store the correctly formatted data
+        $this->attributes['price'] = json_encode($formattedPrice);
     }
 
     /**

@@ -1,5 +1,5 @@
 {{-- Name: Main Footer --}}
-<div class="bg-gray-50 dark:bg-gray-800">
+<div class="bg-gray-50 dark:bg-gray-800 z-10">
     <div class="p-4 pt-12 py-6 mx-auto max-w-screen-2xl md:p-8 md:pt-20 ">
         <div class="grid grid-cols-2 gap-8 lg:grid-cols-6">
             <div class="col-span-2 mb-10 md:mb-0">

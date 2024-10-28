@@ -67,7 +67,7 @@
             <x-label for="blind_spot_monitoring">Blind Spot Monitoring</x-label>
             <x-select id="blind_spot_monitoring" wire:model="storeData.details.safety.blind_spot_monitoring">
                 <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option selected value="no">No</option>
             </x-select>
             <x-input-error for="storeData.details.safety.blind_spot_monitoring" />
         </div>
@@ -116,7 +116,7 @@
             <x-label for="camera_360">360-Degree Camera</x-label>
             <x-select id="camera_360" wire:model="storeData.details.safety.camera_360">
                 <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option selected value="no">No</option>
             </x-select>
             <x-input-error for="storeData.details.safety.camera_360" />
         </div>
@@ -136,7 +136,7 @@
             <x-label for="tire_pressure_monitor">Tire Pressure Monitoring</x-label>
             <x-select id="tire_pressure_monitor" wire:model="storeData.details.safety.tire_pressure_monitor">
                 <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option selected value="no">No</option>
             </x-select>
             <x-input-error for="storeData.details.safety.tire_pressure_monitor" />
         </div>
@@ -168,7 +168,7 @@
             <x-label for="crumple_zones">Crumple Zones</x-label>
             <x-select id="crumple_zones" wire:model="storeData.details.safety.crumple_zones">
                 <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option selected value="no">No</option>
             </x-select>
             <x-input-error for="storeData.details.safety.crumple_zones" />
         </div>
@@ -178,7 +178,7 @@
             <x-label for="isofix_mounts">ISOFIX Child Seat Mounts</x-label>
             <x-select id="isofix_mounts" wire:model="storeData.details.safety.isofix_mounts">
                 <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option selected value="no">No</option>
             </x-select>
             <x-input-error for="storeData.details.safety.isofix_mounts" />
         </div>

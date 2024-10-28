@@ -8,6 +8,6 @@ class Profile extends Component
 {
     public function render()
     {
-        return view('admin.pages.profile');
+        return view('admin.pages.profile')->layout('layouts.admin');
     }
 }

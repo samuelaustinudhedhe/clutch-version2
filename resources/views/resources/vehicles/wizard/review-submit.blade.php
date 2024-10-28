@@ -54,7 +54,7 @@
     <x-div class="w-full space-y-2">
         <div class="space-y-2">
             <h1 class="text-2xl capitalize">
-                {{ $storeData['details']['make'] . ' ' . $storeData['details']['model'] . ' ' . $storeData['details']['year'] }}
+                {{ ($storeData['details']['make'] ?? 'unknown') . ' ' . ($storeData['details']['model'] ?? 'unknown') . ' ' . ($storeData['details']['year'] ?? 'unknown') }}
             </h1>
             <div class="flex items-baseline ">
                 <span class="flex items-center !text-[21px] font-semibold"
@@ -73,10 +73,10 @@
         <div class="flex flex-nowrap items-baseline gap-2">
             @isset($storeData['price'])
                 @if ($storeData['price']['on_sale'] === 'true')
-                    <span class="text-lg line-through opacity-60">{{ humanifyPrice($storeData['price']['amount']) }}</span>
-                    <span class="text-2xl font-semibold">{{ humanifyPrice($storeData['price']['sale']) }}</span>
+                    <span class="text-lg line-through opacity-60">{{ humanifyPrice($storeData['price']['amount'] ?? 00) }}</span>
+                    <span class="text-2xl font-semibold">{{ humanifyPrice($storeData['price']['sale'] ?? 00) }}</span>
                 @else
-                    <span class="text-2xl font-semibold">{{ humanifyPrice($storeData['price']['amount']) }}</span>
+                    <span class="text-2xl font-semibold">{{ humanifyPrice($storeData['price']['amount'] ?? 00) }}</span>
                 @endif
             @else
                 <span class="text-2xl font-semibold">unknown</span>
@@ -110,7 +110,7 @@
                         d="M11.91 8.99h3.87c.23 0 .44-.13.57-.34.1-.2.09-.45-.04-.64l-1.94-2.84a.63.63 0 0 0-.52-.27h-1.94c-.34 0-.62.28-.62.62v2.85c0 .34.27.62.62.62m2.68-1.25h-2.06V6.15h.98zM2.87 6.77h3.67c.34 0 .62-.28.62-.63V3.81c0-.86-.65-1.56-1.45-1.56H3.7c-.81 0-1.45.68-1.45 1.56v2.33c0 .35.28.63.62.63m3.04-1.25H3.5V3.81c0-.17.09-.31.2-.31h2.01c.09 0 .2.13.2.31zM9.56 15.73c0 1.33 1.08 2.42 2.42 2.42a2.43 2.43 0 0 0 2.43-2.42c0-1.104-1.553-3.91-1.875-4.49l-.005-.01c-.22-.39-.87-.39-1.09 0-.31.56-1.88 3.4-1.88 4.5m1.25 0c0-.4.54-1.64 1.17-2.87.63 1.22 1.18 2.47 1.17 2.87 0 .64-.53 1.17-1.17 1.17s-1.17-.52-1.17-1.17"
                         clip-rule="evenodd"></path>
                 </svg>
-                <p class="text-sm">{{ $storeData['details']['fuel']['economy'] }} MPG</p>
+                <p class="text-sm">{{ $storeData['details']['fuel']['economy'] ?? 'unknown' }} MPG</p>
             </div>
             {{--  --}}
             <div class="flex items-center gap-2">
@@ -126,7 +126,7 @@
                         d="M4.18 7.43a.63.63 0 0 0 .89-.01l1.85-1.85c.24-.24.24-.64 0-.88a.63.63 0 0 0-.88 0L4.18 6.55c-.24.24-.24.64 0 .88">
                     </path>
                 </svg>
-                <p class="text-sm">{{ $storeData['details']['fuel']['type'] }}</p>
+                <p class="text-sm">{{ $storeData['details']['fuel']['type']  ?? 'unknown' }}</p>
             </div>
             {{--  --}}
             <div class="flex items-center gap-2">
@@ -142,7 +142,7 @@
                         d="M17.04 13.72h1.95c.35 0 .62-.28.62-.62s-.27-.62-.62-.62h-1.95c-.34 0-.62.28-.62.62s.27.62.62.62">
                     </path>
                 </svg>
-                <p class="text-sm">{{ $storeData['details']['exterior']['doors'] }} doors</p>
+                <p class="text-sm">{{ $storeData['details']['exterior']['doors']?? 'unknown' }} doors</p>
             </div>
             {{--  --}}
             <div class="flex items-center gap-2">
@@ -155,7 +155,7 @@
                         d="M13.87 16.27a1.558 1.558 0 0 0 1.37-.46c.36-.37.51-.89.42-1.4l-.58-3.19a2.05 2.05 0 0 0-2.01-1.68h-2.19c-.99 0-1.83.71-2.01 1.68l-.58 3.18c-.09.51.07 1.03.43 1.4s.87.54 1.39.46l1.23-.2c.4-.06.81-.06 1.21 0zm-1.14-1.44q-.39-.06-.78-.06-.42 0-.81.06l-1.23.2a.35.35 0 0 1-.3-.1.34.34 0 0 1-.09-.3l.58-3.18c.07-.38.4-.65.78-.65h2.2c.38 0 .71.27.78.65l.58 3.19c.03.15-.04.25-.09.3a.35.35 0 0 1-.3.1z"
                         clip-rule="evenodd"></path>
                 </svg>
-                <p class="text-sm">{{ $storeData['details']['interior']['seats'] }} seats</p>
+                <p class="text-sm">{{ $storeData['details']['interior']['seats'] ?? 'unknown' }} seats</p>
             </div>
         </div>
         <div class="">
@@ -196,7 +196,7 @@
             <div class="w-full lg:w-1/2">
                 <h3 class="text-lg font-light">Pickup Address</h3>
                 <div class="gap-2 mt-2">
-                    @foreach ($storeData['location']['pickup'] as $key => $value)
+                    @foreach ($storeData['location']['pickup'] ?? [] as $key => $value)
                         @if ($key === 'latitude' || $key === 'longitude')
                             @continue
                         @endif
@@ -208,7 +208,7 @@
             <div class="w-full lg:w-1/2">
                 <h3 class="text-lg font-light">Drop-off Address</h3>
                 <div class="gap-2 mt-2">
-                    @foreach ($storeData['location']['drop_off'] as $key => $value)
+                    @foreach ($storeData['location']['drop_off'] ?? [] as $key => $value)
                         @if ($key === 'latitude' || $key === 'longitude')
                             @continue
                         @endif
@@ -268,12 +268,13 @@
 
     <x-div class="!space-y-4">
         <h3 class="text-lg font-light">Description:</h3>
-        <p class="text-sm">{{ $storeData['details']['description'] }}</p>
+        <p class="text-sm">{{ $storeData['details']['description']?? "Add a description, it will increase your chances of being booked" }}</p>
     </x-div>
 
 
     <div class="columns-1 md:columns-2 gap-4 mt-4 space-y-4">
         @foreach (['safety', 'security', 'exterior', 'interior', 'engine', 'transmission'] as $key)
+            @isset($storeData['details'][$key] )
             <div
                 class="break-inside-avoid p-4 rounded-lg border border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
                 <!-- Section Header -->
@@ -295,6 +296,7 @@
                     @endforeach
                 </div>
             </div>
+            @endisset
         @endforeach
     </div>
 

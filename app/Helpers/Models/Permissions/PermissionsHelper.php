@@ -3,6 +3,30 @@
 use App\Models\Permission;
 use App\Models\Role;
 
+if (!function_exists('hasPermissions')) {
+
+    /**
+     * Checks if a user has the specified permissions.
+     *
+     * This function verifies whether the given user has the specified permissions
+     * based on their assigned role.
+     *
+     * @param \App\Models\User|\App\Models\Admin $user The user to check permissions for.
+     * @param string|array $permissions The permission or array of permissions to check.
+     * @return bool Returns true if the user has the specified permissions, false otherwise.
+     */
+    function hasPermissions($person, $permissions)
+    {
+        if (!$person) {
+            return false;
+        }
+        $role = getRoleBy($person->role);
+
+        return roleHasPermission($role->slug, $permissions);
+    }
+}
+
+
 if (!function_exists('getPermissionBy')) {
 
     /**

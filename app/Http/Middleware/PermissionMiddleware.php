@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,31 +10,29 @@ use Symfony\Component\HttpFoundation\Response;
 class PermissionMiddleware
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request and check for required permissions.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * This middleware function checks if the authenticated user has the required permissions
+     * to access a specific route or perform an action. If the user has the necessary permissions,
+     * the request is allowed to proceed. Otherwise, the user is redirected with an error message.
+     *
+     * @param \Illuminate\Http\Request $request The incoming HTTP request.
+     * @param \Closure $next The next middleware/handler in the pipeline.
+     * @param string $permissions A pipe-separated string of required permissions.
+     * @param string|null $guard The authentication guard to use (default: null).
+     * @return \Symfony\Component\HttpFoundation\Response The response to be sent back to the user.
      */
     public function handle(Request $request, Closure $next, $permissions, $guard = null): Response
     {
-        // Get the authentication guard
-        $authGuard = Auth::guard($guard);
-
-        // Retrieve the authenticated user
-        $user = $authGuard->user();
-
-        // Convert permissions to an array of lowercase strings
         $permissions = array_map('strtolower', explode('|', $permissions));
 
-        // Check if the user is authenticated and has the specified permissions
-        if ($authGuard->check() && hasPermissions($user, $permissions)) {
+        if (isLoggedIn($guard) && getPerson()->hasPermission($permissions)) {
             return $next($request);
         }
 
-        // Redirect to the appropriate dashboard with an error message if the user is not authorized
-        if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.dashboard')->with('error', 'You do not have the permission to perform this Action. Code: 46-824_P');
-        }
+        $errorMessage = 'You do not have permission to perform this action. Code: 46-824_P';
+        $redirectRoute = $guard === 'admin' ? 'admin.dashboard' : 'user.dashboard';
 
-        return redirect()->route('user.dashboard')->with('error', 'Unauthorized Action. Code: 46-824_P');
+        return redirect()->route($redirectRoute)->with('error', $errorMessage);
     }
 }

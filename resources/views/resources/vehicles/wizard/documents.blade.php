@@ -6,13 +6,13 @@
                 class="!text-base dark:!text-gray-200 !text-gray-800 font-normal">Registration</x-label>
             <div class="flex items-center gap-6">
                 <div class="w-full sm:w-1/2">
-                    <x-date id="issued_date" wire:model.lazy="storeData.documents.registration.issued_date" placeholder="issued date" max="{{ now()->format('d/m/Y') }}" min="{{ now()->subYears(1)->format('d/m/Y') }}" loadJS=true/>
+                    <x-date id="issued_date" wire:model.lazy="storeData.documents.registration.issued_date" placeholder="issued date" max="{{ now()->format('m/d/Y') }}" min="{{ now()->subYears(1)->format('m/d/Y') }}" loadJS=true/>
                     <x-input-error for="storeData.documents.registration.issued_date" />
                 </div>
                 <div class="w-full sm:w-1/2">
                     @php
                         $issuedDate = \Carbon\Carbon::parse($storeData['documents']['registration']['issued_date'] ?? now());
-                        $expirationMinDate = $issuedDate->copy()->addMonths(11)->format('m/d/Y');
+                        $expirationMinDate = $issuedDate->copy()->addMonths(2)->format('m/d/Y');
                         $expirationMaxDate = $issuedDate->copy()->addMonths(13)->format('m/d/Y');
                     @endphp
                     <x-date id="expiration_date" wire:model="storeData.documents.registration.expiration_date" placeholder="expiration date" max="{{ $expirationMaxDate }}" min="{{ $expirationMinDate }}" />

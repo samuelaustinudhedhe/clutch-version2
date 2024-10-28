@@ -152,7 +152,6 @@ class Wizard extends VehiclesWizard
     {
 
         $users = User::search('name', $this->userSearch)
-            ->where('role', 'owner')
             ->paginate($this->usersPerPage);
 
         return view(

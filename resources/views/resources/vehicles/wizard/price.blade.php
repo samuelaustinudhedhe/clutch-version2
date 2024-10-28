@@ -1,6 +1,9 @@
 <div>
     <x-div>
-
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            Upload vehicle images showing the front, left, right, and rear views at a size of 2880 by 1400 pixels. 
+            Ensure a generous portion of the background is included to enhance the presentation's quality
+        </p>
         <div class="mb-6">
             <x-label for="storeData.price.amount">Regular Price</x-label>
             <div class="flex gap-6 items-end">

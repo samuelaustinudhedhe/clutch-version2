@@ -12,4 +12,5 @@ Route::prefix('user')->name('user.')->middleware(['auth:sanctum', config('jetstr
     Route::get('/',  [Dashboard::class, 'show']);
     Route::get('/dashboard',  [Dashboard::class, 'show'])->name('dashboard');
     Route::get('/onboarding', OnboardingLayout::class)->name('onboarding');
+    Route::get('/settings', OnboardingLayout::class)->name('settings.show');
 });

@@ -111,7 +111,7 @@
         {{-- Location --}}
         <x-location id="storeData.location.pickup.full" name="Vehicle Pickup Location" label="Pickup"
             wire:model="storeData.location.pickup.full" loadJS=true />
-        <x-location id="storeData.location.drop_off.full" name="Vehicle drop_off Location" label="Drop-off"
+        <x-location id="storeData.location.drop_off.full" name="Vehicle drop_off Location" label="Drop-off (optional)"
             wire:model="storeData.location.drop_off.full" loadJS=false />
 
     </x-div>

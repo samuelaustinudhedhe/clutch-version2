@@ -23,7 +23,7 @@
         @include('layouts.partials.session-flash')
 
         {{-- Header Content--}}        
-        <header>
+        <header class="h-[65px] relative">
             {{-- Add your navigation or header content here --}}
             @include('layouts.partials.header')
         </header>
@@ -34,7 +34,7 @@
         </main>
 
         {{-- Footer Content --}}
-        <footer>
+        <footer class="relative">
             {{-- Add your footer content here --}}
             @include('layouts.partials.footer')
         </footer>

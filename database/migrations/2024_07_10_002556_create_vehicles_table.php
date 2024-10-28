@@ -77,25 +77,20 @@ return new class extends Migration
                         'economy' => '', // Fuel economy
                     ],
 
-                    // Modifications
-                    'modifications' => [
-                        'performance' => '', // Performance modifications
-                        'aesthetic' => '', // Aesthetic modifications
-                        'interior' => '', // Interior modifications
-                    ],
-
+                    
                     // Security Features
                     'security' => [
-                        'auto_lock' => '', // Auto lock availability
-                        'alarm_system' => '', // Alarm system availability
-                        'tracking_system' => '', // Tracking system availability
                     ],
 
                     // Safety Features
                     'safety' => [
-                        'airbags' => '', // Airbags availability
-                        'emergency_braking' => '', // Emergency braking system availability
                     ],
+                    
+                    // Faults
+                    'faults' => '', // Faults (e.g., brakes, tires, air conditioning, lights, etc.)
+                    
+                    // Modifications
+                    'modifications' => '',
 
                     // Service Information
                     'service' => [
@@ -103,7 +98,6 @@ return new class extends Migration
                         'last_service_date' => '', // Last service date
                         'last_inspection_date' => '', // Last inspection date
                     ],
-                    'faults' => '', // Faults (e.g., brakes, tires, air conditioning, lights, etc.)
                 ])
             )->nullable();
             $table->json('documents')->default(json_encode([

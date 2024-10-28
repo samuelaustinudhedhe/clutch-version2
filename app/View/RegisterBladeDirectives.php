@@ -64,47 +64,6 @@ class RegisterBladeDirectives
             return "<?php endif; ?>";
         });
     }
-    /**
-     * Registers the 'permission' Blade directive.
-     *
-     * This directive checks if the authenticated user or the authenticated admin
-     * has a specific permission.
-     *
-     * @return void
-     */
-    public static function registerCan()
-    {
-        Blade::directive('can', function ($permissions) {
-            // Remove parentheses, spaces, and quotes from the permissions string, then split it into an array
-            $permissions = explode(',', str_replace(['(', ')', ' ', '"', "'"], '', $permissions));
-
-            // Create a string of conditions to check if the user or admin has any of the specified permissions
-            $permissionsCheck = implode(' || ', array_map(function ($permission) {
-                return "auth()->user()->can('$permission') || (auth('admin')->check() && auth('admin')->user()->can('$permission'))";
-            }, $permissions));
-
-            // Return the Blade directive for the permission check
-            return "<?php if(auth()->check() && ($permissionsCheck)): ?>";
-        });
-
-        Blade::directive('notcan', function ($permissions) {
-            // Remove parentheses, spaces, and quotes from the permissions string, then split it into an array
-            $permissions = explode(',', str_replace(['(', ')', ' ', '"', "'"], '', $permissions));
-
-            // Create a string of conditions to check if the user or admin does not have any of the specified permissions
-            $permissionsCheck = implode(' && ', array_map(function ($permission) {
-                return "!auth()->user()->can('$permission') && (!auth('admin')->check() || !auth('admin')->user()->can('$permission'))";
-            }, $permissions));
-
-            // Return the Blade directive for the notcan check
-            return "<?php if(auth()->check() && ($permissionsCheck)): ?>";
-        });
-
-        Blade::directive('endcan', function () {
-            // Return the Blade directive to end the permission check
-            return "<?php endif; ?>";
-        });
-    }
 
     /**
      * Registers the 'permission' Blade directive.
@@ -122,11 +81,11 @@ class RegisterBladeDirectives
 
             // Create a string of conditions to check if the user or admin has any of the specified permissions
             $permissionsCheck = implode(' || ', array_map(function ($permission) {
-                return "auth()->user()->can('$permission') || (auth('admin')->check() && auth('admin')->user()->can('$permission'))";
+                return "getPerson()->hasPermission('$permission')";
             }, $permissions));
 
             // Return the Blade directive for the permission check
-            return "<?php if(auth()->check() && ($permissionsCheck)): ?>";
+            return "<?php if(isLoggedIn() && ($permissionsCheck)): ?>";
         });
 
         Blade::directive('notpermission', function ($permissions) {
@@ -135,11 +94,11 @@ class RegisterBladeDirectives
 
             // Create a string of conditions to check if the user or admin does not have any of the specified permissions
             $permissionsCheck = implode(' && ', array_map(function ($permission) {
-                return "!auth()->user()->can('$permission') && (!auth('admin')->check() || !auth('admin')->user()->can('$permission'))";
+                return "!getPerson()->hasPermission('$permission')";
             }, $permissions));
 
             // Return the Blade directive for the notpermission check
-            return "<?php if(auth()->check() && ($permissionsCheck)): ?>";
+            return "<?php if(isLoggedIn() && ($permissionsCheck)): ?>";
         });
 
         Blade::directive('endpermission', function () {
