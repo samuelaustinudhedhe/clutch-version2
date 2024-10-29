@@ -25,8 +25,28 @@ trait HasDetails
     public function updateDetails(string $key, $value): void
     {
         $details = $this->getDetails();
+        if (!is_object($details)) {
+            $details = new \stdClass();
+        }
         $details->$key = $value;
-        $this->details = json_encode($details);
+        $this->setDetailsAttribute($details);
+    }
+
+    /**
+     * Set the details attribute, ensuring it's stored as a JSON string.
+     *
+     * @param mixed $value The details to be set
+     * @return void
+     */
+    public function setDetailsAttribute($value): void
+    {
+        if (is_array($value) || is_object($value)) {
+            $this->attributes['details'] = json_encode($value);
+        } elseif (is_string($value) && isJson($value)) {
+            $this->attributes['details'] = $value;
+        } else {
+            throw new \InvalidArgumentException('The details attribute must be a valid JSON string, array, or object.');
+        }
     }
 
     /**
@@ -164,6 +184,7 @@ trait HasDetails
     {
         return $this->getDetails()->nin ?? null;
     }
+
     /**
      * Get the phone numbers from the details attribute.
      *

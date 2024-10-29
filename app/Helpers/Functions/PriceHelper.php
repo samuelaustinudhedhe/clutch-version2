@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('humanifyPrice')) {
+if (!function_exists('humanizePrice')) {
     /**
      * Formats a price by adding a currency symbol and ensuring two decimal places.
      *
@@ -9,7 +9,7 @@ if (!function_exists('humanifyPrice')) {
      * @param int $decimals The number of decimal places to display. Default is 0.
      * @return string|null The formatted price with currency symbol, or null if the input is invalid.
      */
-    function humanifyPrice($price, int $decimals = 0 , $echo = false)
+    function humanizePrice($price, int $decimals = 0 , $echo = false)
     {
         if (is_string($price)) {
             // Check if the string contains only digits and commas
@@ -39,7 +39,7 @@ if (!function_exists('humanifyPrice')) {
 if (!function_exists('formatPrice')) {
 
     /**
-     * Formats a price by utilizing the humanifyPrice function.
+     * Formats a price by utilizing the humanizePrice function.
      *
      * @param string|float $price The price to format. Can be a string with numbers and commas or a float.
      * @param bool $echo Whether to echo the formatted price or return it.
@@ -47,7 +47,7 @@ if (!function_exists('formatPrice')) {
      */
     function formatPrice($price, $echo = false)
     {
-        return humanifyPrice($price, $echo);
+        return humanizePrice($price, $echo);
     }
 }
 

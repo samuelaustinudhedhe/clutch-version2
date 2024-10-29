@@ -606,8 +606,9 @@ class Onboarding extends Component
      */
     public function sendEmailVerification()
     {
+        // Send the email verification notification using the sendEmailVerificationNotification method
         getUser()->sendEmailVerificationNotification();
-
+        // Set the verification link sent flag to true
         $this->verificationLinkSent = true;
     }
 
@@ -618,27 +619,24 @@ class Onboarding extends Component
      */
     public function submit()
     {
-        // Redirect to the user dashboard after completing the onboarding process
-        redirect()->route('user.dashboard')->with('message', 'You have completed the onboarding process. You have been updated to ' . ucfirst($this->user->role) . '.');
+        // Update user details using updateDetails method
+        $this->user->updateDetails('phone', $this->storeData['phone']);
+        $this->user->updateDetails('date_of_birth', $this->storeData['date_of_birth']);
+        $this->user->updateDetails('gender', $this->storeData['gender']);
+        $this->user->updateDetails('address', $this->storeData['address']);
+        $this->user->updateDetails('social', $this->storeData['social']);
+        $this->user->updateDetails('nin', $this->storeData['nin']);
+        $this->user->updateDetails('self_drive', $this->storeData['drive']);
+        $this->user->updateDetails('status', 'active');
+        // Save the changes
+        $this->user->save();
 
-        updateUser($this->user->id,[
-            'records->onboarding->status' => 'completed',
-            'records->onboarding->step' => $this->currentStep,
-            'records->onboarding->restart_at' => null,
-            'records->onboarding->completed_at' => now(),
-            'details->phone' => json_encode($this->storeData['phone']),
-            'details->date_of_birth' => json_encode($this->storeData['date_of_birth']),
-            'details->gender' => json_encode($this->storeData['gender']),
-            'details->address' => json_encode($this->storeData['address']),
-            'details->social' => json_encode($this->storeData['social']),
-            'details->nin' => json_encode($this->storeData['nin']),
-            'details->self_drive' => json_encode($this->storeData['drive']),
-            'details->status' => 'active',
-            'verification->account->status' => 'pending',
-            'role' => $this->storeData['role'],
-            'profile_photo_path' => getUserStorage('') . 'profile/photo.webp',
-        ]);
-
+        // Assign the user role using assignRole method
+        $this->user->assignRole($this->storeData['role']);
+        
+        // Update the profile photo path using updateUser method
+        updateUser($this->user->id, ['profile_photo_path' => getUserStorage('') . 'profile/photo.webp',]);
+        
         // Save the uploaded files
         $this->saveFiles($this->user);
 
@@ -646,27 +644,6 @@ class Onboarding extends Component
         Storage::delete($this->storePath);
 
         // Notify the user about the completion
-        $this->user->notify(new Completed());
-    }
-
-    public function oldSubmit()
-    {
-        // Save any necessary data to the database
-        $user = $this->user;
-        $user->role = $this->storeData['role'];
-        // Update the details attribute using the updateDetails method
-        $user->updateDetails('phone', $this->storeData['phone']);
-        $user->updateDetails('date_of_birth', $this->storeData['date_of_birth']);
-        $user->updateDetails('gender', $this->storeData['gender']);
-        $user->updateDetails('address', $this->storeData['address']);
-        $user->updateDetails('social', $this->storeData['social']);
-        $user->updateDetails('nin', $this->storeData['nin']);
-        $user->updateDetails('self_drive', $this->storeData['drive']);
-        $this->saveFiles($user);
-        $user->save();
-        //delete the onboarding json file after saving the data
-        Storage::delete($this->storePath);
-
         $this->completeOnboarding();
     }
 
@@ -679,18 +656,18 @@ class Onboarding extends Component
     public function completeOnboarding()
     {
         // Update the onboarding data.
-        $this->user->updateOnboarding([
-            'status' => 'completed',
-            'step' => $this->currentStep,
-            'restart_at' => null,
-            'completed_at' => now(),
+        updateUser($this->user->id, [
+            'records->onboarding->status' => 'completed',
+            'records->onboarding->step' => $this->currentStep,
+            'records->onboarding->restart_at' => null,
+            'records->onboarding->completed_at' => now(),
+            'verification->account->status' => 'pending',
         ]);
 
         $this->user->notify(new Completed());
         // Redirect to the user dashboard after completing the onboarding process
         return redirect()->route('user.dashboard')->with('message', 'You have completed the onboarding process. You have been updated to ' . ucfirst($this->user->role) . '.');
     }
-
 
     /**
      * Skip the onboarding process.

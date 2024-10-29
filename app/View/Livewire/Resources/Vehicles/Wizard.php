@@ -836,10 +836,10 @@ abstract class Wizard extends Component
     private function updateOwnerRole($owner)
     {
         if ($owner instanceof User && !$owner->hasRole('owner')) {
+            // make user owner if user is not already an owner
             $owner->assignRole('owner');
             // Update the user status to inactive if the user was just updated to owner
-            $owner->status = User::STATUS_INACTIVE;
-            $owner->save();
+            updateUser($owner, ['details->status' => User::STATUS_INACTIVE]);
         }
     }
 

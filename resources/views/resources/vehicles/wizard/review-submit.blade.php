@@ -73,10 +73,10 @@
         <div class="flex flex-nowrap items-baseline gap-2">
             @isset($storeData['price'])
                 @if ($storeData['price']['on_sale'] === 'true')
-                    <span class="text-lg line-through opacity-60">{{ humanifyPrice($storeData['price']['amount'] ?? 00) }}</span>
-                    <span class="text-2xl font-semibold">{{ humanifyPrice($storeData['price']['sale'] ?? 00) }}</span>
+                    <span class="text-lg line-through opacity-60">{{ humanizePrice($storeData['price']['amount'] ?? 00) }}</span>
+                    <span class="text-2xl font-semibold">{{ humanizePrice($storeData['price']['sale'] ?? 00) }}</span>
                 @else
-                    <span class="text-2xl font-semibold">{{ humanifyPrice($storeData['price']['amount'] ?? 00) }}</span>
+                    <span class="text-2xl font-semibold">{{ humanizePrice($storeData['price']['amount'] ?? 00) }}</span>
                 @endif
             @else
                 <span class="text-2xl font-semibold">unknown</span>

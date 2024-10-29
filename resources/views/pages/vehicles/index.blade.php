@@ -47,7 +47,7 @@
                         'id' => $vehicle->id,
                         'lat' => ($vehicle->location->pickup->latitude ?? 0) + $latOffset,
                         'lng' => ($vehicle->location->pickup->longitude ?? 0) + $lngOffset,
-                        'price' => humanifyPrice($price), // Ensure the price is formatted correctly
+                        'price' => humanizePrice($price), // Ensure the price is formatted correctly
                         'image' => $vehicle->featured_image_url,
                         'name' => $vehicle->name,
                         'rating' => $vehicle->rating ?? '5.0',

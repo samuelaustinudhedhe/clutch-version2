@@ -30,7 +30,7 @@ class CheckOnboarding
                     return redirect($intendedUrl)->withCookie(Cookie::forget('intended_url'));
                     echo "Redirecting to intended URL: $intendedUrl";
                 } else {
-                    return redirect()->route('user.dashboard')->with('info', 'You have completed the onboarding process' . $user->name);
+                    return redirect()->route('user.dashboard')->with('info', 'You have completed the onboarding process ' . $user->name);
                 }
             }
         }

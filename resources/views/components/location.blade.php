@@ -11,7 +11,117 @@
 ])
 
 <div class="mb-4" @if ($loadJS == true) 
-    x-data="{initAddressAutocomplete(input){const existingPacContainers=document.querySelectorAll('.pac-container');existingPacContainers.forEach(container=>container.remove());const autocomplete=new google.maps.places.Autocomplete(input);autocomplete.setOptions({types:['geocode'],strictBounds:false});autocomplete.addListener('place_changed',()=>{const place=autocomplete.getPlace();this.handlePlaceChange(place,input);});input.addEventListener('blur',async()=>{const inputValue=input.value;if(inputValue&&!autocomplete.getPlace()){const geocoder=new google.maps.Geocoder();const result=await this.geocodeAddress(geocoder,inputValue);if(result){this.handlePlaceChange(result,input);}}this.closeSuggestionBox();});input.addEventListener('focusout',()=>{this.closeSuggestionBox();});},closeSuggestionBox(){const pacContainer=document.querySelector('.pac-container');if(pacContainer){pacContainer.style.display='none';}},async geocodeAddress(geocoder,address){return new Promise((resolve,reject)=>{geocoder.geocode({'address':address},(results,status)=>{if(status==='OK'&&results[0]){resolve(results[0]);$wire.dispatch('notify',{message:'Your location is on the map',type:'success'});}else{$wire.dispatch('notify',{message:'Your location is not found on the map. (Code: 29-023_L)',type:'error'});}});});},handlePlaceChange(place,input){let street,city,state,country,postal_code,latitude,longitude;if(place.address_components){place.address_components.forEach(component=>{const addressType=component.types[0];const longName=component.long_name;switch(addressType){case'street_number':street=longName+' '+street;break;case'route':street+=longName;break;case'locality':case'sublocality_level_1':city=longName;break;case'administrative_area_level_1':state=component.short_name;break;case'country':country=longName;break;case'postal_code':postal_code=longName;break;}});}if(place.geometry){latitude=place.geometry.location.lat();longitude=place.geometry.location.lng();}if(street&&city&&state&&country){const address={street,city,state,country,postal_code,latitude,longitude};console.log('Extracted address:',address);Array.from(input.attributes).forEach(attr=>{if(attr.name.startsWith('wire:')){const strippedValue=attr.value.replace('.full','');$wire.set(`${strippedValue}`,address);}});const event=new Event('input',{bubbles:true,cancelable:true});input.dispatchEvent(event);}else{$wire.dispatch('notify',{message:'There seems to be an issue with the address provided. Kindly use the suggestion box and enter your complete address. (Code: 30-023_L)',type:'error'});}}}" 
+    x-data="{
+        initAddressAutocomplete(input) {
+            const existingPacContainers = document.querySelectorAll('.pac-container');
+            existingPacContainers.forEach(container => container.remove());
+            const autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.setOptions({types: ['geocode'], strictBounds: false});
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                this.handlePlaceChange(place, input);
+            });
+            input.addEventListener('blur', async () => {
+                const inputValue = input.value;
+                if (inputValue && !autocomplete.getPlace()) {
+                    const geocoder = new google.maps.Geocoder();
+                    const result = await this.geocodeAddress(geocoder, inputValue);
+                    if (result) {
+                        this.handlePlaceChange(result, input);
+                    }
+                }
+                this.closeSuggestionBox();
+            });
+            input.addEventListener('focusout', () => {
+                this.closeSuggestionBox();
+            });
+        },
+        closeSuggestionBox() {
+            const pacContainer = document.querySelector('.pac-container');
+            if (pacContainer) {
+                pacContainer.style.display = 'none';
+            }
+        },
+        async geocodeAddress(geocoder, address) {
+            return new Promise((resolve, reject) => {
+                geocoder.geocode({'address': address}, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        resolve(results[0]);
+                        this.notify_or_flash('Your location is on the map', 'success');
+                    } else {
+                        this.notify_or_flash('Your location is not found on the map. (Code: 29-023_L)', 'error');
+                    }
+                });
+            });
+        },
+        handlePlaceChange(place, input) {
+            let street = '', city = '', state = '', country = '', postal_code = '', latitude, longitude;
+            if (place.address_components) {
+                place.address_components.forEach(component => {
+                    const addressType = component.types[0];
+                    const longName = component.long_name;
+                    switch (addressType) {
+                        case 'street_number':
+                            street = longName + ' ' + street;
+                            break;
+                        case 'route':
+                            street += longName;
+                            break;
+                        case 'locality':
+                        case 'sublocality_level_1':
+                            city = longName;
+                            break;
+                        case 'administrative_area_level_1':
+                            state = component.short_name;
+                            break;
+                        case 'country':
+                            country = longName;
+                            break;
+                        case 'postal_code':
+                            postal_code = longName;
+                            break;
+                    }
+                });
+            }
+            if (place.geometry) {
+                latitude = place.geometry.location.lat();
+                longitude = place.geometry.location.lng();
+            }
+            if (street && city && state && country) {
+                const address = {
+                    street,
+                    city,
+                    state,
+                    country,
+                    postal_code,
+                    latitude,
+                    longitude
+                };
+                console.log('Extracted address:', address);
+                Array.from(input.attributes).forEach(attr => {
+                    if (attr.name.startsWith('wire:')) {
+                        const strippedValue = attr.value.replace('.full', '');
+                        $wire.set(`${strippedValue}`, address);
+                    }
+                });
+                const event = new Event('input', {
+                    bubbles: true,
+                    cancelable: true
+                });
+                input.dispatchEvent(event);
+            } else {
+                this.notify_or_flash('There seems to be an issue with the address provided. Kindly use the suggestion box and enter your complete address. (Code: 30-023_L)', 'error')
+            }
+        },
+        notify_or_flash(message, type) {
+            if ($wire) {
+                $wire.dispatch('notify', {message: message, type: type});
+            } else {
+                // Fallback for non-Livewire context
+                // alert(message);
+            }
+        },
+    }"
     @endif>
     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300 mb-1 {{ $labelClass }}" for="{{ $id }}">
         {{ $label }}

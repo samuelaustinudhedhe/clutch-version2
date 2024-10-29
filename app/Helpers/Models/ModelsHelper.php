@@ -1,11 +1,20 @@
 <?php
 
+use App\Models\Admin;
+use App\Models\User;
+use App\Models\Vehicle;
+use App\Models\Attachment;
+use App\Models\Trip;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 if (!function_exists('update')) {
     function update($table, $id, $data)
     {
+        if (!Schema::hasTable($table)) {
+            throw new InvalidArgumentException("Table '{$table}' does not exist.");
+        }
+
         return DB::table($table)
             ->where('id', $id)
             ->update($data);
@@ -16,14 +25,41 @@ if (!function_exists('updateUser')) {
     /**
      * Updates a user record in the database.
      *
-     * @param int $id The ID of the user to be updated.
+     * @param User|int $user The User model instance or the ID of the user to be updated.
      * @param array $data An associative array of column-value pairs to update in the user record.
      * 
      * @return int The number of affected rows.
      */
-    function updateUser($id, $data)
+    function updateUser($user, array $data)
     {
-        return update('users', $id, $data);
+        $userId = $user instanceof User ? $user->id : $user;
+
+        if (!is_int($userId)) {
+            throw new InvalidArgumentException('The user parameter must be either a User model instance or an integer ID.');
+        }
+
+        return update('users', $userId, $data);
+    }
+}
+
+if (!function_exists('updateAdmin')) {
+    /**
+     * Updates a admin record in the database.
+     *
+     * @param Admin|int $admin The admin model instance or the ID of the admin to be updated.
+     * @param array $data An associative array of column-value pairs to update in the admin record.
+     * 
+     * @return int The number of affected rows.
+     */
+    function updateAdmin($admin, array $data)
+    {
+        $adminId = $admin instanceof Admin ? $admin->id : $admin;
+
+        if (!is_int($adminId)) {
+            throw new InvalidArgumentException('The admin parameter must be either a Admin model instance or an integer ID.');
+        }
+
+        return update('admins', $adminId, $data);
     }
 }
 
@@ -31,14 +67,20 @@ if (!function_exists('updateVehicle')) {
     /**
      * Updates a vehicle record in the database.
      *
-     * @param int $id The ID of the vehicle to be updated.
+     * @param Vehicle|int $vehicle The Vehicle model instance or the ID of the vehicle to be updated.
      * @param array $data An associative array of column-value pairs to update in the vehicle record.
      * 
      * @return int The number of affected rows.
      */
-    function updateVehicle($id, $data)
+    function updateVehicle($vehicle, array $data)
     {
-        return update('vehicles', $id, $data);
+        $vehicleId = $vehicle instanceof Vehicle ? $vehicle->id : $vehicle;
+
+        if (!is_int($vehicleId)) {
+            throw new InvalidArgumentException('The vehicle parameter must be either a Vehicle model instance or an integer ID.');
+        }
+
+        return update('vehicles', $vehicleId, $data);
     }
 }
 
@@ -46,14 +88,20 @@ if (!function_exists('updateAttachment')) {
     /**
      * Updates an attachment record in the database.
      *
-     * @param int $id The ID of the attachment to be updated.
+     * @param Attachment|int $attachment The Attachment model instance or the ID of the attachment to be updated.
      * @param array $data An associative array of column-value pairs to update in the attachment record.
      * 
      * @return int The number of affected rows.
      */
-    function updateAttachment($id, $data)
+    function updateAttachment($attachment, array $data)
     {
-        return update('attachments', $id, $data);
+        $attachmentId = $attachment instanceof Attachment ? $attachment->id : $attachment;
+
+        if (!is_int($attachmentId)) {
+            throw new InvalidArgumentException('The attachment parameter must be either an Attachment model instance or an integer ID.');
+        }
+
+        return update('attachments', $attachmentId, $data);
     }
 }
 
@@ -61,17 +109,22 @@ if (!function_exists('updateTrip')) {
     /**
      * Updates a trip record in the database.
      *
-     * @param int $id The ID of the trip to be updated.
+     * @param Trip|int $trip The Trip model instance or the ID of the trip to be updated.
      * @param array $data An associative array of column-value pairs to update in the trip record.
      * 
      * @return int The number of affected rows.
      */
-    function updateTrip($id, $data)
+    function updateTrip($trip, array $data)
     {
-        return update('trips', $id, $data);
+        $tripId = $trip instanceof Trip ? $trip->id : $trip;
+
+        if (!is_int($tripId)) {
+            throw new InvalidArgumentException('The trip parameter must be either a Trip model instance or an integer ID.');
+        }
+
+        return update('trips', $tripId, $data);
     }
 }
-
 
 if (!function_exists('getPerson')) {
     /**
@@ -256,5 +309,23 @@ if (!function_exists('isLoggedIn')) {
             // If no specific guard is provided, check both
             return auth()->check() || auth('admin')->check();
         }
+    }
+}
+
+if (!function_exists('isJson')) {
+    /**
+     * Checks if a given string is a valid JSON.
+     *
+     * This function attempts to decode the input string as JSON and checks
+     * if the operation was successful.
+     *
+     * @param string $string The string to be checked for JSON validity.
+     *
+     * @return bool Returns true if the string is valid JSON, false otherwise.
+     */
+    function isJson($string): bool
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }

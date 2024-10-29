@@ -145,7 +145,7 @@ class Vehicle extends Model
      */
     public function getHumanPriceAttribute()
     {
-        return humanifyPrice($this->getPrice()->amount);
+        return humanizePrice($this->getPrice()->amount);
     }
 
     /**
@@ -158,7 +158,7 @@ class Vehicle extends Model
      */
     public function getHumanSalePriceAttribute()
     {
-        return humanifyPrice($this->sale_price);
+        return humanizePrice($this->sale_price);
     }
 
     /**
@@ -171,7 +171,7 @@ class Vehicle extends Model
      */
     public function getHumanDiscountedPriceAttribute()
     {
-        return humanifyPrice($this->discountedPrice());
+        return humanizePrice($this->discountedPrice());
     }
 
     /**
@@ -306,7 +306,7 @@ class Vehicle extends Model
     {
         $taxAmount = $this->tax() * $multiplier;
         if ($human) {
-            return humanifyPrice($taxAmount);
+            return humanizePrice($taxAmount);
         }
         return $taxAmount;
     }
@@ -339,7 +339,7 @@ class Vehicle extends Model
         if (!$human) {
             return $basePrice * $multiplier;
         } else {
-            return humanifyPrice($basePrice * $multiplier);
+            return humanizePrice($basePrice * $multiplier);
         }
     }
 
