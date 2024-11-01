@@ -45,7 +45,7 @@ Route::get('/csrf-token', function () {
  * @param int $depth How deep to recurse into subdirectories (1 in this case)
  * @param int $hidden Whether to include hidden files (0 in this case)
  */
-require_recursively(__DIR__ , maxDepth:1);
+require_recursively(__DIR__ , maxDepth:0);
 
 /**
  * Include controller files for other routes.
@@ -60,5 +60,5 @@ require_recursively(__DIR__ , maxDepth:1);
  * @param int $depth How deep to recurse into subdirectories (2 in this case)
  * @param int $hidden Whether to include hidden files (0 in this case)
  */
-require_recursively(__DIR__ ,filename:'controller', maxDepth: 2);
+require_recursively(__DIR__ ,filename:'controller', maxDepth: 1);
 

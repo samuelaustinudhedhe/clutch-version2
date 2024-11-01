@@ -7,38 +7,21 @@
  * It can be used to autoload PHP files, include JavaScript and CSS files, or perform operations on files
  * matching certain patterns while excluding others.
  *
- * @param string $directory The directory to start the search from.
- *                          Example: __DIR__ . '/src'
- * 
- * @param array $extensions An array of file extensions to include (e.g., ['php', 'js', 'css']).
- *                          Default is ['php'].
- *                          Example: ['php', 'js']
- * 
- * @param string $filename Optional. A filename pattern to match (default is an empty string, which matches all files).
- *                         Example: 'Helper' to match all files containing 'Helper' in their name.
- * 
- * @param string|array $exclude Optional. A filename pattern or array of patterns to exclude (default is an empty array).
- *                              Example: ['test', '*.bak'] to exclude all files containing 'test' and with '.bak' extension.
- * 
- * @param int $maxDepth Optional. The maximum depth to recurse into directories (default is 5).
- *                      Use a lower value to limit deep directory traversal.
- * 
- * @param int $currentDepth Internal use. The current depth of recursion (default is 0).
- *                          This parameter is used internally to track the recursion depth.
+ * @param string $directory The directory to start the search from (eg: __DIR__ . '/src').
+ * @param array $extensions An array of file extensions to include (e.g: ['php', 'js', 'css']).Default is ['php'].
+ * @param string $filename Optional. A filename pattern to match (default is an empty string, which matches all files).Example: 'Helper' to match all files containing 'Helper' in their name.
+ * @param string|array $exclude Optional. A filename pattern or array of patterns to exclude (default is an empty array).Example: ['test', '*.bak'] to exclude all files containing 'test' and with '.bak' extension.
+ * @param int $maxDepth Optional. The maximum depth to recurse into directories (default is 5). Use a lower value to limit deep directory traversal.  Use 0 to include only files in the current directory
+ * @param int $currentDepth Internal use. The current depth of recursion (default is 0). This parameter is used internally to track the recursion depth.
  *
  * @return void This function does not return a value.
  *
  * @throws Exception If the specified directory does not exist or is not readable.
  *
- * @example
- * // Include all PHP files in the current directory and subdirectories, excluding test files
- * require_recursively(__DIR__, ['php'], '', ['*test*']);
- *
- * // Include all Helper PHP files in the 'src' directory, up to 3 levels deep
- * require_recursively(__DIR__ . '/src', ['php'], 'Helper', [], 3);
- *
- * // Include JavaScript and CSS files, excluding minified versions
- * require_recursively(__DIR__ . '/assets', ['js', 'css'], '', ['*.min.*']);
+ * @example How to Use this function:
+ *  - Include all PHP files in the current directory and subdirectories, excluding test files: require_recursively(__DIR__, ['php'], '', ['*test*']);
+ *  - Include all Helper PHP files in the 'src' directory, up to 3 levels deep: require_recursively(__DIR__ . '/src', ['php'], 'Helper', [], 3);
+ *  - Include JavaScript and CSS files, excluding minified versions: require_recursively(__DIR__ . '/assets', ['js', 'css'], '', ['*.min.*']);
  */
 function require_recursively($directory, $extensions = ['php'], $filename = '', $exclude = [], $maxDepth = 5, $currentDepth = 0)
 {
@@ -127,18 +110,7 @@ function require_recursively($directory, $extensions = ['php'], $filename = '', 
     }
 }
 
-
 /**
- * Include all helper files with named arguments (PHP 8.0+)
- * 
- * This example shows how to use named arguments to call the require_recursively function,
- * which can improve readability when not all arguments are needed.
+ * Include all helper files with
  */
-require_recursively(
-    directory: __DIR__,
-    extensions: ['php'],
-    filename: 'Helper',
-    exclude: ['_Old'],
-    maxDepth: 10,
-    currentDepth: 0
-);
+require_recursively(__DIR__, ['php'], 'Helper', ['_Old'], 10, 0);
