@@ -64,10 +64,17 @@ class Show extends Component
         $this->store();
 
         if (!getUser()) {
-            $intendedUrl = route('vehicles.show', ['vehicle' => $this->vehicle->id]);
-            cookie()->queue(cookie('intended_url', $intendedUrl, 60)); // Queue the cookie to be sent with the response
+
+            // Set the intended route for the user after the user logged in and completes onboarding
+            set_intended_route('vehicles.show', ['vehicle' => $this->vehicle->id], condition:[
+                'onboarding_completed', 'is_logged_in',
+            ],  validity:60);
+
+            // Redirect the user to the login page
             return redirect()->route('login');
         } else {
+            
+            // Redirect the user to the checkout page for the vehicle
             return redirect()->route('checkout.show', ['vehicle' => $this->vehicle->id]);
         }
     }

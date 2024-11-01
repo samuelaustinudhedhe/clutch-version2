@@ -1,4 +1,4 @@
-@props(['id','name' => 'Accordion item', 'divClass' => '', 'customIcon' => false, 'expanded' => 'true'])
+@props(['id','name' => 'Accordion item','activeClass' => 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white', 'inactiveClass' => '', 'divClass' => '', 'customIcon' => false, 'expanded' => 'true'])
 
 @php
     $divClass = $divClass? $divClass : 'rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800 my-4';
@@ -6,8 +6,8 @@
 
 <div class="relative {{ $divClass }}">
 
-<button  id="{{ $id }}-title" title="{{ $name }}" type="button" class="flex items-center justify-between w-full p-4 sm:p-6 bg-unset"
-    data-accordion-target="#{{ $id }}-content" aria-expanded="{{ $expanded }}" aria-controls="{{ $id }}-content">
+<button  id="{{ $id }}-title" title="{{ $name }}" type="button"  {{ $attributes->merge(['class' => 'flex items-center justify-between w-full p-4 sm:p-6 bg-unset']) }} data-active-classes="{{ $activeClass }}"
+    data-inactive-classes="{{ $inactiveClass }}" data-accordion-target="#{{ $id }}-content" aria-expanded="{{ $expanded }}" aria-controls="{{ $id }}-content" >
 
     {{ $title }}
 

@@ -5,8 +5,8 @@
             Vehicle Gallery
         </p>
         <p class="text-xs text-gray-500 dark:text-gray-400">
-            Upload vehicle images showing the front, left, right, and rear views at a size of 2880 by 1400 pixels. 
-            Ensure a generous portion of the background is included to enhance the presentation's quality
+            Upload landscape-oriented vehicle images (2880x1400 pixels) showing front, left, right, and rear views. 
+            Include ample background to enhance overall presentation quality. <span class=" text-red-900 dark:text-red-300">Portrait images are not recommended.</span>
         </p>
     </div>
 

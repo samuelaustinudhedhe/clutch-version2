@@ -1,0 +1,170 @@
+{
+  "Toyota": [
+    "Coaster", 
+    "HiAce Commuter", 
+    "HiAce Minibus",
+    "LQ Concept Bus",
+    "Sora"
+  ],
+  "Mercedes-Benz": [
+    "Citaro", 
+    "Intouro", 
+    "Tourismo", 
+    "Sprinter City", 
+    "Sprinter Travel", 
+    "Conecto"
+  ],
+  "Volvo": [
+    "7900 Electric", 
+    "9900", 
+    "B8R", 
+    "B11R", 
+    "9700", 
+    "9700DD"
+  ],
+  "Scania": [
+    "Citywide", 
+    "Interlink", 
+    "Touring", 
+    "Fencer", 
+    "K-Series", 
+    "N-Series"
+  ],
+  "Blue Bird": [
+    "All American", 
+    "Vision", 
+    "Micro Bird", 
+    "T3RE", 
+    "Electric Vision"
+  ],
+  "Thomas Built Buses": [
+    "Saf-T-Liner C2", 
+    "Saf-T-Liner HDX", 
+    "Minotour", 
+    "Saf-T-Liner EFX", 
+    "Jouley Electric"
+  ],
+  "IC Bus": [
+    "CE Series", 
+    "RE Series", 
+    "Electric CE Series", 
+    "AC Series"
+  ],
+  "Gillig": [
+    "Low Floor", 
+    "BRT", 
+    "BRTPlus", 
+    "Commuter", 
+    "CNG Low Floor", 
+    "Electric Low Floor"
+  ],
+  "Alexander Dennis": [
+    "Enviro200", 
+    "Enviro400", 
+    "Enviro500", 
+    "Enviro100EV", 
+    "Enviro350H"
+  ],
+  "New Flyer": [
+    "Xcelsior", 
+    "Xcelsior CHARGE", 
+    "Xcelsior CHARGE NG", 
+    "Xcelsior Fuel Cell", 
+    "MiDi"
+  ],
+  "BYD": [
+    "K7M", 
+    "K9S", 
+    "K9", 
+    "C10MS", 
+    "C8M", 
+    "C6M"
+  ],
+  "Van Hool": [
+    "CX45", 
+    "CX35", 
+    "TDX25", 
+    "TD925", 
+    "EX15", 
+    "EX16H"
+  ],
+  "Temsa": [
+    "TS 30", 
+    "TS 35", 
+    "TS 45", 
+    "Maraton", 
+    "LF12", 
+    "MD9"
+  ],
+  "MCI (Motor Coach Industries)": [
+    "D4505", 
+    "J4500", 
+    "J3500", 
+    "D4520", 
+    "J4500e", 
+    "D-Series"
+  ],
+  "Prevost": [
+    "X3-45", 
+    "H3-45", 
+    "X3-45 VIP", 
+    "H3-45 VIP", 
+    "Volvo 9700"
+  ],
+  "Setra": [
+    "TopClass S 531 DT", 
+    "ComfortClass S 515", 
+    "ComfortClass S 516", 
+    "ComfortClass S 517", 
+    "TopClass S 431 DT", 
+    "MultiClass LE"
+  ],
+  "Solaris": [
+    "Urbino 12", 
+    "Urbino 18", 
+    "Trollino 12", 
+    "Trollino 18", 
+    "Urbino Electric", 
+    "InterUrbino"
+  ],
+  "MAN": [
+    "Lion's City", 
+    "Lion's Intercity", 
+    "Lion's Coach", 
+    "RR4", 
+    "RR8", 
+    "A47 Lion's City M"
+  ],
+  "Tata Motors": [
+    "Starbus", 
+    "Cityride", 
+    "Marcopolo", 
+    "Winger", 
+    "Ultra Electric", 
+    "Divo"
+  ],
+  "Ashok Leyland": [
+    "Lynx", 
+    "Cheetah", 
+    "Falcon", 
+    "Viking", 
+    "Mitra", 
+    "JanBus"
+  ],
+  "Yutong": [
+    "ZK6118", 
+    "ZK6122", 
+    "ZK6146", 
+    "ICE12", 
+    "ICE15", 
+    "ZK6760D"
+  ],
+  "Isuzu": [
+    "Erga", 
+    "Gala", 
+    "Citiport", 
+    "Novo", 
+    "Turquoise", 
+    "Urban"
+  ]
+}

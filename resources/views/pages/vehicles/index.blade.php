@@ -9,11 +9,11 @@
 
     {{-- Container  lg:max-h-[calc(100vh-100px)] --}}
     <section
-        class="relative w-full flex flex-wrap flex-row-reverse lg:flex-nowrap lg:h-[calc(100vh-165px)] lg:max-h-[1500px]">
+        class="relative w-full flex flex-wrap flex-row-reverse lg:flex-nowrap lg:h-[calc(100vh-110px)] lg:max-h-[1500px]">
 
         {{-- Vehicles --}}
         <div
-            class="flex flex-col justify-between w-full lg:min-w-[640px] lg:max-w-[740px] order-2 max-lg:mt-[calc(100vh-153px)]  max-lg:z-[5] max-lg:bg-white dark:bg-gray-900">
+            class="flex flex-col {{ $vehicles->isEmpty()?:'justify-between' }} w-full lg:min-w-[640px] lg:max-w-[740px] order-2 max-lg:mt-[calc(100vh-253px)]  max-lg:z-[5] max-lg:bg-white dark:bg-gray-900">
             <button class="lg:hidden flex items-center justify-center py-4 sticky top-16 z-10 bg-white dark:bg-gray-800 "
                 onclick="window.scrollTo({top: 0,behavior: 'smooth'})">
                 <span class="w-20 h-1 bg-gray-400 rounded-xl"></span>
@@ -27,15 +27,15 @@
             @include('pages.vehicles.index.listing', ['vehicles' => $vehicles])
 
             {{-- Pagination --}}
-            <div class="mt-4 max-md:mx-2 mx-4 lg:mr-8 pb-6">
-                {{ $vehicles->links('vendor.pagination.simple') }}
-
-            </div>
-
+            @if ($vehicles->hasPages())
+                <div class="mt-4 max-md:mx-2 mx-4 lg:mr-8 pb-6">
+                    {{ $vehicles->links('vendor.pagination.simple') }}
+                </div>
+            @endif
         </div>
 
         {{-- Map --}}
-        <div class="w-full max-lg:min-h-[calc(100vh-300px)] h-full lg:max-h-full fixed lg:relative">
+        <div class="w-full max-lg:min-h-[calc(100vh-250px)] max-lg:max-h-[calc(100vh-220px)] h-full lg:max-h-full fixed lg:relative">
             @php
                 $mapVehicles = $vehicles->map(function ($vehicle) {
                     // Generate a small random offset for latitude and longitude
@@ -54,13 +54,13 @@
                         'host_rating' =>
                             $vehicle->owner->rating > 4.9 ? 'All Star Host' : $vehicle->owner->rating . ' ★',
                         'location' => $vehicle->location->pickup->city ?? '',
-                        'discount' => $vehicle->discount(),
+                        'discount' => $vehicle->on_sale? $vehicle->discount() : 0,
                         'discount_note' =>
                             'Discount applies if rented ' .
                             (!$ly ? ' for ' : ' ') .
                             countDays($vehicle->discount_days ?? 1, $ly),
                         'extra_fees' => $vehicle->extra_fees ?? 0,
-                        'trips' => '200 trips',
+                        'trips' => 0,
                         'pickup_city' => $vehicle->location->pickup->city ?? '',
                     ];
                 });
@@ -75,7 +75,7 @@
                     border: 1px solid #ccc;
                     text-align: center;
                     font-weight: bold;
-                    font-size: 10px;
+                    font-size: 12px !important;
                 }
 
                 .gm-style-iw-d,
@@ -110,6 +110,7 @@
                         lat: 9.0579,
                         lng: 7.4951
                     };
+
                     var mapStyle = [{
                             featureType: "all",
                             elementType: "labels",
@@ -281,6 +282,7 @@
                             }]
                         }
                     ];
+
                     var mapOptions = {
                         zoom: 13, // Increased zoom level for better detail
                         center: defaultCenter,
@@ -289,7 +291,7 @@
                         gestureHandling: 'greedy',
                         zoomControl: true, // Add zoom control back
                         streetViewControl: false,
-                        fullscreenControl: false,
+                        fullscreenControl: true,
                         mapTypeControl: false
                     };
                     // Initialize the map
@@ -323,11 +325,15 @@
                     }
 
                     // Handle the manual search by address when the user presses "Enter"
-                    // input.addEventListener('keydown', function(event) {
-                    //     if (event.key === 'Enter') {
-                    //         geocodeAddress();
-                    //     }
-                    // });
+                    input.addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter') {
+                            geocodeAddress();
+                        }
+                    });
+
+                    input.addEventListener('blur', function() {
+                        geocodeAddress();
+                    });
 
                     // Listen to place changes for autocomplete
                     autocomplete.addListener('place_changed', function() {
@@ -340,8 +346,11 @@
                             });
                             return;
                         }
+                        // Call geocodeAddress with the selected place
+                        geocodeAddress(place);
+
                         // Smoothly pan and zoom to the selected place
-                        smoothPanAndZoom(place.geometry.location, 17);
+                        smoothPanAndZoom(place.geometry.location, 12);
                     });
 
                     // Example vehicle data with image
@@ -390,7 +399,7 @@
                                             </svg>
 
                                             <!-- Number of Trips -->
-                                            <span>(${vehicle.trips})</span>
+                                            ${vehicle.trips > 0 ? `<span>(${vehicle.trips} trip${vehicle.trips > 1 ? 's' : ''})</span>` : ''}
 
                                         </div>
 
@@ -408,9 +417,9 @@
                                             
                                             <!-- Save Amount -->
                                             ${vehicle.discount > 0 ? `
-                                                                                                                        <div class="bg-green-100 text-green-600 text-xs min-w-[60px] max-w-[60px] font-semibold px-2 py-1.5 max-w-32 rounded-lg inline-block">
-                                                                                                                            ${vehicle.discount}% off
-                                                                                                                        </div>` : ''}
+                                            <div class="bg-green-100 text-green-600 text-xs min-w-[70px] max-w-[60px] font-semibold px-2 py-1.5 max-w-32 rounded-lg inline-block">
+                                                ${vehicle.discount}% off
+                                            </div>` : ''}
 
                                             <!-- Price -->
                                             <div class="text-right w-full ml-2">
@@ -485,25 +494,76 @@
                 }
 
                 // Function to geocode the address entered by the user
-                function geocodeAddress() {
-                    var address = document.getElementById('search-by-location').value;
-                    geocoder.geocode({
-                        address: address
-                    }, function(results, status) {
-                        if (status === 'OK') {
-                            smoothPanAndZoom(results[0].geometry.location,
-                                15); // Smoothly pan and zoom to the searched location
-                        } else {
-                            //console.log('Geocode was not successful for the following reason: ' + status);
-                            $wire.dispatch('notify', {
-                                message: 'Geocode was not successful for the following reason: ' + status,
-                                type: 'error'
-                            });
+                function geocodeAddress(place = null) {
+                    console.log('geocodeAddress function called');
+                    var input = document.getElementById('search-by-location');
+                    var address = place ? place.formatted_address : input.value.trim();
 
-                        }
-                    });
+                    if (!address) {
+                        console.log('Address input is empty');
+                        $wire.dispatch('notify', {
+                            message: 'Please enter an address to search',
+                            type: 'warning'
+                        });
+                        return;
+                    }
+
+                    console.log('Geocoding address:', address);
+                    if (place && place.geometry) {
+                        // If we have a place object, use its geometry directly
+                        handleGeocodeResult(place);
+                    } else {
+                        // Otherwise, use the geocoder
+                        geocoder.geocode({ address: address }, function(results, status) {
+                            console.log('Geocode status:', status);
+                            if (status === 'OK' && results[0]) {
+                                handleGeocodeResult(results[0]);
+                            } else {
+                                $wire.dispatch('notify', {
+                                    message: 'Geocode was not successful for the following reason: ' + status,
+                                    type: 'error'
+                                });
+                            }
+                        });
+                    }
                 }
 
+                function handleGeocodeResult(place) {
+                    var latitude = place.geometry.location.lat();
+                    var longitude = place.geometry.location.lng();
+
+                    var extractedAddress = {
+                        full: place.formatted_address,
+                        city: '',
+                        state: '',
+                        country: '',
+                        postal_code: '',
+                        latitude: latitude,
+                        longitude: longitude
+                    };
+
+                    // Extract address components
+                    place.address_components.forEach(function(component) {
+                        if (component.types.includes('locality')) {
+                            extractedAddress.city = component.long_name;
+                        } else if (component.types.includes('administrative_area_level_1')) {
+                            extractedAddress.state = component.short_name;
+                        } else if (component.types.includes('country')) {
+                            extractedAddress.country = component.long_name;
+                        } else if (component.types.includes('postal_code')) {
+                            extractedAddress.postal_code = component.long_name;
+                        }
+                    });
+
+                    console.log('Extracted address:', extractedAddress);
+
+                    // Update the map
+                    smoothPanAndZoom(place.geometry.location, 12);
+
+                    // Call your Livewire method to update the address
+                    @this.set('searchByLocation', extractedAddress);
+                }
+                
                 // Function to update markers based on the current zoom level
                 function updateMarkersByZoom(zoomLevel) {
                     markers.forEach(function(markerObj) {
@@ -513,9 +573,9 @@
                                 path: google.maps.SymbolPath.CIRCLE,
                                 fillColor: 'blue',
                                 fillOpacity: 0.6,
-                                scale: 7, // 10px radius for inner circle
+                                scale: 6, // 10px radius for inner circle
                                 strokeColor: 'white',
-                                strokeWeight: 3, // 2px outer border
+                                strokeWeight: 2, // 2px outer border
                             });
                             //!! NOTE !! update this to show icon of vehicle type when zoomed out
                             markerObj.marker.setLabel(null); // Remove label when zoomed out
@@ -541,5 +601,4 @@
         </div>
 
     </section>
-
 </div>

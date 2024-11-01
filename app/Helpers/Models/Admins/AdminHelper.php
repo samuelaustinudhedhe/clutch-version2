@@ -45,6 +45,17 @@ if (!function_exists('getAdmin')) {
     }
 }
 
+if (!function_exists('isAdminLoggedIn')) {
+    /**
+     * Check if the Admin is currently logged in.
+     *
+     * @return bool Returns true if the person is logged in, false otherwise.
+     */
+    function isAdminLoggedIn():bool
+    {
+        return isLoggedIn('admin');
+    }
+}
 
 if (!function_exists('getAdminsByRoles')) {
     /**

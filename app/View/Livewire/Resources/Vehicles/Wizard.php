@@ -578,9 +578,9 @@ abstract class Wizard extends Component
                 $error = "The file " . $fileName . " exceeds the maximum size of 4MB.";
             }
             // check if the image dimension is above 960x470
-            elseif ($newImageInfo[0] < 960 || $newImageInfo[1] < 470) {
-                $error = "The image " . $fileName . " dimension doesn't meet the minimum required pixels of 960x470.";
-            }
+            // elseif ($newImageInfo[0] < 960 || $newImageInfo[1] < 470) {
+            //     $error = "The image " . $fileName . " dimension doesn't meet the minimum required pixels of 960x470.";
+            // }
             // Check if the image already exists in the uploaded images
             else {
                 // Generate a hash of the image file

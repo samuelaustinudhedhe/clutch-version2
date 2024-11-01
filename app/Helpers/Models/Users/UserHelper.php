@@ -33,6 +33,18 @@ if (!function_exists('getUser')) {
     }
 }
 
+if (!function_exists('isUserLoggedIn')) {
+    /**
+     * Check if the User is currently logged in.
+     *
+     * @return bool Returns true if the person is logged in, false otherwise.
+     */
+    function isUserLoggedIn():bool
+    {
+        return isLoggedIn('web');
+    }
+}
+
 if (!function_exists('getUserMeta')) {
 
     /**

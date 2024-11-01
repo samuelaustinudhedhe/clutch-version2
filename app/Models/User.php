@@ -79,7 +79,7 @@ class User extends Authenticatable
     ];
 
     const STATUS_ACTIVE = 'active';
-    const STATUS_SUSPENDED ='suspended';
+    const STATUS_SUSPENDED = 'suspended';
     const STATUS_ONBOARDING = 'onboarding';
     const STATUS_DELETED = 'deleted';
     const STATUS_INACTIVE = 'inactive';
@@ -153,10 +153,19 @@ class User extends Authenticatable
      *
      * @return object|null The verification details of the user, or null if not set.
      */
-    public function getVerification(){
+    public function getVerification()
+    {
 
         return $this->verification;
     }
 
-    
+    /**
+     * Get the phone numbers from the details attribute.
+     *
+     * @return object|null
+     */
+    public function getStatusAttribute()
+    {
+        return $this->getDetails()->status ?? $this->getVerification()->account->status;
+    }
 }

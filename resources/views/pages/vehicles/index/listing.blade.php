@@ -1,10 +1,10 @@
-<div class="w-full overflow-hidden lg:overflow-y-scroll lg:px-4 lg:mr-1 2xl:pl-0">
+<div class="w-full overflow-hidden lg:overflow-y-auto lg:px-4 lg:mr-1 2xl:pl-0 lg:min-h-[calc(100%-148px)]">
     @foreach ($vehicles as $vehicle)
         <a href="{{ route('vehicles.show', $vehicle->id) }}">
             <x-div class="max-md:mx-2 max-lg:mx-4 md:flex rounded-lg !p-0 overflow-hidden">
 
                 <div class="w-full md:h-[176px] md:w-[291px]  relative">
-                    <x-img src="{{ $vehicle->featured_image_url }}" class="h-full w-full object-cover "
+                    <x-img src="{{ $vehicle->featured_image_url }}" class="h-full max-h-96 w-full object-cover "
                         alt="{{ $vehicle->name }}" />
                     <div class="absolute right-0 top-0 p-1">
                         <button type="button" data-tooltip-target="tooltip-add-to-favorites-9"
@@ -81,5 +81,8 @@
             </x-div>
         </a>
     @endforeach
-
+    
+    @if($vehicles->isEmpty())
+        @include('pages.vehicles.index.no-results')
+    @endif
 </div>

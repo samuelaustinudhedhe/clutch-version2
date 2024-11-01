@@ -5,7 +5,8 @@
     }
 }" x-on:wheel.prevent="handleScroll" x-on:mousewheel.prevent="handleScroll"
     class="flex overflow-x-auto overflow-hidden gap-4 h-[72px] min-h-[72px] pt-4 mx-4 2xl:ml-0 filters-scrollbar">
-    <div class="relative min-w-[220px] w-[320px] max-h-[40px] ">
+    {{-- Search for name or discription --}}
+    {{-- <div class="relative min-w-[220px] w-[320px] max-h-[40px] ">
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
@@ -15,6 +16,23 @@
             </svg>
         </div>
         <x-xinput type="text" wire:model.live="search" id="simple-search"
+            class="block w-full p-2 py-2 pl-10 text-sm h-[40px] " placeholder="Search" required="" />
+    </div> --}}
+
+    {{-- Seaarch by Location --}}
+    <div class="relative min-w-[220px] w-[320px] max-h-[40px] ">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+
+            <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"
+                    d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"
+                    d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
+            </svg>
+
+        </div>
+        <x-xinput type="text" wire:model.live="searchByLocation.full" id="search-by-location"
             class="block w-full p-2 py-2 pl-10 text-sm h-[40px] " placeholder="Search" required="" />
     </div>
 

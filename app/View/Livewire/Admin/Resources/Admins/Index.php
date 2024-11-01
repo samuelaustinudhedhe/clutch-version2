@@ -10,7 +10,7 @@ class Index extends Component
 {
     use WithPagination;
 
-    public $perPage = 25;
+    public $perPage = 15;
     public $search = '';
     public $roles;
     public $selected = []; // Array to hold selected user IDs
@@ -18,13 +18,13 @@ class Index extends Component
 
     public function suspendAll()
     {
-        Admin::whereIn('id', $this->selected)->update(['status' => 'suspended']);
+        Admin::whereIn('id', $this->selected)->updateDetails(['status' => 'suspended']);
         $this->resetSelection();
     }
 
     public function activeAll()
     {
-        Admin::whereIn('id', $this->selected)->update(['status' => 'active']);
+        Admin::whereIn('id', $this->selected)->updateDetails(['status' => 'active']);
         $this->resetSelection();
     }
 
@@ -43,7 +43,7 @@ class Index extends Component
     public function render()
     {
         $admins = Admin::search('name', $this->search)->paginate($this->perPage);
-        $activeAdmins = Admin::search('status', 'active')->count();
+        $activeAdmins = Admin::search('details->status', 'active')->count();
         return view('admin.resources.admins.index', [
             'admins' => $admins,
             'allAdmins' => Admin::all()->count(),

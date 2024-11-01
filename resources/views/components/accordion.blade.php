@@ -1,4 +1,4 @@
-@props(['id', 'activeClass' => '', 'inactiveClass' => '', 'class' => '', 'accordion' => 'collapse'])
+@props(['id', 'activeClass' => 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white', 'inactiveClass' => '', 'class' => '', 'accordion' => 'collapse'])
 
 @php
     $class = $class

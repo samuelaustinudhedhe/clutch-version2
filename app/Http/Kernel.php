@@ -85,6 +85,7 @@ class Kernel
         'permission' => \App\Http\Middleware\PermissionMiddleware::class,
         'permissions' => \App\Http\Middleware\PermissionMiddleware::class,
         'onboarding' => \App\Http\Middleware\CheckOnboarding::class,
+        'intended' => \App\Http\Middleware\RedirectToIntendedRoute::class,
     ];
 
     /**
@@ -172,29 +173,32 @@ class Kernel
         return "permission:$permissions,$guard";
     }
 
-    public static function adminAuthMiddleware():array{
+    public static function adminAuthMiddleware():string{
 
-        return ['admin'];
+        return 'admin';
         
     } 
-
     /**
-     * Kernel constructor.
+     * Get the authentication middleware based on the Jetstream guard configuration.
      *
-     * This constructor initializes various authentication and session middleware settings
-     * based on the configuration values provided in the Jetstream configuration file.
+     * @return string
      */
-    public function __construct()
+    final public static function getAuthMiddleware(): string
     {
-        // Set the authentication middleware based on the Jetstream guard configuration.
-        self::$authMiddleware = config('jetstream.guard')
+        return config('jetstream.guard')
             ? 'auth:' . config('jetstream.guard')
             : 'auth';
+    }
 
-        // Set the authentication session middleware based on the Jetstream auth_session configuration.
-        self::$authSessionMiddleware = config('jetstream.auth_session', false)
+    /**
+     * Get the authentication session middleware based on the Jetstream auth_session configuration.
+     *
+     * @return string|null
+     */
+    final public static function getAuthSessionMiddleware(): ?string
+    {
+        return config('jetstream.auth_session', false)
             ? config('jetstream.auth_session')
             : null;
-
     }
 }

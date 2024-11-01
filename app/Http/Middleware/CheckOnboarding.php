@@ -15,27 +15,20 @@ class CheckOnboarding
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, $guard = null): Response
     {
-        $intendedUrl = $request->cookie('intended_url') ?? false;
-
-        if (Auth::check()) {
-            $user = Auth::user();
+        if (isLoggedIn($guard)) {
+            $user = getPerson();
             $routeName = $request->route()->getName();
 
             if (($user->onboardingStart() || !$user->onboardingCompleted()) && !$user->onboardingIsSkipped() && $routeName !== 'user.onboarding') {
                 return redirect()->route('user.onboarding');
             } elseif ($routeName === 'user.onboarding' && $user->onboardingCompleted()) {
-                if ($intendedUrl) {
-                    return redirect($intendedUrl)->withCookie(Cookie::forget('intended_url'));
-                    echo "Redirecting to intended URL: $intendedUrl";
-                } else {
-                    return redirect()->route('user.dashboard')->with('info', 'You have completed the onboarding process ' . $user->name);
-                }
+
+                return redirect()->route('user.dashboard')->with('info', 'You have completed the onboarding process ' . $user->name);
             }
         }
 
         return $next($request);
-
     }
 }

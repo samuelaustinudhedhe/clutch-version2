@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasAttachments;
+use App\Traits\HasDetails;
 use App\Traits\HasRolesAndPermissions;
 use App\Traits\HasTwoFactorAuthenticatable;
 use App\Traits\HasVehicles;
@@ -23,6 +24,7 @@ class Admin extends Authenticatable implements MustVerifyEmail
     use HasRolesAndPermissions;
     use HasAttachments;
     use HasVehicles;
+    use HasDetails;
 
     protected $guard = 'admin';
 
@@ -53,13 +55,18 @@ class Admin extends Authenticatable implements MustVerifyEmail
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected  $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+
+    const STATUS_ACTIVE = 'active';
+    const STATUS_SUSPENDED = 'suspended';
+    const STATUS_ONBOARDING = 'onboarding';
+    const STATUS_DELETED = 'deleted';
+    const STATUS_INACTIVE = 'inactive';
+
 
     /**
      * Get the color associated with the user's role.
@@ -97,4 +104,5 @@ class Admin extends Authenticatable implements MustVerifyEmail
             'suspended' => 'red',
         ][$this->status] ?? 'gray'; // Default to 'gray' if status doesn't match
     }
+    
 }

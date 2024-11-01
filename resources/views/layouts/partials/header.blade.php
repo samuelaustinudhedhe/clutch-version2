@@ -3,12 +3,12 @@
 <nav class="bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 px-4 lg:px-6 py-3 fixed top-0 left-0 right-0 z-10 ">
     <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-2xl">
         <a href="{{ app_url() }}" class="flex items-center">
-            <img src="{{ app_logo() }}" class="mr-3 h-6 sm:h-9" alt="{{ app_name() }} Logo" />
+            <img src="{{ app_logo() }}" class="mr-3 h-9" alt="{{ app_name() }} Logo" />
             <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">{{ app_name() }}</span>
         </a>
         <div class="flex items-center lg:order-2">
            @darkModeButton
-            <button onclick="window.location.href='{{ route('vehicles.index') }}'" data-tooltip-target="tooltip-statistics" type="button" class="hidden items-center p-2 text-sm font-medium text-gray-500 rounded-lg lg:inline-flex dark:text-gray-400 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+            <button onclick="window.location.href='{{ route('vehicles.index') }}'" data-tooltip-target="tooltip-statistics" type="button" class="items-center p-2 text-sm font-medium text-gray-500 rounded-lg lg:inline-flex dark:text-gray-400 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                 <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2.4" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
             </button>
             <div id="tooltip-statistics" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
@@ -18,7 +18,7 @@
             @if (getPerson())
                @include('layouts.partials.account-dropdown')
             @else
-                <x-button href="{{ route('login') }}" class="text-xs ml-1 lg:ml-3 mr-1 md:mr-0 gap-x-1.5">
+                <x-button href="{{ route('login') }}" class="max-sm:hidden text-xs ml-1 lg:ml-3 mr-1 md:mr-0 gap-x-1.5">
                     Get Started
                     <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
                 </x-button>

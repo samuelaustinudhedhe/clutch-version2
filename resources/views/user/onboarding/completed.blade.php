@@ -30,23 +30,25 @@
                 <div class="w-full lg:w-3/5 text-right ">{{ $storeData['name'] ?? $this->user->name }}</div>
             </div>
 
-            
+
         </div>
         <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
             <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Birthday</div>
-                <div class="w-full lg:w-3/5  text-right ">{{ $storeData['date_of_birth'] ?? $this->user->date_of_birth }}</div>
+                <div class="w-full lg:w-3/5  text-right ">
+                    {{ $storeData['date_of_birth'] ?? $this->user->date_of_birth }}</div>
             </div>
 
-            
+
         </div>
         <div class="flex items-center justify-between border-inherit py-4 px-4">
             <div class="lg:flex w-full">
                 <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Gender</div>
-                <div class="w-full lg:w-3/5 capitalize  text-right ">{{ $storeData['gender'] ?? $this->user->gender }}</div>
+                <div class="w-full lg:w-3/5 capitalize  text-right ">{{ $storeData['gender'] ?? $this->user->gender }}
+                </div>
             </div>
 
-            
+
         </div>
 
     </x-div>
@@ -65,7 +67,6 @@
                     {{ $this->user->email }}</div>
             </div>
 
-            
         </div>
         <div class="flex items-center justify-between border-inherit py-4 px-4">
             <div class="lg:flex w-full">
@@ -85,43 +86,47 @@
     </x-div>
 
     {{-- Addresses --}}
-    <x-div class="rounded-xl !px-2 !pb-2">
+    @if($storeData['address']['home'] || $storeData['address']['work'])
 
-        <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Address</h3>
-        <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
-            Manage your addresses associated with your Account.
-            <a href="#" class="text-blue-500">Learn more about addresses saved to your account</a>
-        </p>
+        <x-div class="rounded-xl !px-2 !pb-2">
 
-        {{-- add user addresses in db and update helper function  --}}
-        <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
-            <div class="lg:flex w-full">
-                <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Work</div>
-                <div class="w-full lg:w-3/5 text-right ">
-                    {{ formatAddress($storeData['address']['home'], 'street, city, state,') }}</div>
-            </div>
+            <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Address</h3>
+            <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">
+                Manage your addresses associated with your Account.
+                <a href="#" class="text-blue-500">Learn more about addresses saved to your account</a>
+            </p>
 
-            
-        </div>
+            {{-- add user addresses in db and update helper function  --}}
+            @isset($storeData['address']['home'])
+                <div class="flex items-center justify-between border-b border-inherit py-4 px-4">
+                    <div class="lg:flex w-full">
+                        <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Home</div>
+                        <div class="w-full lg:w-3/5 text-right ">
+                            {{ formatAddress($storeData['address']['home'], 'street, city, state,') }}</div>
+                    </div>
+                </div>
+            @endisset
 
-        <div class="flex items-center justify-between border-inherit py-4 px-4">
-            <div class="lg:flex w-full">
-                <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Home</div>
-                <div class="w-full lg:w-3/5 text-right ">
-                    {{ formatAddress($storeData['address']['work'], 'street, city, state,') }}</div>
-            </div>
+            @isset($storeData['address']['work'])
+                <div class="flex items-center justify-between border-inherit py-4 px-4">
+                    <div class="lg:flex w-full">
+                        <div class="w-full lg:w-2/5 text-sm font-medium text-gray-600 dark:text-gray-400">Work</div>
+                        <div class="w-full lg:w-3/5 text-right ">
+                            {{ formatAddress($storeData['address']['work'], 'street, city, state,') }}</div>
+                    </div>
+                </div>
+            @endisset
 
-            
-        </div>
+        </x-div>
 
-    </x-div>
+    @endif
 
     {{-- Documents --}}
     @if (null !== ($this->proofOfAddress['file'] ?? null) ||
             null !== ($this->driversLicense['file'] ?? null) ||
             null !== ($this->internationalPassport['file'] ?? null) ||
             null !== ($this->nin['file'] ?? null))
-      <x-div class="rounded-xl !px-2 !pb-2">
+        <x-div class="rounded-xl !px-2 !pb-2">
 
             <h3 class="lg:text-xl text-lg font-medium lg:font-normal mb-4 px-4">Uploaded Documents</h3>
             <p class="lg:text-base text-sm text-gray-600 dark:text-gray-400 mb-4 px-4">

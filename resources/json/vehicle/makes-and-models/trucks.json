@@ -1,129 +1,145 @@
 {
-    "Ford": [
-      "F-150", 
-      "F-250 Super Duty", 
-      "F-350 Super Duty", 
-      "F-450 Super Duty", 
-      "F-550 Super Duty", 
-      "Maverick", 
-      "Ranger", 
-      "F-150 Lightning", 
-      "Transit", 
-      "Transit Connect"
-    ],
-    "Chevrolet": [
-      "Colorado", 
-      "Silverado 1500", 
-      "Silverado 2500HD", 
-      "Silverado 3500HD", 
-      "Silverado EV", 
-      "Avalanche", 
-      "S10", 
-      "Cheyenne"
-    ],
-    "Ram": [
-      "1500", 
-      "2500", 
-      "3500", 
-      "Ram TRX", 
-      "Ram Chassis Cab", 
-      "Ram ProMaster City", 
-      "Ram ProMaster"
-    ],
-    "GMC": [
-      "Canyon", 
-      "Sierra 1500", 
-      "Sierra 2500HD", 
-      "Sierra 3500HD", 
-      "Hummer EV", 
-      "Savanna", 
-      "TopKick"
-    ],
-    "Toyota": [
-      "Tacoma", 
-      "Tundra", 
-      "Hilux"
-    ],
-    "Nissan": [
-      "Frontier", 
-      "Titan", 
-      "Titan XD", 
-      "Navara"
-    ],
-    "Honda": [
-      "Ridgeline"
-    ],
-    "Jeep": [
-      "Gladiator"
-    ],
-    "Rivian": [
-      "R1T"
-    ],
-    "Tesla": [
-      "Cybertruck"
-    ],
-    "Hummer": [
-      "H1", 
-      "H2", 
-      "H3", 
-      "Hummer EV"
-    ],
-    "International": [
-      "CV Series", 
-      "MV Series", 
-      "Durastar", 
-      "WorkStar", 
-      "Lonestar", 
-      "LT Series", 
-      "ProStar"
-    ],
-    "Peterbilt": [
-      "389", 
-      "579", 
-      "520", 
-      "337", 
-      "220"
-    ],
-    "Kenworth": [
-      "T680", 
-      "T880", 
-      "W990", 
-      "T370", 
-      "T440"
-    ],
-    "Mack": [
-      "Anthem", 
-      "Pinnacle", 
-      "Granite", 
-      "TerraPro", 
-      "MD Series"
-    ],
-    "Freightliner": [
-      "Cascadia", 
-      "Coronado", 
-      "M2 106", 
-      "108SD", 
-      "114SD"
-    ],
-    "Volvo": [
-      "VNL Series", 
-      "VNR Series", 
-      "VNX Series", 
-      "VHD Series", 
-      "VAH Series"
-    ],
-    "Isuzu": [
-      "N-Series", 
-      "F-Series", 
-      "Giga", 
-      "D-Max", 
-      "Elf"
-    ],
-    "Western Star": [
-      "4700", 
-      "4800", 
-      "4900", 
-      "5700", 
-      "6900"
-    ]
-} 
+  "Ford": [
+    "F-150",
+    "F-250 Super Duty",
+    "F-350 Super Duty",
+    "F-450 Super Duty",
+    "F-550 Super Duty",
+    "F-650",
+    "F-750",
+    "Ranger",
+    "Maverick",
+    "Transit",
+    "Transit Connect"
+  ],
+  "Chevrolet": [
+    "Silverado 1500",
+    "Silverado 2500HD",
+    "Silverado 3500HD",
+    "Colorado",
+    "Express 3500",
+    "Silverado 4500HD",
+    "Silverado 5500HD"
+  ],
+  "Ram": [
+    "1500",
+    "2500",
+    "3500",
+    "Ram 4500",
+    "Ram 5500",
+    "Ram Chassis Cab",
+    "Ram ProMaster City",
+    "Ram ProMaster"
+  ],
+  "GMC": [
+    "Sierra 1500",
+    "Sierra 2500HD",
+    "Sierra 3500HD",
+    "Canyon",
+    "Savana",
+    "Sierra Denali"
+  ],
+  "Toyota": [
+    "Tacoma",
+    "Tundra",
+    "Hilux",
+    "Land Cruiser Pickup"
+  ],
+  "Nissan": [
+    "Titan",
+    "Titan XD",
+    "Frontier",
+    "Navara",
+    "NV1500",
+    "NV2500",
+    "NV3500"
+  ],
+  "Honda": [
+    "Ridgeline"
+  ],
+  "Isuzu": [
+    "N-Series",
+    "F-Series",
+    "C-Series",
+    "H-Series",
+    "Giga"
+  ],
+  "Hino": [
+    "155",
+    "195",
+    "258",
+    "268",
+    "338",
+    "500 Series",
+    "700 Series"
+  ],
+  "Mitsubishi Fuso": [
+    "Canter",
+    "FE Series",
+    "FG Series",
+    "eCanter"
+  ],
+  "Freightliner": [
+    "Cascadia",
+    "M2 106",
+    "M2 112",
+    "Coronado",
+    "108SD",
+    "114SD",
+    "Argosy"
+  ],
+  "Kenworth": [
+    "T680",
+    "T880",
+    "W990",
+    "T370",
+    "T440",
+    "K370"
+  ],
+  "Peterbilt": [
+    "579",
+    "389",
+    "567",
+    "520",
+    "337",
+    "220"
+  ],
+  "International": [
+    "LT Series",
+    "RH Series",
+    "MV Series",
+    "HV Series",
+    "ProStar",
+    "Durastar"
+  ],
+  "Volvo": [
+    "VNL Series",
+    "VNR Series",
+    "VHD Series",
+    "VAH Series"
+  ],
+  "Mack": [
+    "Anthem",
+    "Granite",
+    "Pinnacle",
+    "TerraPro"
+  ],
+  "Western Star": [
+    "4700",
+    "4800",
+    "4900",
+    "5700"
+  ],
+  "Navistar": [
+    "International MV",
+    "International HV",
+    "International RH",
+    "International LT"
+  ],
+  "UD": [
+    "Quon",
+    "Condor",
+    "Cavalier",
+    "Nissan UD"
+  ]
+}

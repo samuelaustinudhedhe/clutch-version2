@@ -678,6 +678,8 @@ class Vehicle extends Model
         $this->attributes['price'] = json_encode($formattedPrice);
     }
 
+
+    
     /**
      * Determine if the vehicle is on sale and return the corresponding color.
      *

@@ -136,7 +136,7 @@
 
                                     {{-- Owner --}}
                                     <td class="px-4 py-3">
-                                        <a href="{{ route('admin.' . (strpos($vehicle->ownerable_type, 'Admin') !== false ? 'admins' : 'users') . '.show', $vehicle->ownerable_id) }}">
+                                        <a href="{{ route('admin.' . (strpos($vehicle->ownerable_type, 'Admin') !== false ? 'users' : 'users') . '.show', $vehicle->ownerable_id) }}">
                                                 {{ $vehicle->owner->name ?? '' }}                                        
                                         </a>                                 
                                     </td>
