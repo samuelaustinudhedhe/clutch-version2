@@ -168,4 +168,30 @@ class User extends Authenticatable
     {
         return $this->getDetails()->status ?? $this->getVerification()->account->status;
     }
+
+    /**
+     * Get the orders associated with the user.
+     *
+     * This function retrieves all orders that are related to the user through a polymorphic relationship.
+     * It uses the 'authorable' morph type to allow for different types of entities (like users) to be associated with orders.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany A collection of Order models associated with this user.
+     */
+    public function orders()
+    {
+        return $this->morphMany(Order::class, 'authorable');
+    }
+
+    /**
+     * Get the trips associated with the user.
+     *
+     * This function retrieves all trips that are related to the user through a polymorphic relationship.
+     * It uses the 'traveler' morph type to allow for different types of entities (like users) to be associated with trips.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany A collection of Trip models associated with this user.
+     */
+    public function trips()
+    {
+        return $this->morphMany(Trip::class, 'traveler');
+    }
 }

@@ -57,11 +57,11 @@ class Index extends Component
         $this->filterBy['model'] = '';
     }
 
-    public function updatingsearchByLocation(){
-        if(!empty($this->searchByLocation['full'])){
+    public function updatingsearchByLocation()
+    {
+        if (!empty($this->searchByLocation['full'])) {
             $this->searchByLocation = [];
         }
-
     }
 
     public function updatingSearch()
@@ -72,6 +72,13 @@ class Index extends Component
     public function render()
     {
         $vehicles = Vehicle::where('status', '=', 'active')
+        // Show vehicles that dont have a trip or the trip has been completed, failed, or cancelled
+            ->where(function ($query) {
+                $query->whereDoesntHave('trips')
+                    ->orWhereHas('trips', function ($query) {
+                        $query->whereIn('status', ['completed', 'failed', 'cancelled']);
+                    });
+            })
             ->orderBy('created_at', 'desc')
             ->when($this->search, function ($query) {
                 return $query->where(function ($q) {
@@ -84,44 +91,14 @@ class Index extends Component
                     }
                 });
             })
-            // ->when($this->search_by_location, function ($query) {
-            //     // Convert search_by_location to an array
-            //     $locationData = $this->searchByLocation;
-            
-            //     if (!empty($locationData)) {
-            //         return $query->where(function($q) use ($locationData) {
-            //             foreach ($locationData as $key => $value) {
-            //                 if (!empty($value)) {
-            //                     if (in_array($key, ['city', 'state', 'country', 'street'])) {
-            //                         $q->orWhere("location->pickup->{$key}", 'like', "%{$value}%");
-            //                     }
-            //                 }
-            //             }
-            //         });
-            
-            //         // If latitude and longitude are available, add distance-based search
-            //         if (!empty($locationData['lat']) && !empty($locationData['lng'])) {
-            //             $radius = 50; // Search radius in kilometers, adjust as needed
-            //             $query->whereRaw("
-            //                 ST_Distance_Sphere(
-            //                     point(location->>'$.pickup.longitude', location->>'$.pickup.latitude'),
-            //                     point(?, ?)
-            //                 ) <= ? * 1000
-            //             ", [$locationData['lng'], $locationData['lat'], $radius]);
-            //         }
-            //     }
-            
-            //     return $query;
-            // })
             ->when($this->searchByLocation, function ($query) {
-                // Assuming $this->search_by_location is a string (like a city name or address)
                 $coordinates = $this->searchByLocation;
-                
+
                 if ($coordinates && isset($coordinates['latitude']) && isset($coordinates['longitude'])) {
                     $lat = $coordinates['latitude'];
                     $lng = $coordinates['longitude'];
                     $radius = 50; // Search radius in kilometers, adjust as needed
-                                
+
                     $this->dispatch('notify', 'searching by cardinal points ', 'success');
 
                     return $query->whereRaw("
@@ -135,8 +112,7 @@ class Index extends Component
 
                 $this->dispatch('notify', 'searching by city state country ', 'error');
 
-                // Fallback to a general location search if coordinates are not available
-                return $query->where(function($q) {
+                return $query->where(function ($q) {
                     if (isset($this->searchByLocation['city']) && !empty($this->searchByLocation['city'])) {
                         $q->where('location->pickup->city', 'like', '%' . $this->searchByLocation['city'] . '%');
                     }

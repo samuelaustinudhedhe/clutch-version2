@@ -204,7 +204,7 @@ class Vehicle extends Model
         $amount = $price->amount ?? 0;
         $sale = $price->sale ?? 0;
 
-        if ($amount <= 0 || !$on_sale) {
+        if ($amount <= 0 || !$on_sale || $sale >= $amount) {
             return $symbol ? '0%' : 0;
         }
 
@@ -226,13 +226,14 @@ class Vehicle extends Model
     {
         $price = $this->getPrice();
         $sale = $price->sale ?? 0;
-        $on_sale = $price->on_sale ?? false;
+        $on_sale = filter_var($price->on_sale ?? false, FILTER_VALIDATE_BOOLEAN);
         $amount = $price->amount ?? 0;
 
-        if ($on_sale) {
+        if ($on_sale && $sale < $amount) {
             return $amount - $sale;
+        } else {
+            return 0;
         }
-        return $amount;
     }
 
     public function getDiscountDaysAttribute()
@@ -250,7 +251,7 @@ class Vehicle extends Model
     public function getOnSaleAttribute()
     {
         $price = $this->getPrice();
-        return $price->on_sale === "true" || $price->on_sale === 1;
+        return filter_var($price->on_sale ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -277,11 +278,20 @@ class Vehicle extends Model
         return $this->price;
     }
 
+    /**
+     * Calculate the tax amount for the vehicle.
+     *
+     * This method calculates the tax based on the final price of the vehicle.
+     * It determines whether the vehicle is on sale and applies the tax rate
+     * to the appropriate base price.
+     *
+     * @return float The calculated tax amount for the vehicle.
+     */
     public function tax()
     {
-        $price = $this->finalPrice();
-        $amount = $price->amount ?? 0;
-        $sale = $price->sale ?? 0;
+        $price = $this->getPrice();
+        $amount = $price->amount;
+        $sale = $price->sale;
         $on_sale = $price->on_sale ?? false;
         $basePrice = $on_sale ? $sale : $amount;
         $taxRate = 0.07; // 7% tax rate
@@ -637,50 +647,6 @@ class Vehicle extends Model
 
 
     /**
-     * Set the price attribute for the vehicle.
-     *
-     * This method formats and sanitizes the price data before storing it.
-     * It handles various price-related fields including sale status, amount, sale price,
-     * currency, and discount information.
-     *
-     * @param array $value An associative array containing price-related data.
-     *                     Expected keys:
-     *                     - 'on_sale' (bool): Whether the vehicle is on sale.
-     *                     - 'amount' (string|int): The regular price of the vehicle.
-     *                     - 'sale' (string|int): The sale price of the vehicle, if applicable.
-     *                     - 'currency' (string): The currency code for the price.
-     *                     - 'discount' (array): Contains discount information.
-     *                       - 'days' (int): Number of days for the discount period.
-     *
-     * @return void
-     */
-    public function setPriceAttribute($value)
-    {
-        // Helper function to clean and convert price values
-        $cleanPrice = function($price) {
-            if (is_null($price)) return null;
-            return (int) str_replace(',', '', $price);
-        };
-
-        // Check that each key exists and has the right type
-        $formattedPrice = [
-            'on_sale' => filter_var($value['on_sale'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'amount' => $cleanPrice($value['amount'] ?? null) ?? 50000,
-            'sale' => $cleanPrice($value['sale'] ?? null) ?? 0,
-            'currency' => $value['currency'] ?? app_currency(),
-            'discount' => [
-                'days' => (int) ($value['discount']['days'] ?? 1),
-            ],
-            // add more as needed
-        ];
-
-        // Store the correctly formatted data
-        $this->attributes['price'] = json_encode($formattedPrice);
-    }
-
-
-    
-    /**
      * Determine if the vehicle is on sale and return the corresponding color.
      *
      * This accessor method returns a color string based on whether the vehicle is on sale.
@@ -737,5 +703,75 @@ class Vehicle extends Model
             'rv' => 'cyan',
             'minivan' => 'fuchsia',
         ][$this->type] ?? 'slate'; // Default color if type is not matched
+    }
+
+    /**
+     * Get the price attribute for the vehicle.
+     *
+     * This accessor method decodes the JSON-encoded price attribute and returns it
+     * as an object with formatted values.
+     *
+     * @return object The formatted price object.
+     */
+    public function getPriceAttribute($value)
+    {
+        $price = json_decode($value);
+
+        if (is_object($price)) {
+            $price->amount = (float) $price->amount;
+            $price->sale = isset($price->sale) ? (float) $price->sale : 0;
+            $price->on_sale = (bool) filter_var($price->on_sale ?? false, FILTER_VALIDATE_BOOLEAN);
+            $price->discount->days = isset($price->discount->days) ? (int) $price->discount->days : 0;
+        }
+
+        return $price;
+    }
+
+    /**
+     * Set the price attribute for the vehicle.
+     *
+     * This method formats and sanitizes the price data before storing it.
+     * It handles various price-related fields including sale status, amount, sale price,
+     * currency, and discount information.
+     *
+     * @param array $value An associative array containing price-related data.
+     *                     Expected keys:
+     *                     - 'on_sale' (bool): Whether the vehicle is on sale.
+     *                     - 'amount' (string|int): The regular price of the vehicle.
+     *                     - 'sale' (string|int): The sale price of the vehicle, if applicable.
+     *                     - 'currency' (string): The currency code for the price.
+     *                     - 'discount' (array): Contains discount information.
+     *                       - 'days' (int): Number of days for the discount period.
+     *
+     * @return void
+     */
+    public function setPriceAttribute($value)
+    {
+        $cleanPrice = function ($price) {
+            $number = (float) str_replace(',', '', $price);
+            return ($number == (int) $number) ? (int) $number : $number;
+        };
+
+
+        if (is_array($value) || is_object($value)) {
+            $value = (object) $value;
+            $value->on_sale = filter_var($value->on_sale ?? false, FILTER_VALIDATE_BOOLEAN);
+
+            $value->currency = $value->currency ?? app_currency();
+            // Convert amount and sale to float or integer
+            $value->amount = $cleanPrice($value->amount);
+            $value->sale = $cleanPrice($value->sale);
+            $value->discount->days = (int) ($value['discount']['days'] ?? 1);
+        }
+
+        $this->attributes['price'] = json_encode($value);
+    }
+
+    /**
+     * Get the trips associated with the vehicle.
+     */
+    public function trips()
+    {
+        return $this->hasMany(Trip::class);
     }
 }

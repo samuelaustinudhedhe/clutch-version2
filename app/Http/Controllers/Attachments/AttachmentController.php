@@ -206,7 +206,7 @@ class AttachmentController extends Controller
     {
         // Ensure the path does not include "storage" at the beginning
         $path = preg_replace('/^.*\/storage\//', '', $path);
-
+    
         // Check if the file is a PDF
         if (str_contains($mimeType, 'pdf')) {
             // Store the PDF file and get the full path
@@ -215,13 +215,20 @@ class AttachmentController extends Controller
             // Store the file and get the full path
             Storage::put($path, $file);
         }
-
+    
+        // Change permissions of the directory
+        $fullPath = Storage::path($path);
+        $directory = is_dir($fullPath) ? $fullPath : dirname($fullPath);
+        
+        if (is_dir($directory)) {
+            chmod($directory, 0755);
+        }
+    
         // Return the full path to the stored file
         if ($return) {
-            return Storage::path($path);
+            return $fullPath;
         }
     }
-
 
 
     /**

@@ -158,7 +158,7 @@
 
 
     {{-- Right Side --}}
-    <div class="flex flex-col justify-between relative items-center w-full">
+    <div class="flex flex-col justify-between relative items-center w-full h-full">
 
         {{-- Logo --}}
         <div class="flex flex-col w-full mt-10 mb-4 mx-auto md:max-w-[46rem] px-4 md:px-8 xl:px-0">
@@ -203,8 +203,8 @@
                     :currentStep="$currentStep" :nextStepName="$nextStepName" :prevStepName="$prevStepName" class="!mt-0 mb-6" />
 
                 @if ($currentStep < 1)
-                    <p class="mt-4 text-sm font-light text-gray-500 dark:text-gray-400">
-                        Not read to onboard?
+                    <p class="my-4 text-sm font-light text-gray-500 dark:text-gray-400">
+                        Not ready to onboard?
                         <a href="#" wire:click="skipOnboarding"
                             class="font-medium text-blue-600 hover:underline dark:text-blue-500">
                             Skip the Onboarding Process

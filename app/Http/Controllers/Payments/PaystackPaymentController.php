@@ -2,17 +2,54 @@
 
 namespace App\Http\Controllers\Payments;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class PaystackPaymentController extends Controller
+class PaystackPaymentController extends PaymentController
 {
-   
-    protected $SECRET_KEY ;
-    protected $PUBLIC_KEY ;
+
+    public $SECRET_KEY;
+    public $PUBLIC_KEY;
     private $CURL_HANDLE;
-    
+
+    /**
+     * Initialize a payment transaction.
+     *
+     * @param array $data
+     * @return array
+     */
+    public function initializePayment(array $data)
+    {
+        $url = "https://api.paystack.co/transaction/initialize";
+
+        $fields = [
+            'email' => $data['email'],
+            'amount' => $data['amount'],
+            'reference' => $data['reference'],
+            'callback_url' => $data['callback_url'] ?? route('payment.paystack.callback'),
+        ];
+
+        $response = Http::withToken($this->SECRET_KEY)
+            ->post($url, $fields);
+
+        return $response->json();
+    }
+
+    /**
+     * Verify a payment transaction.
+     *
+     * @param string $reference
+     * @return array
+     */
+    public function verifyPayment($reference)
+    {
+        $url = "https://api.paystack.co/transaction/verify/$reference";
+
+        $response = Http::withToken($this->SECRET_KEY)
+            ->get($url);
+
+        return $response->json();
+    }
 
     /**
      * Get a list of banks for a specified country using the Paystack API.
@@ -128,20 +165,39 @@ class PaystackPaymentController extends Controller
         return $response;
     }
 
+    /**
+     * Handle Paystack callback
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function handleCallback(Request $request)
+    {
+        $reference = $request->reference;
+        $response = $this->verifyPayment($reference);
 
+        if ($response['status'] && $response['data']['status'] === 'success') {
+            // Payment was successful
+            // You might want to update your order status here
+            // For now, we'll just redirect with a success message
+            return redirect()->route('user.trips.index')->with('message', 'Payment successful! Your trip has been booked.');
+        } else {
+            // Payment failed
+            return redirect()->route('user.trips.index')->with('error', 'Payment verification failed.');
+        }
+    }
     /**
      * Controller constructor.
      *
      * Initializes Paystack Secret Key, User instance, and cURL handle.
      */
-    public function __construct()
+    final function __construct()
     {
         // Paystack Secret and Public Key
-        $this->SECRET_KEY = payStackKeys(true)['secret_key'];
-        $this->PUBLIC_KEY = payStackKeys(true)['public_key'];
+        $this->SECRET_KEY = getPayStackKeys(true, 'secret');
+        $this->PUBLIC_KEY = getPayStackKeys(true, 'public');
 
         // Curl Handle
         $this->CURL_HANDLE = curl_init();
     }
-
 }

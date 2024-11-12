@@ -98,7 +98,7 @@ class AttachmentUploadController extends AttachmentController
      *
      * @return \App\Models\Attachment The newly created Attachment instance.
      */
-    public static function image($name, $description, $image, $mimeType, $is_featured, $type, $resizing, $quality = 90, $authorable, $attachable, $path)
+    public static function image($name, $description, $image, $mimeType, $is_featured, $type, $resizing, $quality, $authorable, $attachable, $path)
     {
         // Get the file extension from the filename
         $fileName = basename($image);

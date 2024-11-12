@@ -9,7 +9,7 @@
  */
 function getGoogleMapKey()
 {
-    return 'AIzaSyDHrouXMU1tozzlEpqq5IYFT1fEczaYFMk';
+    return config('services.google.map');
 }
 
 
@@ -17,23 +17,33 @@ function getGoogleMapKey()
  * Retrieves PayStack API keys.
  *
  * @param bool $test Specifies whether to fetch test API keys. Defaults to false (fetches live keys).
+ * @param string|null $keyType Specifies which key to return ('secret' or 'public'). If null, returns both keys.
  *
- * @return array Returns an array containing PayStack API keys (secret_key and public_key).
+ * @return string|array Returns a string if $keyType is specified, otherwise returns an array containing PayStack API keys.
  */
-function payStackKeys($test = false)
+function getPayStackKeys($test = false, $keyType = null)
 {
     // API Configuration - Test Mode
     $testApiKey = [
-        'secret_key' => 'sk_test_ab81c176e77848d5c91ae0504b287ebc00dc61f7',
-        'public_key' => 'pk_test_06c43f28737153732513617505ce2384adaf7264'
+        'secret_key' => config('services.paystack.test.secret_key'),
+        'public_key' => config('services.paystack.test.public_key')
     ];
 
     // API Configuration - Live Mode
     $liveApiKey = [
-        'secret_key' => 'sk_live_cded7ba8bee607fe15a749bf683cdae0eaffc3b7',
-        'public_key' => 'pk_live_5e8e00e9e218ecc0189158acfb0b151da6118acf'
+        'secret_key' => config('services.paystack.live.secret_key'),
+        'public_key' => config('services.paystack.live.public_key')
     ];
 
-    // Return keys based on mode
-    return $test ? $testApiKey : $liveApiKey;
+    // Select keys based on mode
+    $keys = $test ? $testApiKey : $liveApiKey;
+
+    // Return specific key if keyType is provided
+    if ($keyType !== null) {
+        $key = $keyType . '_key';
+        return $keys[$key] ?? null;
+    }
+
+    // Return all keys if keyType is not provided
+    return $keys;
 }

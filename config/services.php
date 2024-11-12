@@ -35,4 +35,21 @@ return [
         ],
     ],
 
+    // Google API keys
+    'google' => [
+        'map' => env('GOOGLE_MAP_KEY'),
+    ],
+
+    // Paystack API keys
+    'paystack' => [
+        'live' => [
+            'public_key' => env('PAYSTACK_PUBLIC_KEY'),
+            'secret_key' => env('PAYSTACK_SECRET_KEY'),
+        ],
+        'test' => [
+            'public_key' => env('PAYSTACK_TEST_PUBLIC_KEY'),
+            'secret_key' => env('PAYSTACK_TEST_SECRET_KEY'),
+        ],
+    ]
+
 ];

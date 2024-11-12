@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\View\Livewire\User\Trips\Index;
+use App\View\Livewire\User\Trips\Show;
 
 /**
  * Define routes for user trip management.
@@ -46,7 +47,7 @@ Route::prefix('trips')->name('trips.')->group(function () {
      * @param int|string $trip The ID or identifier of the trip to edit
      * @return \Illuminate\View\View
      */
-    Route::get('edit/{trip}', Index::class)->name('edit');
+    Route::get('edit/{trip}', Show::class)->name('edit');
 
     /**
      * Display the details of a specific trip.
@@ -56,5 +57,5 @@ Route::prefix('trips')->name('trips.')->group(function () {
      * @param int|string $trip The ID or identifier of the trip to show
      * @return \Illuminate\View\View
      */
-    Route::get('show/{trip}', Index::class)->name('show');
+    Route::get('show/{trip}', Show::class)->name('show');
 });

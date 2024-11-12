@@ -4,7 +4,7 @@ if (!function_exists('humanizePrice')) {
     /**
      * Formats a price by adding a currency symbol and ensuring two decimal places.
      *
-     * @param mixed $price The price to format. Can be a string with numbers and commas, an integer, or a float.
+     * @param float|string|int $price The price to format. Can be a string with numbers and commas, an integer, or a float.
      * @param bool $echo Whether to echo the formatted price or return it.
      * @param int $decimals The number of decimal places to display. Default is 0.
      * @return string|null The formatted price with currency symbol, or null if the input is invalid.

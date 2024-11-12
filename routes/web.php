@@ -10,30 +10,6 @@ use Illuminate\Support\Facades\Route;
  */
 
 /**
- * Route to retrieve the CSRF token.
- *
- * This route returns a JSON response containing the CSRF token.
- * It's useful for JavaScript applications that need to make
- * POST requests to your Laravel backend.
- *
- * @return \Illuminate\Http\JsonResponse
- *
- * @throws \Exception If the CSRF token cannot be generated.
- *
- * @example
- * // JavaScript fetch example
- * fetch('/csrf-token')
- *     .then(response => response.json())
- *     .then(data => {
- *         // Use the token in your requests
- *         console.log(data.token);
- *     });
- */
-Route::get('/csrf-token', function () {
-    return response()->json(['token' => csrf_token()]);
-});
-
-/**
  * Include all PHP files in the routes root folder.
  *
  * This function recursively includes all PHP files in the current directory.

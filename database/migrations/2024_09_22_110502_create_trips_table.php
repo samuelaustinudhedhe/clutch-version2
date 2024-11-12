@@ -13,39 +13,8 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->id()->startingValue(10061100044);
-            $table->string('status')->nullable();
-            $table->json('details')->default(json_encode([
-                'start' => [
-                    'location' => [
-                        'latitude' => '',
-                        'longitude' => '',
-                        'full' => '',
-                        'city' => '',
-                        'country' => '',
-                        'state' => '',
-                        'postal_code' => '',
-                        'street' => '',
-                    ],
-                    'date' => '',
-                ],
-                'end' => [
-                    'location' => [
-                        'latitude' => '',
-                        'longitude' => '',
-                        'full' => '',
-                        'city' => '',
-                        'country' => '',
-                        'state' => '',
-                        'postal_code' => '',
-                        'street' => '',
-                    ],
-                    'date' => '',
-                ],
-                'distance' => 0,
-                'price' => [],
-                'passengers' => [],
-                'insurance' => [],
-            ])); //Details about the trip, including details about the start and end locations, distance, price, passengers, insurance, etc.
+            $table->string('status')->default('pending');
+            $table->json('details')->nullable(); //Details about the trip, including details about the start and end locations, distance, price, passengers, insurance, etc.
             $table->morphs('traveler'); // Polymorphic fields for traveler (User or Admin)
             $table->foreignId('vehicle_id')->constrained('vehicles'); // The vehicle being booked
             $table->timestamps();
