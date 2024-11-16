@@ -194,8 +194,8 @@ class PaystackPaymentController extends PaymentController
     final function __construct()
     {
         // Paystack Secret and Public Key
-        $this->SECRET_KEY = getPayStackKeys(true, 'secret');
-        $this->PUBLIC_KEY = getPayStackKeys(true, 'public');
+        $this->SECRET_KEY = getPayStackKeys('secret');
+        $this->PUBLIC_KEY = getPayStackKeys('public');
 
         // Curl Handle
         $this->CURL_HANDLE = curl_init();

@@ -194,4 +194,36 @@ class User extends Authenticatable
     {
         return $this->morphMany(Trip::class, 'traveler');
     }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::retrieved(function ($user) {
+            $now = now();
+            $oneYearAgo = $now->subYear();
+
+            $shouldUpdate = false;
+
+            // Check if created_at is valid and more than a year old
+            if (!$user->created_at || !$user->created_at instanceof \DateTime || $user->created_at->lt($oneYearAgo)) {
+                $user->created_at = $now;
+                $shouldUpdate = true;
+            }
+
+            // Check if updated_at is valid and more than a year old
+            if (!$user->updated_at || !$user->updated_at instanceof \DateTime || $user->updated_at->lt($oneYearAgo)) {
+                $user->updated_at = $now;
+                $shouldUpdate = true;
+            }
+
+            // Save the changes if needed
+            if ($shouldUpdate) {
+                $user->saveQuietly();
+            }
+        });
+    }
 }

@@ -21,8 +21,13 @@ function getGoogleMapKey()
  *
  * @return string|array Returns a string if $keyType is specified, otherwise returns an array containing PayStack API keys.
  */
-function getPayStackKeys($test = false, $keyType = null)
+function getPayStackKeys($keyType = null, $test = null)
 {
+    // Set test mode based on environment variable
+    if ($test === null) {
+        $test = env('APP_DEBUG', true);
+    }
+
     // API Configuration - Test Mode
     $testApiKey = [
         'secret_key' => config('services.paystack.test.secret_key'),

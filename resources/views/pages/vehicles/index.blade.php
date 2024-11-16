@@ -109,8 +109,10 @@
                 function initMap() {
                     // Default location: Nigeria
                     var defaultCenter = {
-                        lat: 9.0579,
-                        lng: 7.4951
+                        // lat: 9.0579,
+                        // lng: 7.4951
+                        lat: 6.4844,
+                        lng: 3.4792
                     };
 
                     var mapStyle = [{

@@ -62,12 +62,6 @@ class Trip extends Component
             throw new AuthenticationException('User must be logged in to book a trip.');
         }
     
-        // Validate input data
-        $this->validate([
-            'trip.days' => 'required|integer|min:1',
-            // Add other necessary validations
-        ]);
-    
         // Check for pending orders
         $this->checkPendingOrders();
     

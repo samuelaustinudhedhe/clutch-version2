@@ -40,63 +40,66 @@
         </x-div>
 
         <div class="w-full flex flex-col justify-between">
-            <x-div>
-
-                {{-- Distance Allowed --}}
-                <div class="space-y-2">
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Start Date </dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">
-                            {{ isset($trip->details->start->timestamp) ? date('d, M Y h:i A', $trip->details->start->timestamp) : 'N/A' }}
-                        </dd>
-                    </dl>
-
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">End Date </dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">
-                            {{ isset($trip->details->end->timestamp) ? date('d, M Y h:i A', $trip->details->end->timestamp) : 'N/A' }}
-                        </dd>
-                    </dl>
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Drop-off Location </dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">
-                            {{ formatAddress($trip->details->end->location, 'city, state, country') ?? 'N/A' }}</dd>
-                    </dl>
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Pickup Location </dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">
-                            {{ formatAddress($trip->details->start->location, 'city, state, country') ?? 'N/A' }}</dd>
-                    </dl>
-
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Allowed Mileage</dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">
-                            {{ $trip->vehicle->details->maximum_mileage ?? 'Unlimited' }}</dd>
-                    </dl>
-
-                    {{-- aditionaly millage cost --}}
-                    @if (isset($trip->vehicle->details->maximum_mileage) || isset($trip->vehicle->price->cost_per_mileage))
+            <div>
+                <x-div>
+                    {{-- Distance Allowed --}}
+                    <div class="space-y-2">
                         <dl class="flex items-center justify-between gap-4">
-                            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Price/Mileage</dt>
+                            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Start Date </dt>
                             <dd class="text-base font-medium text-gray-900 dark:text-white">
-                                {{ humanizePrice($trip->vehicle->price->cost_per_mileage ?? 100) }}</dd>
+                                {{ isset($trip->details->start->timestamp) ? date('d, M Y h:i A', $trip->details->start->timestamp) : 'N/A' }}
+                            </dd>
                         </dl>
-                    @endif
+
+                        <dl class="flex items-center justify-between gap-4">
+                            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">End Date </dt>
+                            <dd class="text-base font-medium text-gray-900 dark:text-white">
+                                {{ isset($trip->details->end->timestamp) ? date('d, M Y h:i A', $trip->details->end->timestamp) : 'N/A' }}
+                            </dd>
+                        </dl>
+                        <dl class="flex items-center justify-between gap-4">
+                            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Drop-off Location </dt>
+                            <dd class="text-base font-medium text-gray-900 dark:text-white">
+                                {{ formatAddress($trip->details->end->location, 'city, state, country') ?? 'N/A' }}</dd>
+                        </dl>
+                        <dl class="flex items-center justify-between gap-4">
+                            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Pickup Location </dt>
+                            <dd class="text-base font-medium text-gray-900 dark:text-white">
+                                {{ formatAddress($trip->details->start->location, 'city, state, country') ?? 'N/A' }}</dd>
+                        </dl>
+
+                        <dl class="flex items-center justify-between gap-4">
+                            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Allowed Mileage</dt>
+                            <dd class="text-base font-medium text-gray-900 dark:text-white">
+                                {{ $trip->vehicle->details->maximum_mileage ?? 'Unlimited' }}</dd>
+                        </dl>
+
+                        {{-- aditionaly millage cost --}}
+                        @if (isset($trip->vehicle->details->maximum_mileage) || isset($trip->vehicle->price->cost_per_mileage))
+                            <dl class="flex items-center justify-between gap-4">
+                                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Price/Mileage</dt>
+                                <dd class="text-base font-medium text-gray-900 dark:text-white">
+                                    {{ humanizePrice($trip->vehicle->price->cost_per_mileage ?? 100) }}</dd>
+                            </dl>
+                        @endif
 
 
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Discount</dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">
-                            {{ $trip->details->location->pickup->full ?? 'N/A' }}</dd>
-                    </dl>
+                        <dl class="flex items-center justify-between gap-4">
+                            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Discount</dt>
+                            <dd class="text-base font-medium text-gray-900 dark:text-white">
+                                {{ $trip->details->location->pickup->full ?? 'N/A' }}</dd>
+                        </dl>
 
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Total Price</dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">
-                            {{ humanizePrice($trip->details->price->total_paid) ?? 'N/A' }}</dd>
-                    </dl>
-                </div>
-            </x-div>
+                        <dl class="flex items-center justify-between gap-4">
+                            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Total Price</dt>
+                            <dd class="text-base font-medium text-gray-900 dark:text-white">
+                                {{ humanizePrice($trip->details->price->total_paid) ?? 'N/A' }}</dd>
+                        </dl>
+                    </div>
+                </x-div>
+
+
+            </div>
 
             <x-div class="flex space-x-6 ">
                 @if ($this->trip->details->start->timestamp <= now()->timestamp && $this->trip->status === 'pending')
