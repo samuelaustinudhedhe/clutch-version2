@@ -1,4 +1,82 @@
 <?php
+<div class="container mx-auto p-4">
+<h1 class="text-2xl font-bold mb-4">Order Details</h1>
+
+<x-div class="shadow-md rounded-lg p-6">
+    <h2 class="text-xl font-semibold mb-2">Order #{{ $order->id }}</h2>
+    <p class="text-gray-600 mb-4">Placed on: {{ $order->created_at->format('F j, Y, g:i a') }}</p>
+
+    <div class="mb-4">
+        <h3 class="text-lg font-semibold">Orderable Item</h3>
+        <p class="text-gray-800">
+            @if ($order->orderable && $order->orderable_type === 'App\Models\Trip')
+                <a href="{{ route('user.trips.show', $order->orderable->id) }}" class="text-blue-500 hover:underline">
+                    View Trip #{{ $order->orderable->id }}
+                </a>
+            @elseif ($order->orderable)
+                {{ $order->orderable_type }} #{{ $order->orderable->id }}
+            @else
+                No associated item
+            @endif
+        </p>
+    </div>
+
+    <div class="mb-4">
+        <h3 class="text-lg font-semibold">Price Details</h3>
+        <p class="text-gray-800">Total: {{ $order->price['total'] }} {{ $order->price['currency'] }}</p>
+    </div>
+
+    <div class="mb-4">
+        <h3 class="text-lg font-semibold">Payment Status</h3>
+        <p class="text-gray-800">{{ ucfirst($order->payment['status']) }}</p>
+    </div>
+
+    <div class="mb-4">
+        <h3 class="text-lg font-semibold">Customer Details</h3>
+        <p class="text-gray-800">{{ $order->authorable->name }}</p>
+        <p class="text-gray-800">{{ $order->authorable->email }}</p>
+    </div>
+
+    <div class="mb-4">
+        <h3 class="text-lg font-semibold">Additional Details</h3>
+        <p class="text-gray-800">{{ $order->details['notes'] ?? 'No additional details' }}</p>
+    </div>
+    <div class="w-full lg:w-1/2">
+        <h3 class="text-lg font-light">Additional Details</h3>
+        <div class="gap-2 mt-2">
+            @foreach ($order->details ?? [] as $key => $value)
+                <p><span class="capitalize opacity-70">{{ str_replace('_', ' ', $key) }}:</span>
+                    {{ $value }}</p>
+            @endforeach
+        </div>
+    </div>
+</x-div>
+<x-div>
+    {{-- Featured Image --}}
+    <div class="relative">
+        <img src="{{ $order->orderable->vehicle->featured_image_url }}"
+            class="rounded  min-w-80 w-full min-h-44 h-full object-cover" width="220px" height="180px"
+            alt="{{ $order->orderable->vehicle->name }} image" />
+    </div>
+
+    {{-- <div class="w-full min-w-0 flex-1 space-y-4 md:max-w-md ">
+            <a href="{{ route('vehicles.show', $order->orderable->vehicle->id) }}" target="_blank"
+                class="!text-xl font-medium text-gray-900 dark:text-white hover:underline">{{ $order->orderable->vehicle->name }}</a>
+        </div> --}}
+
+    <div class="my-8">
+        @include('pages.vehicles.show.name', ['vehicle' => $order->orderable->vehicle])
+    </div>
+
+    {{-- Details --}}
+    @include('pages.vehicles.show.basic-details', ['vehicle' => $order->orderable->vehicle])
+
+    {{-- Host --}}
+    @include('pages.vehicles.show.host', ['vehicle' => $order->orderable->vehicle])
+
+
+</x-div>
+</div>
 
 // Resizing the image to the desired dimensions
 $resizing = [

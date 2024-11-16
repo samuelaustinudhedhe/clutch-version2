@@ -136,6 +136,40 @@ class Vehicle extends Model
     }
 
     /**
+     * Get the current price of the vehicle.
+     *
+     * This method returns the sale price if the vehicle is on sale and the sale price is set.
+     * Otherwise, it returns the regular amount.
+     *
+     * @return float The current price of the vehicle.
+     */
+    public function getCurrentPriceAttribute()
+    {
+        $price = $this->getPrice();
+        $on_sale = filter_var($price->on_sale ?? false, FILTER_VALIDATE_BOOLEAN);
+        $sale_price = $price->sale ?? null;
+        $amount = $price->amount ?? 0;
+
+        if ($on_sale && $sale_price !== null && $sale_price < $amount) {
+            return $sale_price;
+        }
+
+        return $amount;
+    }
+
+    public function getCurrentPrice($days = 1)
+    {
+        $price = $this->finalPrice();
+        $totalPrice = $this->calcTotalPrice($days, true, false);
+        return [
+            'base_price' => $price->amount,
+            'sale_price' => $price->sale,
+            'on_sale' => $this->on_sale,
+            'total_price' => $totalPrice,
+        ];
+    }
+    
+    /**
      * Get the formatted human-readable price attribute.
      *
      * This accessor method formats the price attribute into a human-readable string,

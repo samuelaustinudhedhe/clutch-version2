@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class UserDashboardController extends Controller
@@ -41,8 +42,10 @@ class UserDashboardController extends Controller
     public function show(Request $request)
     {
         return view('user.dashboard.show', [
+            'vehicles' => Vehicle::latest()->take(4)->get(),
             'request' => $request,
-            'admin' => $request->user()
+            'user' => $request->user()
         ]);
     }
+
 }

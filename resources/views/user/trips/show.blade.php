@@ -30,8 +30,11 @@
                 @include('pages.vehicles.show.name', ['vehicle' => $trip->vehicle])
             </div>
 
-            {{-- Host --}}
+            {{-- Details --}}
             @include('pages.vehicles.show.basic-details', ['vehicle' => $trip->vehicle])
+            
+            {{-- Host --}}
+            @include('pages.vehicles.show.host', ['vehicle' => $trip->vehicle])
 
 
         </x-div>

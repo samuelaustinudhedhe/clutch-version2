@@ -58,7 +58,7 @@ class Trip extends Model
     {
         return $this->morphMany(Order::class, 'orderable');
     }
-
+    
     /**
      * Get the traveler associated with the trip.
      */

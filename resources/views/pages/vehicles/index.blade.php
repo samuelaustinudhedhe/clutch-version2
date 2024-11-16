@@ -1,7 +1,7 @@
 <div class="max-w-screen-2xl dark:bg-gray-900 mx-auto" x-data="{}" {{-- on load scroll down by 300px only on mobile or screens smaller than 1020px --}}
     x-init="() => {
         if (window.innerWidth < 1021) {
-            setTimeout(() => window.scrollTo({ top: 300, behavior: 'smooth' }), 100);
+            setTimeout(() => window.scrollTo({ top: 740, behavior: 'smooth' }), 100);
         }
     }">
     {{-- Verification Note --}}
@@ -13,7 +13,7 @@
 
         {{-- Vehicles --}}
         <div
-            class="flex flex-col {{ $vehicles->isEmpty()?:'justify-between' }} w-full lg:min-w-[640px] lg:max-w-[740px] order-2 max-lg:mt-[calc(100vh-253px)]  max-lg:z-[5] max-lg:bg-white dark:bg-gray-900">
+            class="flex flex-col {{ $vehicles->isEmpty() ?: 'justify-between' }} w-full lg:min-w-[640px] lg:max-w-[740px] order-2 max-lg:mt-[calc(100vh-253px)]  max-lg:z-[5] max-lg:bg-white dark:bg-gray-900">
             <button class="lg:hidden flex items-center justify-center py-4 sticky top-16 z-10 bg-white dark:bg-gray-800 "
                 onclick="window.scrollTo({top: 0,behavior: 'smooth'})">
                 <span class="w-20 h-1 bg-gray-400 rounded-xl"></span>
@@ -35,14 +35,15 @@
         </div>
 
         {{-- Map --}}
-        <div class="w-full max-lg:min-h-[calc(100vh-250px)] max-lg:max-h-[calc(100vh-220px)] h-full lg:max-h-full fixed lg:relative">
+        <div
+            class="w-full max-lg:min-h-[calc(100vh-250px)] max-lg:max-h-[calc(100vh-220px)] h-full lg:max-h-full fixed lg:relative">
             @php
                 $mapVehicles = $vehicles->map(function ($vehicle) {
                     // Generate a small random offset for latitude and longitude
                     $latOffset = mt_rand(-10, 10) / 10000; // Random offset between -0.001 and 0.001
                     $lngOffset = mt_rand(-10, 10) / 10000; // Random offset between -0.001 and 0.001
                     $ly = true;
-                    $price = $vehicle->price->sale ?? $vehicle->price->amount;
+                    $price = $vehicle->current_price;
                     return [
                         'id' => $vehicle->id,
                         'lat' => ($vehicle->location->pickup->latitude ?? 0) + $latOffset,
@@ -54,7 +55,7 @@
                         'host_rating' =>
                             $vehicle->owner->rating > 4.9 ? 'All Star Host' : $vehicle->owner->rating . ' ★',
                         'location' => $vehicle->location->pickup->city ?? '',
-                        'discount' => $vehicle->on_sale? $vehicle->discount() : 0,
+                        'discount' => $vehicle->on_sale ? $vehicle->discount() : 0,
                         'discount_note' =>
                             'Discount applies if rented ' .
                             (!$ly ? ' for ' : ' ') .
@@ -89,6 +90,7 @@
 
                 .gm-style-iw.gm-style-iw-c {
                     padding: 0 !important;
+                    min-width: fit-content !important;
                 }
             </style>
 
@@ -417,9 +419,9 @@
                                             
                                             <!-- Save Amount -->
                                             ${vehicle.discount > 0 ? `
-                                            <div class="bg-green-100 text-green-600 text-xs min-w-[70px] max-w-[60px] font-semibold px-2 py-1.5 max-w-32 rounded-lg inline-block">
-                                                ${vehicle.discount}% off
-                                            </div>` : ''}
+                                                        <div class="bg-green-100 text-green-600 text-xs min-w-[70px] max-w-[60px] font-semibold px-2 py-1.5 max-w-32 rounded-lg inline-block">
+                                                            ${vehicle.discount}% off
+                                                        </div>` : ''}
 
                                             <!-- Price -->
                                             <div class="text-right w-full ml-2">
@@ -514,7 +516,9 @@
                         handleGeocodeResult(place);
                     } else {
                         // Otherwise, use the geocoder
-                        geocoder.geocode({ address: address }, function(results, status) {
+                        geocoder.geocode({
+                            address: address
+                        }, function(results, status) {
                             console.log('Geocode status:', status);
                             if (status === 'OK' && results[0]) {
                                 handleGeocodeResult(results[0]);
@@ -563,7 +567,7 @@
                     // Call your Livewire method to update the address
                     @this.set('searchByLocation', extractedAddress);
                 }
-                
+
                 // Function to update markers based on the current zoom level
                 function updateMarkersByZoom(zoomLevel) {
                     markers.forEach(function(markerObj) {

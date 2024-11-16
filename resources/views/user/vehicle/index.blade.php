@@ -23,35 +23,33 @@
     <div class="">
         <!-- Vehicle Listing -->
         <!-- Vehicle Card -->
-        @if ($vehicles)
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                @foreach ($vehicles as $vehicle)
-                    <a href="{{ route('vehicles.show', $vehicle->id) }}" target="_blank" class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                        <img class="w-full h-48 object-cover"
-                            src="{{ $vehicle->featured_image->url }}" alt="Vehicle Image">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold">{{ $vehicle->name }}</h3>
-                            <p class="text-gray-600 dark:text-gray-400">Pickup:
-                                {{ formatAddress($vehicle->location->pickup, 'street, city, state,') }}</p>
-                            <p class="text-gray-600 dark:text-gray-400">Insurance:
-                                {{ $vehicle->document->insurance->status ?? 'Invalid' }}</p>
-                            <p class="text-gray-900 dark:text-gray-100 font-bold">{{ $vehicle->human_price }}</p>
-                        </div>
-                    </a>
-                @endforeach
-            </div>
-        @else
-            <div class="flex items-center justify-center">
-                <div class="grid space-y-6 text-center">
-                    <img src="/assets/images/placeholders/985e307e72.png" alt="Placeholder Image"
-                        class="mx-auto max-w-[200px] min-w-[150px]">
-                    <p class="text-gray-600 mt-8 dark:text-gray-300">No vehicles found.</p>
-                    <p class="text-gray-600 mt-8 dark:text-gray-300">List a Vehicle and start earning from Africa's
-                        largest vehicle sharing marketplace.</p>
-                    <x-button href="{{ route('user.vehicles.wizard') }}" class="mx-auto">List your Vehicle</x-button>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            @forelse ($vehicles as $vehicle)
+                <a href="{{ route('vehicles.show', $vehicle->id) }}" target="_blank" class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                    <img class="w-full h-48 object-cover"
+                        src="{{ $vehicle->featured_image->url }}" alt="Vehicle Image">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold">{{ $vehicle->name }}</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Pickup:
+                            {{ formatAddress($vehicle->location->pickup, 'street, city, state,') }}</p>
+                        <p class="text-gray-600 dark:text-gray-400">Insurance:
+                            {{ $vehicle->document->insurance->status ?? 'Invalid' }}</p>
+                        <p class="text-gray-900 dark:text-gray-100 font-bold">{{ $vehicle->human_price }}</p>
+                    </div>
+                </a>
+            @empty
+                <div class="col-span-full flex items-center justify-center">
+                    <div class="grid space-y-6 text-center">
+                        <img src="/assets/images/placeholders/985e307e72.png" alt="Placeholder Image"
+                            class="mx-auto max-w-[200px] min-w-[150px]">
+                        <p class="text-gray-600 mt-8 dark:text-gray-300">No vehicles found.</p>
+                        <p class="text-gray-600 mt-8 dark:text-gray-300">List a Vehicle and start earning from Africa's
+                            largest vehicle sharing marketplace.</p>
+                        <x-button href="{{ route('user.vehicles.wizard') }}" class="mx-auto">List your Vehicle</x-button>
+                    </div>
                 </div>
-            </div>
-        @endif
+            @endforelse
+        </div>
     </div>
 
     {{-- Pagination --}}

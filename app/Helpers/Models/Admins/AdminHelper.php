@@ -33,7 +33,10 @@ if (!function_exists('getAdmin')) {
         if (is_numeric($admin)) {
             // If $admin is a numeric ID, retrieve the admin by ID
             $admin = Admin::find($admin);
-        } elseif ((!$admin || !is_object($admin)) || $admin === 'current') {
+        } elseif (is_string($admin) && filter_var($admin, FILTER_VALIDATE_EMAIL)) {
+            // If $admin is a valid email address, retrieve the admin by email
+            $admin = Admin::where('email', $admin)->first();
+        }  elseif ((!$admin || !is_object($admin)) || $admin === 'current') {
             // If $admin is null or 'current', get the currently authenticated admin
             $admin = Auth::guard('admin')->user();
         }

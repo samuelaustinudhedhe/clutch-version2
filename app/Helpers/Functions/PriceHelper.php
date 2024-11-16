@@ -9,7 +9,7 @@ if (!function_exists('humanizePrice')) {
      * @param int $decimals The number of decimal places to display. Default is 0.
      * @return string|null The formatted price with currency symbol, or null if the input is invalid.
      */
-    function humanizePrice($price, int $decimals = 0 , $echo = false)
+    function humanizePrice($price, int $decimals = 0, $currencyCode = null)
     {
         if (is_string($price)) {
             // Check if the string contains only digits and commas
@@ -26,28 +26,31 @@ if (!function_exists('humanizePrice')) {
         }
 
         $cleanPrice = number_format($cleanPrice, $decimals);
-        $formattedPrice = app_currency_symbol(false) . $cleanPrice;
+        $formattedPrice = app_currency_symbol($currencyCode) . $cleanPrice;
 
-        if ($echo) {
-            echo $formattedPrice;
-        } else {
-            return $formattedPrice;
-        }
+
+        return $formattedPrice;
     }
 }
 
 if (!function_exists('formatPrice')) {
 
+
+
     /**
-     * Formats a price by utilizing the humanizePrice function.
+     * Formats a price with currency symbol and specified decimal places.
      *
-     * @param string|float $price The price to format. Can be a string with numbers and commas or a float.
-     * @param bool $echo Whether to echo the formatted price or return it.
+     * This function is an alias for the humanizePrice function. It takes a price value,
+     * formats it with the specified number of decimal places, and adds a currency symbol.
+     *
+     * @param float|string|int $price The price to format. Can be a string with numbers and commas, an integer, or a float.
+     * @param int $decimals The number of decimal places to display. Default is 0.
+     * @param string|null $currencyCode The currency code to use for the symbol. If null, the default currency will be used.
      * @return string|null The formatted price with currency symbol, or null if the input is invalid.
      */
-    function formatPrice($price, $echo = false)
+    function formatPrice($price, int $decimals = 0, $currencyCode = null)
     {
-        return humanizePrice($price, $echo);
+        return humanizePrice($price, $decimals, $currencyCode);
     }
 }
 

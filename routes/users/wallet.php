@@ -1,7 +1,7 @@
 <?php
 
-use App\View\Livewire\User\Wallet\Edit;
-use App\View\Livewire\User\Vehicle\Index;
+use App\View\Livewire\User\Wallet\Transactions;
+use App\View\Livewire\User\Wallet\Deposit;
 use App\View\Livewire\User\Wallet\Show;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +25,7 @@ Route::prefix('wallet')->name('wallet.')->group(function () {
      * @uses App\View\Livewire\User\Wallet\Index
      * @return \Illuminate\View\View
      */
-    Route::get('/', Index::class)->name('index');
+    //Route::get('/', Show::class)->name('Show');
 
 
     /**
@@ -35,7 +35,7 @@ Route::prefix('wallet')->name('wallet.')->group(function () {
      * @param int|string $wallet The ID or identifier of the wallet to edit
      * @return \Illuminate\View\View
      */
-   // Route::get('edit/{wallet}', Edit::class)->name('edit');
+    //Route::get('/transactions', Transactions::class)->name('transactions');
 
     /**
      * Display the details of a specific wallet.
@@ -44,5 +44,5 @@ Route::prefix('wallet')->name('wallet.')->group(function () {
      * @param int|string $wallet The ID or identifier of the wallet to show
      * @return \Illuminate\View\View
      */
-    //Route::get('show/{wallet}', Show::class)->name('show');
+    //Route::get('/deposit', Deposit::class)->name('Deposit');
 });

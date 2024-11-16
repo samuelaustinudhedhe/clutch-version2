@@ -163,27 +163,21 @@ if (!function_exists('app_currency_symbol')) {
      | @return string The application currency symbol.
      |
      */
-    function app_currency_symbol(bool $echo = true)
+    function app_currency_symbol($currencyCode = null)
     {
-        $currency = app_currency(false); // Get the currency code
+        if ($currencyCode === null) {
+            $currencyCode = app_currency(false); // Get the default currency code if not provided
+        }
 
         $countries = countries();
+        $symbol = $currencyCode; // Default to currency code if symbol is not found
 
-        $symbol = $currency; // Default to currency code if symbol is not found
-
-        // Loop through the countries to find the currency symbol
         foreach ($countries as $country) {
-            if (isset($country['currencies'][$currency])) {
-                $symbol = $country['currencies'][$currency]['symbol'] ?? $currency;
+            if (isset($country['currencies'][$currencyCode])) {
+                $symbol = $country['currencies'][$currencyCode]['symbol'] ?? $currencyCode;
                 break;
             }
         }
-
-        if ($echo) {
-            echo $symbol;
-        } else {
-            return $symbol;
-        }
+        return $symbol;
     }
 }
-

@@ -13,6 +13,8 @@
                     @include('pages.vehicles.show.name')
                 </div>
                 @include('pages.vehicles.show.basic-details', ['vehicle' => $vehicle])
+                {{-- Host --}}
+                @include('pages.vehicles.show.host', ['vehicle' => $vehicle])
             </x-div>
             {{-- Left --}}
             <x-div class="w-full md:w-2/5 order-first md:order-2 !my-0">

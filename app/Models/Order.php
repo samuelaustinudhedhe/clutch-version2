@@ -70,4 +70,63 @@ class Order extends Model
     {
         return $this->price['total'] ?? 0;
     }
+
+    /**
+     * Get the humanized total price of the order.
+     *
+     * @return string
+     */
+    public function getHumanTotalPriceAttribute()
+    {
+        return humanizePrice($this->getTotalPriceAttribute());
+    }
+
+    /**
+     * Get the tax amount of the order.
+     *
+     * @return float
+     */
+    public function getTaxAttribute()  
+    {
+        return $this->cleanValue($this->price['tax']) ?? 0;
+    }
+
+    private function cleanValue($value)
+    {
+        if (is_string($value)) {
+            $value = preg_replace('/[^0-9.]/', '', $value);
+        }
+        return is_numeric($value) ? (float) $value : $value;
+    }
+
+    /**
+     * Get the humanized tax amount of the order.
+     *
+     * @return string
+     */
+    public function getHumanTaxAttribute()
+    {
+        return humanizePrice($this->getTaxAttribute());
+    }
+
+    /**
+     * Get the discount amount of the order.
+     *
+     * @return float
+     */
+    public function getDiscountAttribute()
+    {
+        return $this->price['discount'] ?? 0;
+    }
+
+    /**
+     * Get the humanized discount amount of the order.
+     *
+     * @return string
+     */
+    public function getHumanDiscountAttribute()
+    {
+        return humanizePrice($this->getDiscountAttribute());
+    }
+
 }

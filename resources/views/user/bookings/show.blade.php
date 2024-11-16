@@ -25,7 +25,7 @@
                 @include('pages.vehicles.show.name', ['vehicle' => $booking->vehicle])
             </div>
 
-            {{-- Host --}}
+            {{-- Details --}}
             @include('pages.vehicles.show.basic-details', ['vehicle' => $booking->vehicle])
         </x-div>
 

@@ -60,6 +60,20 @@ if (!function_exists('toSlug')) {
     }
 }
 
+if (!function_exists('str_uuid')) {
+    /**
+     * Generates a UUID (Universally Unique Identifier) string.
+     *
+     * This function uses Laravel's Str::uuid() method to create a new UUID.
+     *
+     * @return \Ramsey\Uuid\UuidInterface
+     */
+    function str_uuid():\Ramsey\Uuid\UuidInterface
+    {
+        return \Illuminate\Support\Str::uuid();
+    }
+}
+
 if (!function_exists('error')) {
 
     /**
@@ -69,7 +83,7 @@ if (!function_exists('error')) {
      * @param string $message An optional message to be displayed with the error page. Default is an empty string.
      * @return never This function does not return a value. It either returns a response or aborts the request.
      */
-    function error($code , $message = ''): never
+    function error($code, $message = ''): never
     {
         // Get an instance of the ErrorPageController
         $error = app('App\Http\Controllers\Pages\ErrorPageController');
@@ -250,7 +264,7 @@ if (!function_exists('numberToWords')) {
             80 => 'Eighty',
             90 => 'Ninety'
         ];
-    
+
         $ordinals = [
             1 => 'First',
             2 => 'Second',
@@ -280,7 +294,7 @@ if (!function_exists('numberToWords')) {
             80 => 'Eightieth',
             90 => 'Ninetieth'
         ];
-    
+
         if ($ordinal) {
             // Check if the number is 20 or less, or a multiple of 10 less than 100
             if ($number <= 20 || ($number < 100 && $number % 10 == 0)) {
@@ -328,7 +342,7 @@ if (!function_exists('numberToWords')) {
                 return 'One Thousand';
             }
         }
-    
+
         // Fallback for numbers above 1000, return as string
         return (string)$number;
     }

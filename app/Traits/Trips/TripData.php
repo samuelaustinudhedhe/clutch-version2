@@ -72,7 +72,6 @@ trait TripData
         if (!empty($path) && Storage::exists($path)) {
             return json_decode(Storage::get($path), $associative);
         }
-
         return null;
     }
 
@@ -85,7 +84,7 @@ trait TripData
     final static function deleteTripData(Vehicle $vehicle)
     {
         $data = self::getTripData(true);
-
+        
         unset($data[$vehicle->id]);
 
         self::putTripData($data);

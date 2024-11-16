@@ -3,7 +3,7 @@
 
     <x-aside-menu name="Menu">
         {{-- Overview --}}
-        <x-aside-menu-dropdown name="overview">
+        <x-aside-menu-dropdown name="overview" href="{{ route('user.dashboard') }}" >
             <svg aria-hidden="true"
                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -27,8 +27,7 @@
                 </svg>
                 My Vehicles
                 <x-slot name="items">
-                    <x-aside-menu-dropdown-item name="Rentals" href="{{ route('user.vehicles.index') }}" />
-                    <x-aside-menu-dropdown-item name="Trips" href="{{ route('user.vehicles.index') }}" />
+                    <x-aside-menu-dropdown-item name="Trips" href="{{ route('user.bookings.index') }}" />
 
                 </x-slot>
             </x-aside-menu-dropdown>
@@ -59,7 +58,7 @@
         @endif
 
         {{-- Messages --}}
-        <x-aside-menu-dropdown name="Messages">
+        {{-- <x-aside-menu-dropdown name="Messages">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -72,10 +71,10 @@
                 class="inline-flex justify-center items-center min-w-fit h-5 text-xs font-semibold rounded-full text-blue-800 bg-blue-100 dark:bg-blue-200 dark:text-blue-800">
                 100
             </span>
-        </x-aside-menu-dropdown>
+        </x-aside-menu-dropdown> --}}
 
         {{-- Wallet --}}
-        <x-aside-menu-dropdown name="wallet" href="{{ route('user.wallet.index') }}">
+        {{-- <x-aside-menu-dropdown name="wallet" href="{{ route('user.wallet.index') }}">
             <svg aria-hidden="true"
                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -91,7 +90,18 @@
                 <x-aside-menu-dropdown-item name="Invoice" href="/" />
                 <x-aside-menu-dropdown-item name="Refunds" href="/" />
             </x-slot>
-        </x-aside-menu-dropdown>
+        </x-aside-menu-dropdown> --}}
+        
+        @if (getUser()->whereHas('Orders')->exists())
+            <x-aside-menu-dropdown name="orders" href="{{ route('user.orders.index') }}">
+                <svg aria-hidden="true"
+                    class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+                  </svg>
+                My Orders
+            </x-aside-menu-dropdown>
+        @endif
 
         {{-- Referals --}}
         {{-- <x-aside-menu-dropdown name="referals" href="/referal">
@@ -115,12 +125,12 @@
                     d="M15 9h3m-3 3h3m-3 3h3m-6 1c-.306-.613-.933-1-1.618-1H7.618c-.685 0-1.312.387-1.618 1M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm7 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
             </svg>
             Profile
-
+{{-- 
             <x-slot name="items">
                 <x-aside-menu-dropdown-item name="Edit Photo" href="{{ route('user.profile.photo') }}" />
                 <x-aside-menu-dropdown-item name="Change Passwod" href="{{ route('user.profile.password') }}" />
                 <x-aside-menu-dropdown-item name="2AF" href="{{ route('user.profile.2af') }}" />
-            </x-slot>
+            </x-slot> --}}
         </x-aside-menu-dropdown>
     </x-aside-menu>
 

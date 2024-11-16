@@ -38,7 +38,7 @@ Route::group([], function () {
      * @uses App\Http\Controllers\User\Dashboard\UserDashboardController::show
      * @return \Illuminate\Http\Response
      */
-    Route::get('/',  [Dashboard::class, 'show']);
+    Route::get('/',  [Dashboard::class, 'show'])->name('dashboard.overview');
 
     /**
      * Show the user dashboard (named route)

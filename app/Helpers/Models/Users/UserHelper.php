@@ -21,7 +21,10 @@ if (!function_exists('getUser')) {
         if (is_numeric($user)) {
             // If $user is a numeric ID, retrieve the user by ID
             $user = User::find($user);
-        } elseif (!$user || $user === 'current') {
+        } elseif (is_string($user) && filter_var($user, FILTER_VALIDATE_EMAIL)) {
+            // If $user is a valid email address, retrieve the user by email
+            $user = User::where('email', $user)->first();
+        }  elseif (!$user || $user === 'current') {
             // If $user is null or 'current', get the currently authenticated user
             $user = Auth::user();
         }
