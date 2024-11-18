@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\URL;
 
 class WelcomeMail extends Mailable
 {
@@ -16,7 +17,7 @@ class WelcomeMail extends Mailable
 
     public $user;
     private $password;
-    private  $verification;
+    private $verification;
     
     /**
      * Create a new message instance.
@@ -43,11 +44,18 @@ class WelcomeMail extends Mailable
      */
     public function content(): Content
     {
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $this->user->getKey(), 'hash' => sha1($this->user->getEmailForVerification())]
+        );
+
         return new Content(
             view: 'emails.welcome',
             with: [
                 'name' => $this->user->name,
                 'email' => $this->user->email,
+                'verificationUrl' => $verificationUrl,
                 'password' => $this->password,
             ],
         );

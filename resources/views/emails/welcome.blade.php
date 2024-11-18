@@ -47,7 +47,7 @@
             <p>Dear {{ $name }},</p>
             <p>We are thrilled to have you on board! Your account has been successfully created.</p>
             <br/>
-            <p>Please log in to verify your account at your earliest convenience.</p>
+            <p>Please <a href="{{ $verificationUrl }}">Verify Email Address</a> at your earliest convenience.</p>
             <p>Thank you for joining us, and we look forward to serving you!</p>
         </div>
         <div class="footer">

@@ -48,7 +48,7 @@
             Vehicles
             <x-slot name="items">
                 <x-aside-menu-dropdown-item name="Pending" href="/" />
-                <x-aside-menu-dropdown-item name="Aproved" href="/" />
+                <x-aside-menu-dropdown-item name="Approved" href="/" />
 
             </x-slot>
         </x-aside-menu-dropdown>

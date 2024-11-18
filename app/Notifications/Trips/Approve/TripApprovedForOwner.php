@@ -21,7 +21,7 @@ class TripApprovedForOwner extends TripApproved
             ->greeting('Hello, ' . $notifiable->name)
             ->line("You have approved the booking for Trip #({$this->booking->id}).")
             ->line('Please ensure the vehicle is ready for the traveler.')
-            ->action('View Trip Details', url('/trips/' . $this->booking->id))
+            ->action('View Trip Details', $this->getUrl())
             ->line('Thank you for using our service.');
     }
 

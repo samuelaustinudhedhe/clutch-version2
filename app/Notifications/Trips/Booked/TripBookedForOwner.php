@@ -18,11 +18,11 @@ class TripBookedForOwner extends TripBooked
     {
         return (new MailMessage)
             ->subject('New Booking for Your Vehicle')
-            ->line('A new trip has been booked for your vehicle.')
+            ->line('A new trip has been booked for your vehicle and')
             ->line('Trip ID: ' . $this->trip->id)
             ->line('Vehicle: ' . $this->trip->vehicle->name)
             ->line('Start Date: ' . static::getDateTime($this->trip->details->start->timestamp))
-            ->action('View Trip Details', url('/user/bookings/' . $this->trip->id));
+            ->action('View Trip Details', $this->getUrl());
     }
     /**
      * Get the array representation of the notification.

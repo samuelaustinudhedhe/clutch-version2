@@ -47,7 +47,7 @@ class TripCanceled extends Notification
                     ->line("We regret to inform you that Trip #({$this->trip->id}) has been canceled.")
                     ->line("The cancellation was initiated by {$this->canceledBy->name}.")
                     ->line('If you have any questions or need further assistance, please contact our support team.')
-                    ->action('View Trip Details', url('/user/trips/show/' . $this->trip->id))
+                    ->action('View Trip Details', $this->getUrl($this->trip->id))
                     ->line('Thank you for using our service.');
     }
 
@@ -63,5 +63,20 @@ class TripCanceled extends Notification
             'canceled_by' => $this->canceledBy->name,
             'message' => "Trip #({$this->trip->id}) has been canceled by {$this->canceledBy->name}.",
         ];
+    }
+    
+    /**
+     * Generate the URL for viewing a specific trip booking.
+     *
+     * This function creates a URL that points to the page where a user can view
+     * the details of a specific trip booking. It uses the trip ID from the
+     * current trip object, regardless of the provided parameter.
+     *
+     * @param int $tripId The ID of the trip (Note: This parameter is not used in the function body)
+     * @return ($path is null ? \Illuminate\Contracts\Routing\UrlGenerator : string)
+     */
+    final public function getUrl($tripId = null){
+        $tripId = $tripId?? $this->trip->id;
+        return url('/user/trips/' . $tripId);
     }
 }

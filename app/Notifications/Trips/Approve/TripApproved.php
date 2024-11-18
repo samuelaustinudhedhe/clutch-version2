@@ -55,7 +55,7 @@ class TripApproved extends Notification implements ShouldQueue
             $message->line('Please ensure the vehicle is ready for the traveler.');
         }
 
-        $message->action('View Trip Details', url('/trips/' . $this->booking->id))
+        $message->action('View Trip Details', $this->getUrl())
             ->line('Thank you for using our service.');
 
         return $message;
@@ -73,5 +73,20 @@ class TripApproved extends Notification implements ShouldQueue
             'booking_id' => $this->booking->id,
             'message' => "Trip #({$this->booking->id}) has been approved.",
         ];
+    }
+
+    /**
+     * Generate the URL for viewing a specific trip booking.
+     *
+     * This function creates a URL that points to the page where a user can view
+     * the details of a specific trip booking. It uses the trip ID from the
+     * current trip object, regardless of the provided parameter.
+     *
+     * @param int $tripId The ID of the trip (Note: This parameter is not used in the function body)
+     * @return ($path is null ? \Illuminate\Contracts\Routing\UrlGenerator : string)
+     */
+    final public function getUrl($bookingId = null){
+        $bookingId = $bookingId?? $this->booking->id;
+        return url('/user/trips/' . $bookingId);
     }
 }

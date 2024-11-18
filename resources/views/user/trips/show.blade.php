@@ -112,7 +112,7 @@
                     <button type="button" wire:click="requestCancelTrip"
                         wire:confirm="Are you sure you want to cancle this trip?"
                         class="w-full bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Cancle Trip
+                        Cancel Trip
                     </button>
                 @endif
 

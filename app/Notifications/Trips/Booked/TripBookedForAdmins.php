@@ -19,7 +19,7 @@ class TripBookedForAdmins extends TripBooked
             ->line('Traveler: ' . $this->trip->traveler->name)
             ->line('Vehicle: ' . $this->trip->vehicle->name)
             ->line('Start Date: ' . static::getDateTime($this->trip->details->start->timestamp))
-            ->action('View Trip Details', url('/admin/trips/' . $this->trip->id));
+            ->action('View Trip Details', $this->getUrl());
     
     }
 

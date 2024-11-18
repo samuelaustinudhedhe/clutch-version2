@@ -223,7 +223,7 @@ class Onboarding extends Component
                     ],
                     'storeData.gender' => 'required|string|in:male,female',
 
-                    'storeData.address.*.full' => [
+                    'storeData.address.home.full' => [
                         'required',
                         'string',
                         function ($attribute, $value, $fail) {
@@ -236,8 +236,19 @@ class Onboarding extends Component
                             }
                         },
                     ],
+                    'storeData.address.work.full' => [
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            // Custom validation logic to check if the location exists using Google Maps API
+                            $response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($value) . "&key=" . getGoogleMapKey());
+                            $response = json_decode($response, true);
+
+                            if (empty($response['results'])) {
+                                $fail('The ' . $attribute . ' is not a valid location.');
+                            }
+                        },
+                    ],
                     'storeData.social.*' => [
-                        'required',
                         'url',
                         function ($attribute, $value, $fail) {
                             $patterns = [

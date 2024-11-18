@@ -16,10 +16,11 @@ class TripBookedForTraveler extends TripBooked
     {
         return (new MailMessage)
             ->subject('Your Trip is Booked')
-            ->line('Your trip has been successfully booked.')
+            ->line('Your trip has been booked. and is pending confirmation.')
             ->line('Trip ID: ' . $this->trip->id)
             ->line('Start Date: ' . static::getDateTime($this->trip->details->start->timestamp))            
-            ->action('View Trip Details', url('/user/trips/' . $this->trip->id));
+            ->line('End Date: ' . static::getDateTime($this->trip->details->end->timestamp))            
+            ->action('View Trip Details', $this->getUrl());
     }
 
     /**

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TripCancellationRequest extends Notification
+class TripCancellationRequest extends TripCanceled
 {
     use Queueable;
 
@@ -47,7 +47,7 @@ class TripCancellationRequest extends Notification
         return (new MailMessage)
             ->subject('Trip Cancellation Request')
             ->line("A cancellation request has been made for Trip #({$this->trip->id})")
-            ->action('View Trip', url('/user/trips/show/' . $this->trip->id))
+            ->action('View Trip', $this->getUrl($this->trip->id))
             ->line('Please review the request and take necessary action.');
     }
 
@@ -57,7 +57,7 @@ class TripCancellationRequest extends Notification
      * @param mixed $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray(object $notifiable): array
     {
         return [
             'trip_id' => $this->trip->id,

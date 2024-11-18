@@ -17,7 +17,7 @@ class TripCancellationRequestSubmitted extends TripCancellationRequest
         return (new MailMessage)
             ->subject('Trip Cancellation Request Submitted')
             ->line("A cancellation request has been submitted for Trip #({$this->trip->id}) by {$this->traveler->name}.")
-            ->action('View Trip', url('/user/trips/show/' . $this->trip->id))
+            ->action('View Trip', $this->getUrl($this->trip->id))
             ->line('Please wait for further updates regarding the cancellation.');
     }
 
@@ -27,7 +27,7 @@ class TripCancellationRequestSubmitted extends TripCancellationRequest
      * @param mixed $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray(object $notifiable): array
     {
         return [
             'trip_id' => $this->trip->id,

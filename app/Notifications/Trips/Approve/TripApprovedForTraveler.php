@@ -24,7 +24,7 @@ class TripApprovedForTraveler extends TripApproved
             ->line('Pickup Location: ' . $this->booking->details->pickup_location)
             ->line('Start Date: ' . $this->booking->details->start_date)
             ->line('End Date: ' . $this->booking->details->end_date)
-            ->action('View Trip Details', url('/trips/' . $this->booking->id))
+            ->action('View Trip Details', $this->getUrl())
             ->line('Thank you for using our service.');
     }
 

@@ -25,15 +25,18 @@
                 <dl>
                     <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Address
                     </dt>
-                    <dd class="text-gray-500 dark:text-gray-400">{{ $user->address->home->full }}</dd>
+                    <dd class="text-gray-500 dark:text-gray-400">{{ $user->address->home->full?? 'add an address' }}</dd>
 
                 </dl>
                 <dl>
                     <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Phone</dt>
                     <dd class="text-gray-500 dark:text-gray-400">
-                        {{ $user->humanized_work_phone ? $user->humanized_home_phone . ' / ' . $user->humanized_work_phone : $user->humanized_home_phone }}
+                        @if($user->humanized_home_phone || $user->humanized_work_phone)
+                            {{ $user->humanized_work_phone ? $user->humanized_home_phone . ' / ' . $user->humanized_work_phone : $user->humanized_home_phone }}
+                        @else
+                            Add a phone number
+                        @endif
                     </dd>
-
                 </dl>
             </div>
             <div
