@@ -110,15 +110,28 @@ class Wizard extends VehiclesWizard
                 break;
             case 1:
                 $rules = [
-                    'storeData.details.description' => 'min:60|max:900|required|string',
-                    'storeData.details.vin.type' => 'required|string|in:' . implode(',', array_keys($this->vehicleData['vits'])),
-                    'storeData.details.vin.number' => 'required|string|min:5|max:40',
+                    'storeData.details.description' => 'required|min:60|max:900|string',
+                    'storeData.details.vin.type' => 'string|in:' . implode(',', array_keys($this->vehicleData['vits'])),
+                    'storeData.details.vin.number' => 'string|min:5|max:40',
                     'storeData.details.make' => 'required|string',
-                    'storeData.details.manufacturer' => 'required|string',
+                    // 'storeData.details.manufacturer' => 'required|string',
+                    'storeData.details.reg_number' => 'required|string',
                     'storeData.details.model' => 'required|string',
                     'storeData.details.year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
-                    'storeData.location.*.full' => [
+                    'storeData.location.pickup.full' => [
                         'required',
+                        'string',
+                        function ($attribute, $value, $fail) {
+                            // Custom validation logic to check if the location exists using Google Maps API
+                            $response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($value) . "&key=" . getGoogleMapKey());
+                            $response = json_decode($response, true);
+
+                            if (empty($response['results'])) {
+                                $fail('The ' . $attribute . ' is not a valid location.');
+                            }
+                        },
+                    ],
+                    'storeData.location.drop_off.full' => [
                         'string',
                         function ($attribute, $value, $fail) {
                             // Custom validation logic to check if the location exists using Google Maps API
@@ -139,9 +152,10 @@ class Wizard extends VehiclesWizard
                     'storeData.details.vin.number' => 'Identification Number',
                     'storeData.details.make' => 'make',
                     'storeData.details.manufacturer' => 'manufacturer',
+                    'storeData.details.reg_number' => 'plate number',
                     'storeData.details.model' => 'model',
                     'storeData.details.year' => 'year',
-                    'storeData.location' => 'location',
+                    'storeData.location.*.full' => 'location',
                 ];
                 break;
             case 2:
@@ -175,7 +189,7 @@ class Wizard extends VehiclesWizard
                 $rules = [
                     'storeData.details.engine.type' => 'required|string',
                     'storeData.details.engine.size' => 'required|string',
-                    'storeData.details.engine.hp' => 'required|numeric',
+                    'storeData.details.engine.hp' => 'numeric|min:0|max:10000',
                     'storeData.details.fuel.type' => 'required|string',
                     'storeData.details.fuel.economy' => 'required|string',
                     'storeData.details.transmission.type' => 'required|string',
@@ -195,30 +209,30 @@ class Wizard extends VehiclesWizard
                 ];
                 break;
             case 4:
-                // Validation rules for step 4 (KYC)
+                // Validation rules for step 4 (Features)
                 $rules = [
-                    'storeData.safety.abs' => 'required|string|in:yes,no',
-                    'storeData.safety.traction_control' => 'required|string|in:yes,no',
-                    'storeData.safety.stability_control' => 'required|string|in:yes,no',
-                    'storeData.safety.lane_departure_warning' => 'required|string|in:yes,no',
-                    'storeData.safety.lane_keeping_assist' => 'required|string|in:yes,no',
-                    'storeData.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
-                    'storeData.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
-                    'storeData.safety.forward_collision_warning' => 'required|string|in:yes,no',
-                    'storeData.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
-                    'storeData.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
-                    'storeData.safety.parking_sensors' => 'required|string|in:yes,no',
-                    'storeData.safety.camera_360' => 'required|string|in:yes,no',
-                    'storeData.safety.driver_attention_monitor' => 'required|string|in:yes,no',
-                    'storeData.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
-                    'storeData.safety.airbags' => 'required|string|in:front,front-sides,front-sides-curtain',
-                    'storeData.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
-                    'storeData.safety.crumple_zones' => 'required|string|in:yes,no',
-                    'storeData.safety.isofix_mounts' => 'required|string|in:yes,no',
-                    'storeData.security.alarm_system' => 'required|string|in:yes,no',
-                    'storeData.security.immobilizer' => 'required|string|in:yes,no',
-                    'storeData.security.remote_central_locking' => 'required|string|in:yes,no',
-                    'storeData.security.gps_tracking' => 'required|string|in:yes,no',
+                    'storeData.details.safety.abs' => 'required|string|in:yes,no',
+                    'storeData.details.safety.traction_control' => 'required|string|in:yes,no',
+                    'storeData.details.safety.stability_control' => 'required|string|in:yes,no',
+                    'storeData.details.safety.lane_departure_warning' => 'required|string|in:yes,no',
+                    'storeData.details.safety.lane_keeping_assist' => 'required|string|in:yes,no',
+                    'storeData.details.safety.adaptive_cruise_control' => 'required|string|in:yes,no',
+                    'storeData.details.safety.blind_spot_monitoring' => 'required|string|in:yes,no',
+                    'storeData.details.safety.forward_collision_warning' => 'required|string|in:yes,no',
+                    'storeData.details.safety.automatic_emergency_braking' => 'required|string|in:yes,no',
+                    'storeData.details.safety.rear_cross_traffic_alert' => 'required|string|in:yes,no',
+                    'storeData.details.safety.parking_sensors' => 'required|string|in:yes,no',
+                    'storeData.details.safety.camera_360' => 'required|string|in:yes,no',
+                    'storeData.details.safety.driver_attention_monitor' => 'required|string|in:yes,no',
+                    'storeData.details.safety.tire_pressure_monitor' => 'required|string|in:yes,no',
+                    'storeData.details.safety.airbags' => 'required|string|in:front,front-sides,front-sides-curtain',
+                    'storeData.details.safety.seat_belt_pretensioners' => 'required|string|in:yes,no',
+                    'storeData.details.safety.crumple_zones' => 'required|string|in:yes,no',
+                    'storeData.details.safety.isofix_mounts' => 'required|string|in:yes,no',
+                    'storeData.details.security.alarm_system' => 'required|string|in:yes,no',
+                    'storeData.details.security.immobilizer' => 'required|string|in:yes,no',
+                    'storeData.details.security.remote_central_locking' => 'required|string|in:yes,no',
+                    'storeData.details.security.gps_tracking' => 'required|string|in:yes,no',
                 ];
 
                 $names = [
@@ -245,6 +259,128 @@ class Wizard extends VehiclesWizard
                     'storeData.details.security.remote_central_locking' => 'remote central locking',
                     'storeData.details.security.gps_tracking' => 'GPS tracking',
                 ];
+                break;
+            case 5:
+                // Validation rules for step 5 (Faults & Modifications)
+                $rules = [
+                    // Add Faults & Modifications validation rules here
+                ];
+
+                $names = [
+                    // Add Faults & Modifications field names here
+                ];
+                break;
+            case 6:
+                // Validation rules for step 6 (photos)
+                $rules = [
+                    'images.uploaded' => 'required|array|min:4|max:20',
+                ];
+
+                $names = [
+                    'images.newUploads' => 'Vehicle image',
+                ];
+
+                $messages = [
+                    'images.uploaded.required' => 'Please upload at least four (4) HD images.',
+                    'images.uploaded.array' => 'The uploaded images are not in valid format. Please refresh you browser to fix the issue.',
+                    'images.uploaded.min' => 'Please upload at least four (4) HD images.',
+                    'images.uploaded.max' => 'You can upload a maximum of 20 images.',
+                    'images.newUploads.required' => 'Please upload at least one image.',
+                    'images.newUploads.image' => 'The file must be an image.',
+                    'images.newUploads.mimes' => 'The image must be a JPEG, JPG, or PNG file.',
+                    'images.newUploads.max' => 'Each image must not exceed 4MB in size.',
+                ];
+                break;
+            case 7:
+                // Validation rules for step 7 (vehicle documentation)
+                $rules = [
+                    // Add vehicle documentation) validation rules here
+                    // Registration
+                    'storeData.documents.registration.issued_date' => 'required|date_format:m/d/Y|before_or_equal:today',
+                    'storeData.documents.registration.expiration_date' => 'required|date_format:m/d/Y|after:storeData.documents.registration.issued_date',
+                    'registration.new' => 'required_without:registration.uploaded|max:2048', // 2MB max
+
+                    // Proof of Ownership
+                    'proofOfOwnership.new' => 'required_without:proofOfOwnership.uploaded|max:2048', // 2MB max
+
+                    // Insurance
+                    'storeData.documents.insurance.status' => 'required|in:valid,invalid',
+                    'insurance.new' => 'required_if:storeData.documents.insurance.status,valid|max:2048', // 2MB max
+                ];
+                $messages = [
+                    // ... existing messages ...
+
+                    'storeData.documents.registration.issued_date.required' => 'The registration issued date is required.',
+                    'storeData.documents.registration.issued_date.date_format' => 'The registration issued date must be in the format MM/DD/YYYY.',
+                    'storeData.documents.registration.issued_date.before_or_equal' => 'The registration issued date must be today or earlier.',
+                    'storeData.documents.registration.expiration_date.required' => 'The registration expiration date is required.',
+                    'storeData.documents.registration.expiration_date.date_format' => 'The registration expiration date must be in the format MM/DD/YYYY.',
+                    'storeData.documents.registration.expiration_date.after' => 'The registration expiration date must be after the issued date.',
+                    'registration.new.required_without' => 'Please upload a registration document.',
+                    'registration.new.max' => 'The registration must not be larger than 5MB.',
+
+                    'proofOfOwnership.new.required_without' => 'Please upload a proof of ownership document.',
+                    'proofOfOwnership.new.max' => 'The proof of ownership must not be larger than 5MB.',
+
+                    'storeData.documents.insurance.status.required' => 'Please specify if you have insurance coverage.',
+                    'storeData.documents.insurance.status.in' => 'The insurance status must be valid or invalid.',
+                    'insurance.new.required_if' => 'Please upload an insurance document if you have coverage.',
+                    'insurance.new.max' => 'The insurance document must not be larger than 5MB.',
+                ];
+                $names = [
+                    // Add vehicle documentation) field names here
+                    'storeData.documents.registration.issued_date' => 'Registration Issued Date',
+                    'storeData.documents.registration.expiration_date' => 'Registration Expiration Date',
+                    'registration.new' => 'Registration Document',
+                    'proofOfOwnership.new' => 'Proof of Ownership Document',
+                    'storeData.documents.insurance.status' => 'Insurance Status',
+                    'insurance.new' => 'Insurance Document',
+                ];
+                break;
+            case 8:
+                // Validation rules for step 8 (pricing)
+                $rules = [
+                    'storeData.price.amount' => ['required', 'numeric', 'min:0', 'max:1000000'],
+                    'storeData.price.on_sale' => ['required', 'in:true,false'],
+                    'storeData.price.sale' => [
+                        'required_if:storeData.price.on_sale,true',
+                        'numeric',
+                        'min:0',
+                        'max:1000000',
+                        function ($attribute, $value, $fail) {
+                            if (
+                                $this->storeData['price']['on_sale'] === 'true' &&
+                                $value >= $this->storeData['price']['amount']
+                            ) {
+                                $fail('The sale price must be less than the regular price.');
+                            }
+                        },
+                    ],
+                    'storeData.price.discount.days' => ['required', 'in:1,2,3,5,7'],
+                ];
+
+                $names = [
+                    'storeData.price.amount' => 'Regular Price',
+                    'storeData.price.on_sale' => 'On Sale',
+                    'storeData.price.sale' => 'Sale Price',
+                    'storeData.price.discount.days' => 'Discount Days',
+                ];
+
+                $messages = [
+                    'storeData.price.amount.required' => 'The regular price is required.',
+                    'storeData.price.amount.numeric' => 'The regular price must be a number.',
+                    'storeData.price.amount.min' => 'The regular price must be at least 0.',
+                    'storeData.price.amount.max' => 'The regular price cannot exceed 1,000,000.',
+                    'storeData.price.on_sale.required' => 'Please specify if the vehicle is on sale.',
+                    'storeData.price.on_sale.in' => 'The on sale value must be either true or false.',
+                    'storeData.price.sale.required_if' => 'The sale price is required when the vehicle is on sale.',
+                    'storeData.price.sale.numeric' => 'The sale price must be a number.',
+                    'storeData.price.sale.min' => 'The sale price must be at least 0.',
+                    'storeData.price.sale.max' => 'The sale price cannot exceed 1,000,000.',
+                    'storeData.price.discount.days.required' => 'Please select the number of days for the discount.',
+                    'storeData.price.discount.days.in' => 'The selected discount days value is invalid.',
+                ];
+
                 break;
             default:
                 break;

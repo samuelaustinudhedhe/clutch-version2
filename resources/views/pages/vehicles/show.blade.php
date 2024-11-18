@@ -69,6 +69,7 @@
                         <x-input-error for="trip.end.time" class=" mt-2" />
                     </div>
 
+                    
                     <x-button wire:click="bookTrip" class="flex justify-center !font-light">
                         Continue
                     </x-button>

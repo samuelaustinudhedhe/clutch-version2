@@ -761,21 +761,16 @@ class Vehicle extends Model
         return $price;
     }
 
+
     /**
      * Set the price attribute for the vehicle.
      *
-     * This method formats and sanitizes the price data before storing it.
-     * It handles various price-related fields including sale status, amount, sale price,
-     * currency, and discount information.
+     * This method processes and sets the price attribute, handling various input formats
+     * and ensuring consistent data structure. It cleans the price values, handles sale status,
+     * and sets default values where necessary.
      *
-     * @param array $value An associative array containing price-related data.
-     *                     Expected keys:
-     *                     - 'on_sale' (bool): Whether the vehicle is on sale.
-     *                     - 'amount' (string|int): The regular price of the vehicle.
-     *                     - 'sale' (string|int): The sale price of the vehicle, if applicable.
-     *                     - 'currency' (string): The currency code for the price.
-     *                     - 'discount' (array): Contains discount information.
-     *                       - 'days' (int): Number of days for the discount period.
+     * @param mixed $value The price data to be set. Can be an array or an object.
+     *                     Expected to contain 'amount', potentially 'sale', 'on_sale', and 'discount' properties.
      *
      * @return void
      */
@@ -786,16 +781,25 @@ class Vehicle extends Model
             return ($number == (int) $number) ? (int) $number : $number;
         };
 
-
         if (is_array($value) || is_object($value)) {
             $value = (object) $value;
             $value->on_sale = filter_var($value->on_sale ?? false, FILTER_VALIDATE_BOOLEAN);
 
             $value->currency = $value->currency ?? app_currency();
-            // Convert amount and sale to float or integer
+            // Convert amount to float or integer
             $value->amount = $cleanPrice($value->amount);
-            $value->sale = $cleanPrice($value->sale);
-            $value->discount->days = (int) ($value['discount']['days'] ?? 1);
+
+            // Only clean and set sale price if the vehicle is on sale
+            if ($value->on_sale) {
+                $value->sale = $cleanPrice($value->sale);
+            } else {
+                // If not on sale, remove the sale property
+                unset($value->sale);
+            }
+
+            // Ensure discount is always an object
+            $value->discount = (object) ($value->discount ?? []);
+            $value->discount->days = (int) ($value->discount->days ?? 1);
         }
 
         $this->attributes['price'] = json_encode($value);

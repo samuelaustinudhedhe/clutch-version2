@@ -44,13 +44,15 @@ class Trip extends Component
         // // Set the amount for the payment (you may want to calculate this based on the trip details)
         // $this->amount = $vehicle->calcTotalPrice($this->trip->days ?? 1, true, false) * 100; // Amount in kobo (10 NGN)
 
+        // Calculate the total price for the trip based on the selected days and the vehicle's current price
+        $currentPrice = $this->vehicle->getCurrentPrice($this->trip->days);
+        $this->amount = $currentPrice['total_price'] * 100; // Convert to kobo
+
         // Generate a unique reference for this transaction
         $this->reference = 'TRIP_' . uniqid();
 
         $requestReference = request('reference');
-        if (!$requestReference) {
-            session()->flash('error', 'No payment reference found.');
-        } else {
+        if ($requestReference) {
             $this->verifyPayment($requestReference);
         }
     }
@@ -61,17 +63,11 @@ class Trip extends Component
         if (!auth()->check()) {
             throw new AuthenticationException('User must be logged in to book a trip.');
         }
-    
+
         // Check for pending orders
         $this->checkPendingOrders();
-    
-        // Calculate the total price for the trip based on the selected days and the vehicle's current price
-        $currentPrice = $this->vehicle->getCurrentPrice($this->trip->days);
-        $this->amount = $currentPrice['total_price'] * 100; // Convert to kobo
-    
-        // Generate a unique reference
-        $this->reference = 'TRIP_' . str_uuid()->toString();
-    
+
+        // Generate a unique reference for this transaction
         $paystack = new PayStack();
         $response = $paystack->initializePayment([
             'email' => $this->user->email,
@@ -79,7 +75,7 @@ class Trip extends Component
             'reference' => $this->reference,
             'callback_url' => route('checkout.callback', ['vehicle' => $this->vehicle->id])
         ]);
-    
+
         if ($response['status']) {
             // Store initialized payment details in the session
             session(['pending_payment' => [
@@ -88,7 +84,7 @@ class Trip extends Component
                 'vehicle_id' => $this->vehicle->id,
                 'trip_days' => $this->trip->days,
             ]]);
-    
+
             return redirect($response['data']['authorization_url']);
         } else {
             session()->flash('error', 'Unable to initialize payment: ' . $response['message']);
@@ -115,7 +111,7 @@ class Trip extends Component
 
             // Verify that the order is not already in the system
             $this->checkExistingOrder($response);
-           
+
             // Payment was successful and amount is correct, proceed with booking
             $order = new mOrder([
                 'details' => [
@@ -200,7 +196,7 @@ class Trip extends Component
             ->where('authorable_type', get_class($this->user))
             ->whereHas('orderable', function ($query) {
                 $query->where('vehicle_id', $this->vehicle->id)
-                      ->where('status', 'pending');
+                    ->where('status', 'pending');
             })
             ->first();
 
@@ -229,11 +225,11 @@ class Trip extends Component
 
         $existingOrder = mOrder::where(function ($query) use ($accessCode, $reference) {
             $query->where('payment->access_code', $accessCode)
-                  ->orWhere('payment->reference', $reference);
+                ->orWhere('payment->reference', $reference);
         })->first();
 
         if ($existingOrder) {
-            session()->flash('error', 'This payment has already been processed. If you believe this is an error, <a href="'. url('/pages/contact').'" class="text-blue-600 dark:text-blue-400 hover:underline" >please contact support.</a>');
+            session()->flash('error', 'This payment has already been processed. If you believe this is an error, <a href="' . url('/pages/contact') . '" class="text-blue-600 dark:text-blue-400 hover:underline" >please contact support.</a>');
             return redirect()->back();
         }
     }

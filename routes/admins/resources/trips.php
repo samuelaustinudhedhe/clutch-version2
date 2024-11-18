@@ -28,7 +28,7 @@ Route::prefix('trips')->name('trips.')->group(function () {
      * @uses App\View\Livewire\User\Trips\Index
      * @return \Illuminate\View\View
      */
-    //Route::get('/', Index::class)->name('index');
+    Route::get('/', Index::class)->name('index');
 
     /**
      * Display the form or interface to create a new trip.
@@ -57,5 +57,5 @@ Route::prefix('trips')->name('trips.')->group(function () {
      * @param int|string $trip The ID or identifier of the trip to show
      * @return \Illuminate\View\View
      */
-    //Route::get('show/{trip}', Show::class)->name('show');
+    Route::get('show/{trip}', Show::class)->name('show');
 });

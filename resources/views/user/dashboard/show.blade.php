@@ -18,18 +18,18 @@
                     </div>
                 </div>
                 <dl>
-                    <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Email Adress</dt>
+                    <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Email</dt>
                     <dd class="text-gray-500 dark:text-gray-400">{{ $user->email }}</dd>
 
                 </dl>
                 <dl>
-                    <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Delivery Adress
+                    <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Address
                     </dt>
                     <dd class="text-gray-500 dark:text-gray-400">{{ $user->address->home->full }}</dd>
 
                 </dl>
                 <dl>
-                    <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Phone Number</dt>
+                    <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Phone</dt>
                     <dd class="text-gray-500 dark:text-gray-400">
                         {{ $user->humanized_work_phone ? $user->humanized_home_phone . ' / ' . $user->humanized_work_phone : $user->humanized_home_phone }}
                     </dd>
@@ -79,7 +79,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">60 reviews</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">0 reviews</h2>
                     <p class="text-gray-500 dark:text-gray-400">added in the last 90 days</p>
                 </div>
             </div>
@@ -95,8 +95,8 @@
                 </div>
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white">
-                        {{ $user->created_at->diffInYears(now()) }}
-                        {{ Str::plural('year', $user->created_at->diffInYears(now())) }}
+                        {{ ceil($user->created_at->diffInYears(now())) }}
+                        {{ Str::plural('Year', ceil($user->created_at->diffInYears(now()))) }}
                     </h2>
                     <p class="text-gray-500 dark:text-gray-400">since you are our customer</p>
                 </div>
