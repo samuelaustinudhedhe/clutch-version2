@@ -82,6 +82,20 @@ if (!function_exists('app_url')) {
     }
 }
 
+if (!function_exists('app_domain')) {
+    /*
+     | Get the application domain name and extension.
+     |
+     | @return string The application domain.
+     |
+     */
+    function app_domain()
+    {
+        // Call app_url with strip set to true and echo set to false
+        return app_url('', true, false);
+    }
+}
+
 if (!function_exists('app_admin_slug')) {
     /*
      | Get the application Admin URL from the settings table.

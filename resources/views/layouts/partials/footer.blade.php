@@ -8,9 +8,10 @@
 
                     {{ app_name() }}
                 </a>
-                <p class="my-4 font-light text-gray-500 dark:text-gray-400">{{ app_name() }} A Peer to Peer car
-                    sharing marketplace car owners (Hosts) to users. It’s a collaborative way to monetize idle cars,
-                    offering affordable rentals to personal users to move around.
+                <p class="my-4 font-light text-gray-500 dark:text-gray-400">
+                    {{ app_name() }} 
+                    is the peer-to-peer car rental platform where car owners 
+                    (Hosts) make money from renting their cars, while users enjoy affordable and convenient rentals
                 </p>
                 <ul class="flex mt-5 space-x-6">
                     <li>
@@ -68,30 +69,30 @@
                 <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Company</h2>
                 <ul class="text-gray-500 dark:text-gray-400">
                     <li class="mb-4">
-                        <a href="{{ route('pages.about') }}" class=" hover:underline">About</a>
+                        <a href="{{ route('pages.about') }}" class=" hover:underline">Get to know us</a>
                     </li>
                     <li class="mb-4">
-                        <a href="#" class="hover:underline">Careers</a>
+                        <a href="{{ route('pages.how-it-works') }}" class="hover:underline">How it Works</a>
                     </li>
-                    <li class="mb-4">
+                    {{-- <li class="mb-4">
                         <a href="#" class="hover:underline">Brand Center</a>
-                    </li>
-                    <li class="mb-4">
+                    </li> --}}
+                    {{-- <li class="mb-4">
                         <a href="{{ route('blog.index') }}" class="hover:underline">Blog</a>
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
             <div class="lg:mx-auto">
                 <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Help center</h2>
                 <ul class="text-gray-500 dark:text-gray-400">
                     <li class="mb-4">
-                        <a href="#" class="hover:underline">Discord Server</a>
+                        <a href="https://www.instagram.com/clutch.africa" class="hover:underline">Instagram</a>
                     </li>
                     <li class="mb-4">
-                        <a href="#" class="hover:underline">Twitter</a>
+                        <a href="https://x.com/ridewithclutch" class="hover:underline">Twitter</a>
                     </li>
                     <li class="mb-4">
-                        <a href="#" class="hover:underline">Facebook</a>
+                        <a href="https://www.facebook.com/clutch.africa" class="hover:underline">Facebook</a>
                     </li>
                     <li class="mb-4">
                         <a href="{{ route('pages.contact') }}" class="hover:underline">Contact Us</a>
@@ -104,9 +105,9 @@
                     <li class="mb-4">
                         <a href="{{ route('policies.privacy') }}" class="hover:underline">Privacy Policy</a>
                     </li>
-                    <li class="mb-4">
+                    {{-- <li class="mb-4">
                         <a href="{{ route('policies.guidelines') }}" class="hover:underline">Guidelines</a>
-                    </li>
+                    </li> --}}
                     <li class="mb-4">
                         <a href="{{ route('policies.terms') }}" class="hover:underline">Terms</a>
                     </li>
@@ -116,17 +117,17 @@
                 <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Hosting</h2>
                 <ul class="text-gray-500 dark:text-gray-400">
                     <li class="mb-4">
-                        <a href="#" class="hover:underline">List your car</a>
+                        <a href="{{ route('pages.become-a-host') }}" class="hover:underline">List your car</a>
                     </li>
-                    <li class="mb-4">
+                    {{-- <li class="mb-4">
                         <a href="#" class="hover:underline">Profit Calculator</a>
-                    </li>
+                    </li> --}}
                     <li class="mb-4">
-                        <a href="#" class="hover:underline">Get help</a>
+                        <a href="{{ route('pages.contact') }}" class="hover:underline">Get help</a>
                     </li>
-                    <li class="mb-4">
+                    {{-- <li class="mb-4">
                         <a href="#" class="hover:underline">Insurance & protection</a>
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
         </div>

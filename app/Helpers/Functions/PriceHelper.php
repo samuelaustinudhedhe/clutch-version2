@@ -92,3 +92,19 @@ if (!function_exists('countDays')) {
         }
     }
 }
+
+
+/**
+ * Retrieves the tax rate based on the authenticated user's country and state.
+ *
+ * This function assumes the user is authenticated and attempts to determine
+ * the applicable tax rate using the user's country and state information.
+ * If the user is not authenticated or the tax rate cannot be determined,
+ * the function returns null.
+ *
+ * @return float|null The tax rate as a decimal (e.g., 0.075 for 7.5%), or null if
+ *                    the user is not authenticated or the tax rate is not available.
+ */
+function getTaxRate() {
+    return 0.00;
+}

@@ -5,11 +5,10 @@
         <div class="relative py-8 px-4 mx-auto max-w-screen-xl text-white lg:py-16 xl:px-0 z-1">
             <div class="mb-6 max-w-screen-md lg:mb-0 mx-auto text-center">
                 <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-tight text-white md:text-5xl lg:text-6xl">
-                    Your perfect ride is just a click away.
+                    Find Your Perfect Ride <br> Enter Your Location Below
                 </h1>
                 <p class="mb-6 hidden md:block font-light text-gray-300 lg:mb-8 md:text-lg lg:text-xl">
-                    From weekend adventures to business trips and daily errands, Clutch pairs you with friendly
-                    local hosts offering the ideal vehicle for any situation.
+                    From weekend events to business trips and airport runs, find affordable rentals near you. Enter your address and book your ride today
                 </p>
             </div>
 

@@ -31,13 +31,33 @@ class PageController extends Controller
     }
 
     /**
+     * This function is responsible for displaying the how It Works page.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    public function howItWorksShow()
+    {
+        return view('pages.how-it-works');
+    }
+
+    /**
+     * This function is responsible for displaying the becomeHost page.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    public function becomeHostShow()
+    {
+        return view('pages.become-a-host');
+    }
+
+    /**
      * This function is responsible for displaying the contact page.
      *
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
      */
     public function contactShow()
     {
-        return view('pages.contact');
+        return ContactPageController::show();
     }
 
 }

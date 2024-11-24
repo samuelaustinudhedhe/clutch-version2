@@ -331,7 +331,7 @@
             <div class="grid items-center grid-cols-1 gap-12 xl:grid-cols-3 lg:gap-16">
                 <div class="space-y-4">
                     <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-                        Designed for Africa's Mobility Needs
+                        Designed for Africa's Rental Needs
                     </h2>
                     <p class="text-gray-500 sm:text-lg dark:text-gray-400">
                         Connecting car owners with renters across urban and rural areas
@@ -433,133 +433,6 @@
                             Make your car work for you by listing it on Clutch
                             and leaving the rest to us.
                         </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-white dark:bg-gray-900">
-        <div class="max-w-screen-xl px-4 py-8 mx-auto sm:py-16 lg:py-24">
-            <div class="items-center gap-8 mx-auto lg:grid lg:grid-cols-2 xl:gap-16">
-                <div class="hidden lg:block">
-                    <img class="w-full rounded-lg dark:hidden" src="/images/analytics-mockup.png" alt="">
-                    <img class="hidden w-full rounded-lg dark:block" src="/images/analytics-mockup-dark.png"
-                        alt="">
-                </div>
-
-                <div>
-                    <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-                        How to List Your Car
-                    </h2>
-                    <p class="mt-4 text-base text-gray-500 sm:text-xl dark:text-gray-400">
-                        Deliver great service experiences fast - without the complexity of traditional ITSM
-                        solutions.Accelerate
-                        critical
-                        development work, eliminate toil, and deploy changes with ease.
-                    </p>
-
-                    <div class="pt-8 mt-8 space-y-8 border-t border-gray-200 dark:border-gray-800">
-                        <div class="flex gap-4">
-                            <div
-                                class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 shrink-0">
-                                <svg class="w-5 h-5 text-blue-700 dark:text-blue-400" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-                                    List Your Car
-                                </h3>
-                                <p class="mt-3 text-gray-500 dark:text-gray-400">
-                                    Sign up on the Clutch app or website, provide car details, and upload photos.
-                                </p>
-                                <div class="mt-3">
-                                    <a href="#"
-                                        class="inline-flex items-center font-medium text-blue-700 hover:underline dark:text-blue-500">
-                                        Learn more
-                                        <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex gap-4">
-                            <div
-                                class="flex items-center justify-center w-8 h-8 bg-purple-100 rounded-full dark:bg-purple-900 shrink-0">
-                                <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-                                    Dependency graph
-                                </h3>
-                                <p class="mt-3 text-gray-500 dark:text-gray-400">
-                                    See the packages your project depends on, the repositories that depend on them, and
-                                    any vulnerabilities
-                                    detected in
-                                    their dependencies.
-                                </p>
-                                <div class="mt-3">
-                                    <a href="#"
-                                        class="inline-flex items-center font-medium text-purple-600 hover:underline dark:text-purple-500">
-                                        Learn more
-                                        <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex gap-4">
-                            <div
-                                class="flex items-center justify-center w-8 h-8 bg-teal-100 rounded-full dark:bg-teal-900 shrink-0">
-                                <svg class="w-5 h-5 text-teal-600 dark;text-teal-300" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-                                    Code scanning
-                                </h3>
-                                <p class="mt-3 text-gray-500 dark:text-gray-400">
-                                    Find vulnerabilities in custom code using static
-                                    analysis. Prevent new vulnerabilities from being introduced by scanning every pull
-                                    request.
-                                </p>
-                                <div class="mt-3">
-                                    <a href="#"
-                                        class="inline-flex items-center font-medium text-teal-600 hover:underline dark:text-teal-500">
-                                        Learn more
-                                        <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

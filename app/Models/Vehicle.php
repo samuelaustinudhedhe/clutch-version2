@@ -328,7 +328,7 @@ class Vehicle extends Model
         $sale = $price->sale;
         $on_sale = $price->on_sale ?? false;
         $basePrice = $on_sale ? $sale : $amount;
-        $taxRate = 0.07; // 7% tax rate
+        $taxRate = getTaxRate();
         $taxAmount = $basePrice * $taxRate;
         return $taxAmount;
     }

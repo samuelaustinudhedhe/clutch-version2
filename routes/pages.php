@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Pages\DynamicPageController;
 use App\Http\Controllers\Pages\PageController;
+use App\Http\Controllers\Pages\ContactPageController;
+
 use App\Http\Controllers\Pages\PoliciesPageController as Policy;
 
 /**
@@ -41,6 +43,10 @@ Route::prefix('policies')->name('policies.')->group(function () {
 Route::prefix('pages')->name('pages.')->group(function () {
 
     route::get('/contact', [PageController::class, 'contactShow'])->name('contact');
+    Route::post('/contact', [ContactPageController::class, 'submit'])->name('contact.submit');
+
     Route::get('/about', [PageController::class, 'aboutShow'])->name('about');
+    Route::get('/how-it-works', [PageController::class, 'howItWorksShow'])->name('how-it-works');
+    Route::get('/become-a-host', [PageController::class, 'becomeHostShow'])->name('become-a-host');
 
 });

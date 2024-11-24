@@ -25,13 +25,14 @@
                 <dl>
                     <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Address
                     </dt>
-                    <dd class="text-gray-500 dark:text-gray-400">{{ $user->address->home->full?? 'add an address' }}</dd>
+                    <dd class="text-gray-500 dark:text-gray-400">{{ $user->address->home->full ?? 'add an address' }}
+                    </dd>
 
                 </dl>
                 <dl>
                     <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Phone</dt>
                     <dd class="text-gray-500 dark:text-gray-400">
-                        @if($user->humanized_home_phone || $user->humanized_work_phone)
+                        @if ($user->humanized_home_phone || $user->humanized_work_phone)
                             {{ $user->humanized_work_phone ? $user->humanized_home_phone . ' / ' . $user->humanized_work_phone : $user->humanized_home_phone }}
                         @else
                             Add a phone number
@@ -153,18 +154,23 @@
         {{-- Vehicles --}}
         <div class="my-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                @foreach($vehicles->take(4) as $vehicle)
-                    <div class=" border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                        <img class="w-full h-48 object-cover" src="{{ $vehicle->featured_image->url }}"
-                            alt="{{ $vehicle->name }}">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $vehicle->name }}</h3>
+                @foreach ($vehicles->take(4) as $vehicle)
+                    <a href="{{ route('vehicles.show', $vehicle->id) }}">
+                        <div
+                            class=" border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                            <img class="w-full h-48 object-cover" src="{{ $vehicle->featured_image->url }}"
+                                alt="{{ $vehicle->name }}">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $vehicle->name }}
+                                </h3>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
             <div class="mt-8  mb-8 text-center">
-                <x-button href="{{ route('vehicles.index') }}"  class="text-blue-600 hover:underline dark:text-blue-500">
+                <x-button href="{{ route('vehicles.index') }}"
+                    class="text-blue-600 hover:underline dark:text-blue-500">
                     View all vehicles
                 </x-button>
             </div>
