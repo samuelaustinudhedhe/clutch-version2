@@ -48,17 +48,29 @@ class Trip extends Model
     ];
 
     /**
+     * Get the first order of the trip.
+     *
+     * This function retrieves the first order associated with the trip using a polymorphic relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne The first Order model related to this trip.
+     */
+    public function firstOrder()
+    {
+        return $this->morphOne(Order::class, 'orderable')->oldestOfMany();
+    }
+
+    /**
      * Get all of the trip's orders.
      *
      * This function retrieves all orders associated with the trip using a polymorphic relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany A collection of Order models related to this trip.
      */
-    public function order()
+    public function orders()
     {
         return $this->morphMany(Order::class, 'orderable');
     }
-    
+
     /**
      * Get the traveler associated with the trip.
      */
@@ -94,17 +106,17 @@ class Trip extends Model
     {
         $startDateTime = new \DateTime();
         $startDateTime->setTimestamp($this->details->start->timestamp);
-    
+
         $endDateTime = new \DateTime();
         $endDateTime->setTimestamp($this->details->end->timestamp);
-    
+
         // Calculate the difference between the start and end times
         $diff = $endDateTime->diff($startDateTime);
-    
+
         // Return the number of days
         return $diff->days;
     }
-    
+
     /**
      * Calculate the number of hours between the start and end times of the trip.
      *
@@ -117,17 +129,134 @@ class Trip extends Model
     {
         $startDateTime = new \DateTime();
         $startDateTime->setTimestamp($this->details->start->timestamp);
-    
+
         $endDateTime = new \DateTime();
         $endDateTime->setTimestamp($this->details->end->timestamp);
-    
+
         // Calculate the difference between the start and end times
         $diff = $endDateTime->diff($startDateTime);
-    
+
         // Return the number of hours
         return $diff->h;
     }
 
+    /**
+     * Get the base price of the trip.
+     *
+     * This accessor method returns the base price of the trip.
+     *
+     * @return float The base price of the trip.
+     */
+    public function getPriceAttribute()
+    {
+        // Assuming you have a base price stored in the details or another column
+        return $this->details->price ?? 0;
+    }
+
+    public function getTotalUnpaidPriceAttribute()
+    {
+        // Assuming you have a total unpaid price stored in the details or another column
+        return ($this->details->total - $this->details->total_paid) ?? 0;
+    }
+
+    /**
+     * Get the total price of the trip.
+     *
+     * This accessor method calculates and returns the total price of the trip,
+     * which may include additional fees or discounts.
+     *
+     * @return float The total price of the trip.
+     */
+    public function getTotalPriceAttribute()
+    {
+        // Calculate the total price based on the base price and any additional logic
+        $price = $this->price;
+
+        // Example: Calculate total price based on the number of days
+        $totalPrice = $price->total;
+
+        // Add any additional fees or discounts here if applicable
+
+        return $totalPrice;
+    }
+    /**
+     * Get the maximum allowed distance for the trip.
+     *
+     * This accessor method retrieves the maximum allowed distance from the trip's details.
+     * If the maximum allowed distance is not set, it defaults to 'Unlimited'.
+     *
+     * @return string The maximum allowed distance for the trip.
+     */
+    public function getMaxAllowedDistanceAttribute()
+    {
+        return $this->details->distance->max_allowed ?? 'Unlimited';
+    }
+
+    /**
+     * Get the insurance type associated with the trip.
+     *
+     * This accessor method retrieves the insurance type from the trip's details.
+     * If the insurance type is not set, it defaults to 'none'.
+     *
+     * @return string The insurance type associated with the trip.
+     */
+    public function getInsuranceAttribute()
+    {
+        return $this->details->insurance ?? null;
+    }
+
+    public function getTaxAttribute()
+    {
+        return $this->details->price->tax ?? 0;
+    }
+
+    public function getTotalPaidAttribute()
+    {
+        return $this->details->price->total_paid ?? 0;
+    }
+    public function getTotalUnPaidAttribute()
+    {
+        return ($this->details->price->total - $this->total_paid) ?? 0;
+    }
+
+    public function getVehiclePriceAttribute()
+    {
+        return ($this->total_paid - $this->tax) / $this->days;
+    }
+
+
+    public function getStartAttribute()
+    {
+        return $this->details->start;
+    }
+    public function getEndAttribute()
+    {
+        return $this->details->end;
+    }
+
+    /**
+     * Get the start time of the trip.
+     *
+     * This accessor method retrieves the start time from the trip's details.
+     *
+     * @return \DateTime|null The start time of the trip, or null if not set.
+     */
+    public function getStartDateAttribute()
+    {
+        return isset($this->start) ? (new \DateTime())->setTimestamp($this->start->timestamp) : null;
+    }
+
+    /**
+     * Get the end time of the trip.
+     *
+     * This accessor method retrieves the end time from the trip's details.
+     *
+     * @return \DateTime|null The end time of the trip, or null if not set.
+     */
+    public function getEndDateAttribute()
+    {
+        return isset($this->end) ? (new \DateTime())->setTimestamp($this->end->timestamp) : null;
+    }
     /**
      * Get the color associated with the trip's status.
      *

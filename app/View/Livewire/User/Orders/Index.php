@@ -2,17 +2,11 @@
 
 namespace App\View\Livewire\User\Orders;
 
-use Livewire\Component;
+use App\View\Livewire\Resources\Orders\Index as OrdersIndex;
 use Livewire\WithPagination;
 
-class Index extends Component
+class Index extends OrdersIndex
 {
-    use WithPagination;
-
-    public $user;
-    public $search;
-    public $perPage; 
-
     public function mount(){
         $this->user = getUser();
     }

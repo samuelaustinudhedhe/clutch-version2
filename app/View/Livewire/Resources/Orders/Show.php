@@ -8,7 +8,18 @@ use Livewire\Component;
 abstract class Show extends Component
 {
     public $order;
+    public $queriedOrder;
 
+    public function mount(Order $order)
+    {
+        // Check if the order belongs to the current user
+        if ($this->condition()) {
+            // Load the order details and related data
+            $this->order = $order;
+        } else {
+            $this->queriedOrder = $order->id;
+        }
+    }
     /**
      * Initialize the component with the specified order.
      *

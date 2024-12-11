@@ -13,6 +13,6 @@
     @endif
 
     @if (isset($vehicle->trips_count) && $vehicle->trips_count > 0)
-        <span class="ml-2" title="Trips Taken">({{ '0 trips' }})</span>
+        <span class="ml-2" title="Trips Taken">({{ $vehicle->trips_count }} trips)</span>
     @endif
 </div>

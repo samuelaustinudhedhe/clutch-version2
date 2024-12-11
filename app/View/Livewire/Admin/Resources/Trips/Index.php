@@ -9,12 +9,16 @@ use Livewire\WithPagination;
 
 class Index extends TripsIndex
 {
-    use WithPagination; 
+    use WithPagination;
+
+    public function mount(){
+
+
+    }
 
     public function render()
     {
-        //$trips = Trip::all();
-
+        $trips = Trip::all();
         return view('admin.resources.trips.index', compact('trips'))->layout('layouts.admin');
     }
 }

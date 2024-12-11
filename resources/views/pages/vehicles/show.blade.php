@@ -2,12 +2,12 @@
 
     {{-- Gallery Section --}}
     <x-carousel :images="$vehicle->gallery->sortByDesc('is_featured')" />
-        
+
     {{-- Content Section --}}
     <div class="mx-2 2xl:mx-0 mt-4 md:mt-4 xl:mt-5">
         <div class="flex flex-wrap md:flex-nowrap gap-4">
 
-            {{-- Right --}} 
+            {{-- Right --}}
             <x-div class="w-full md:w-3/5 order-1 !my-0">
                 <div class="hidden md:block mb-8">
                     @include('pages.vehicles.show.name')
@@ -35,17 +35,33 @@
                     <span class="font-bold"> {{ countDays($vehicle->discount_days) }} </span> or more
                 </p>
                 <x-devider />
+
                 <form wire:submit.prevent="bookTrip" class="grid grid-col-1 space-y-6">
+                    @php
+                        $isOnAnotherTrip = isVehicleBooked($vehicle);
+                        $dateRange = getBookingDateRange($vehicle);
+                    @endphp
+
+                    {{-- @if ($isOnAnotherTrip)
+                        <div class=" font-semibold">
+                            This vehicle is currently on another trip and cannot be booked at the moment.
+                        </div>
+                    @else --}}
                     <div class="grid">
                         <x-label for="start_time" class="text-sm">Pickup Date</x-label>
                         <div class="flex w-full gap-4">
                             {{-- Pickup Date --}}
                             <x-date id="start" wire:model="trip.start.date" class="w-2/3"
-                                datepicker-min-date="{{ now()->format('m/d/Y') }}" loadJS="true" />
+                                min="{{ $dateRange['minDate'] }}" max="{{ $dateRange['maxDate'] }}" loadJS="true" />
                             {{-- Pickup Time --}}
-                            <x-select class="!w-1/3" wire:model="trip.start.time" :loadJS="true" title="- Pickup Time -" selected="10:00 AM">
+                            <x-select class="!w-1/3" wire:model="trip.start.time" :loadJS="true"
+                                title="- Drop-off Time -">
                                 @foreach ($times as $time)
+                                    @if ($time == '09:00 am')
+                                        <option value="{{ $time }}" selected>{{ $time }}</option>
+                                    @else
                                         <option value="{{ $time }}">{{ $time }}</option>
+                                    @endif
                                 @endforeach
                             </x-select>
                         </div>
@@ -57,27 +73,30 @@
                         <div class="flex w-full gap-4 mb-2">
                             {{-- Drop-off Date --}}
                             <x-date id="end" wire:model="trip.end.date" class="w-2/3"
-                                datepicker-min-date="{{ now()->addDay()->format('m/d/Y') }}" loadJS=true />
+                                min="{{ $dateRange['minDate'] }}" max="{{ $dateRange['maxDate'] }}" loadJS=true />
                             {{-- Drop-off Time --}}
-                            <x-select class="!w-1/3" wire:model="trip.end.time" title="- Drop-off Time -" selected="10:00 AM">
+                            <x-select class="!w-1/3" wire:model="trip.end.time" title="- Drop-off Time -">
                                 @foreach ($times as $time)
+                                    @if ($time == '06:00 PM')
+                                        <option value="{{ $time }}" selected>{{ $time }}</option>
+                                    @else
                                         <option value="{{ $time }}">{{ $time }}</option>
+                                    @endif
                                 @endforeach
                             </x-select>
                         </div>
                         <x-input-error for="trip.end.date" class=" mt-2" />
                         <x-input-error for="trip.end.time" class=" mt-2" />
                     </div>
-
-                    
                     <x-button wire:click="bookTrip" class="flex justify-center !font-light">
                         Continue
                     </x-button>
+                    {{-- @endif --}}
                 </form>
             </x-div>
 
         </div>
-        
+
         {{-- Description --}}
         {{-- Details --}}
         <x-accordion id="description-accordion" class="block" accordion="open">
@@ -110,8 +129,7 @@
                                 <div class="mt-2 divide-y divide-gray-200 dark:divide-gray-700 dark:border-gray-800">
                                     @foreach ($vehicle->getDetails()->$key as $item => $value)
                                         <dl class="flex items-center justify-between gap-4 py-2">
-                                            <dt
-                                                class="text-sm font-medium text-gray-500 dark:text-gray-400 capitalize">
+                                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 capitalize">
                                                 {{ str_replace('_', ' ', $item) ?? '' }}
                                             </dt>
                                             <dd class="text-sm font-normal text-gray-900 dark:text-white capitalize">

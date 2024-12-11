@@ -4,8 +4,8 @@
         class=" h-[40rem] lg:h-[40rem] grid items-center bg-[url('/assets/images/banners/x7x7faceliftrearview.jpeg')] bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-overlay">
         <div class="relative py-8 px-4 mx-auto max-w-screen-xl text-white lg:py-16 xl:px-0 z-1">
             <div class="mb-6 max-w-screen-md lg:mb-0 mx-auto text-center">
-                <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-tight text-white md:text-5xl lg:text-6xl">
-                    Find Your Perfect Ride <br> Enter Your Location Below
+                <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-tight !lg:leading-[60px] text-white md:text-5xl lg:text-6xl">
+                    Find Your Ride <br> Search by Location
                 </h1>
                 <p class="mb-6 hidden md:block font-light text-gray-300 lg:mb-8 md:text-lg lg:text-xl">
                     From weekend events to business trips and airport runs, find affordable rentals near you. Enter your address and book your ride today

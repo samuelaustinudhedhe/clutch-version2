@@ -2,8 +2,10 @@
 
 namespace App\View\Livewire\Guest\Vehicles;
 
+use App\Models\Trip;
 use App\Models\Vehicle;
 use App\Traits\Trips\TripData;
+use App\View\Livewire\Toast\Notify;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
@@ -38,6 +40,30 @@ class Show extends Component
     }
 
     /**
+     * Checks if the vehicle is currently on another trip that hasn't finished
+     * and if the booked date falls within the vehicle's availability range.
+     *
+     * @return bool Returns true if the vehicle is on another trip or the booked date is out of range, false otherwise.
+     */
+    private function isVehicleOnAnotherTrip()
+    {
+        // Check if the vehicle is currently booked
+        if (isVehicleBooked($this->vehicle->id)) {
+
+            // Get the booking date range for the vehicle
+            $bookingDateRange = getBookingDateRange($this->vehicle, false);
+
+            // Check if the trip start date is within the available date range
+            $tripStartDate = \DateTime::createFromFormat('m/d/Y', $this->trip['start']['date']);
+            if ($tripStartDate < $bookingDateRange['minDate'] || $tripStartDate > $bookingDateRange['maxDate']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Books a trip for the vehicle.
      *
      * This function validates the trip data, calculates timestamps and intervals,
@@ -49,6 +75,12 @@ class Show extends Component
      */
     public function bookTrip()
     {
+        // Check if the vehicle is currently on another trip that hasn't finished.
+        if ($this->isVehicleOnAnotherTrip()) {
+            $this->dispatch('notify', 'This vehicle is currently on another trip.', 'error');
+            return;
+        }
+
         $this->validationRule();
 
         $this->trip['start']['timestamp'] = strtotime($this->trip['start']['date'] . ' ' . $this->trip['start']['time']);
@@ -142,39 +174,36 @@ class Show extends Component
      */
     public function defineTripData()
     {
-        // Check if start date is not set, set it to the current date
-        if (!isset($this->trip['start']['date'])) {
-            $this->trip['start'] = [
-                'time' => $this->trip['start']['time'] ?? '',
-                'date' => date('m/d/Y')
-            ];
+        // Get the booking date range for the vehicle
+        $bookingDateRange = getBookingDateRange($this->vehicle, false);
+
+        // Check if start date is not set, set it to the available start date
+        if (!isset($this->trip['start']['date']) || empty($this->trip['start']['date'])) {
+            $this->trip['start']['date'] = $bookingDateRange['minDate']->format('m/d/Y');
         }
 
         // Check if start time is not set, set it to 10:00 AM
         if (!isset($this->trip['start']['time'])) {
-            $this->trip['start'] = [
-                'date' => $this->trip['start']['date'] ?? '',
-                'time' => '10:00 AM',
-            ];
+            $this->trip['start']['time'] = '10:00 AM';
         }
 
-        // Check if end date is not set, set it to 3 days from the current date
-        if (!isset($this->trip['end']['date'])) {
-            $this->trip['end'] = [
-                'time' => $this->trip['end']['time'] ?? '',
-                'date' => date('m/d/Y', strtotime('+3 days')),
-            ];
+        // Check if end date is not set, set it to two days after the available start date
+        if (!isset($this->trip['end']['date']) || empty($this->trip['end']['date'])) {
+            $endDate = (clone $bookingDateRange['minDate'])->add(new \DateInterval('P2D'));
+
+            // Ensure the end date does not exceed the max date allowed by the vehicle
+            if ($endDate > $bookingDateRange['maxDate']) {
+                $endDate = $bookingDateRange['maxDate'];
+            }
+
+            $this->trip['end']['date'] = $endDate->format('m/d/Y');
         }
 
         // Check if end time is not set, set it to 10:00 AM
         if (!isset($this->trip['end']['time'])) {
-            $this->trip['end'] = [
-                'date' => $this->trip['end']['date'] ?? '',
-                'time' => '10:00 AM',
-            ];
+            $this->trip['end']['time'] = '10:00 AM';
         }
     }
-
     /**
      * Generates an array of time slots in 30-minute intervals.
      *

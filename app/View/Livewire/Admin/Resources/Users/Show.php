@@ -4,9 +4,14 @@ namespace App\View\Livewire\Admin\Resources\Users;
 
 use App\Models\User;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Show extends Component
 {
+    use WithPagination;
+    public $ordersPerPage = 10;
+    public $orderssearch = '';
+
     public $user;
 
     public function mount(User $user){
@@ -15,6 +20,7 @@ class Show extends Component
 
     public function render()
     {
-        return view('admin.resources.users.show')->layout('layouts.admin');
+        $orders = $this->user->orders()->search('id', $this->orderssearch)->paginate($this->ordersPerPage);
+        return view('admin.resources.users.show', compact('orders'))->layout('layouts.admin');
     }
 }

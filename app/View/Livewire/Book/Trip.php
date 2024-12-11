@@ -60,8 +60,15 @@ class Trip extends Component
     public function initializePayment()
     {
         // Authenticate user
-        if (!auth()->check()) {
-            throw new AuthenticationException('User must be logged in to book a trip.');
+        if (!isLoggedIn()) {
+            // Set the intended route for the user after the user logged in and completes onboarding
+            set_intended_route('checkout.show', ['vehicle' => $this->vehicle->id], condition: [
+                'onboarding_completed',
+                'is_logged_in',
+            ],  validity: 60);
+
+            // Redirect the user to the login page
+            return redirect()->route('login');
         }
 
         // Check for pending orders
@@ -219,13 +226,23 @@ class Trip extends Component
      */
     final function checkExistingOrder($response)
     {
-        // Check if the access code is already associated with an existing order
+        // Check if the access code or reference is null
         $accessCode = $response['data']['access_code'] ?? null;
         $reference = $response['data']['reference'] ?? null;
 
+        // If both access code and reference are null, skip the check
+        if (is_null($accessCode) && is_null($reference)) {
+            return;
+        }
+
+        // Check if the access code or reference is already associated with an existing order
         $existingOrder = mOrder::where(function ($query) use ($accessCode, $reference) {
-            $query->where('payment->access_code', $accessCode)
-                ->orWhere('payment->reference', $reference);
+            if (!is_null($accessCode)) {
+                $query->where('payment->access_code', $accessCode);
+            }
+            if (!is_null($reference)) {
+                $query->orWhere('payment->reference', $reference);
+            }
         })->first();
 
         if ($existingOrder) {

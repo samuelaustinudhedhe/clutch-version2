@@ -18,7 +18,7 @@ class CheckOnboarding
     public function handle(Request $request, Closure $next, $guard = null): Response
     {
         if (isLoggedIn($guard)) {
-            $user = getPerson();
+            $user = getUser();
             $routeName = $request->route()->getName();
 
             if (($user->onboardingStart() || !$user->onboardingCompleted()) && !$user->onboardingIsSkipped() && $routeName !== 'user.onboarding') {

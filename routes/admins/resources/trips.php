@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\View\Livewire\Admin\Resources\Trips\Index;
 use App\View\Livewire\Admin\Resources\Trips\Show;
+use App\View\Livewire\Admin\Resources\Trips\orders;
 
 /**
  * Define routes for user trip management.
@@ -58,4 +59,14 @@ Route::prefix('trips')->name('trips.')->group(function () {
      * @return \Illuminate\View\View
      */
     Route::get('show/{trip}', Show::class)->name('show');
+
+    /**
+     * Display the order details of a specific trip.
+     * Note: This route uses the same Index component as the list view.
+     *
+     * @uses App\View\Livewire\User\Trips\Orders
+     * @param int|string $trip The ID or identifier of the trip to show
+     * @return \Illuminate\View\View
+     */
+    Route::get('orders/{trip}', Orders::class)->name('orders');
 });

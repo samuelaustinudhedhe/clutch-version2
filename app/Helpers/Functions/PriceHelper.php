@@ -68,9 +68,9 @@ if (!function_exists('countDays')) {
         if (is_null($days)) {
             return 'daily';
         }
-
+    
         if ($days < 2) {
-            return $ly ? 'daily' : $days . ' day';
+            return $ly ? 'daily' : '1 day';
         } elseif ($days <= 6) {
             return $days . ' days';
         } elseif ($days == 7) {

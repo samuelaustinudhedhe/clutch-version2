@@ -2,12 +2,16 @@
 
 namespace App\View\Livewire\Admin\Resources\Orders;
 
-use Livewire\Component;
+use App\Models\Order;
+use App\View\Livewire\Resources\Orders\Index as OrdersIndex;
+use Livewire\WithPagination;
 
-class Index extends Component
+class Index extends OrdersIndex
 {
+    use WithPagination;
     public function render()
     {
-        return view('admin.resources.orders.index');
+        $orders = Order::search('id', $this->search)->paginate($this->perPage);
+        return view('admin.resources.orders.index', compact('orders'))->layout('layouts.admin');
     }
 }

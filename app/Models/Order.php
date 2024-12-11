@@ -72,6 +72,16 @@ class Order extends Model
     }
 
     /**
+     * Get the status of the order.
+     *
+     * @return string
+     */
+    public function getStatusAttribute()
+    {
+        return $this->payment['status'] ?? 'failed';
+    }
+
+    /**
      * Get the humanized total price of the order.
      *
      * @return string
@@ -86,7 +96,7 @@ class Order extends Model
      *
      * @return float
      */
-    public function getTaxAttribute()  
+    public function getTaxAttribute()
     {
         return $this->cleanValue($this->price['tax']) ?? 0;
     }
@@ -128,5 +138,4 @@ class Order extends Model
     {
         return humanizePrice($this->getDiscountAttribute());
     }
-
 }
