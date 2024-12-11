@@ -130,6 +130,7 @@
                         <p>
                             Protrction plan keeps you covered while pinching some penalties.
                         </p>
+                        
                     </x-div>
 
                     {{-- Order Summary --}}
