@@ -9,7 +9,7 @@ class Orders extends TripShow
 {
     public function render()
     {
-        $orders = $this->trip->orders;
+        //$orders = $this->trip->orders;
         return view('admin.resources.trips.orders', compact('orders'))->layout('layouts.admin');
     }
 }

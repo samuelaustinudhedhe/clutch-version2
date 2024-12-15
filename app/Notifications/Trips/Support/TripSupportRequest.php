@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications\Trip\Support;
+namespace App\Notifications\Trips\Support;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
