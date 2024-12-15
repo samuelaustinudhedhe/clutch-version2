@@ -74,6 +74,7 @@ Route::prefix('user')->name('user.')->middleware(
     require_once(__DIR__ . '/users/api.php');
     require_once(__DIR__ . '/users/orders.php');
     require_once(__DIR__ . '/users/trips.php');
+    require_once(__DIR__ . '/users/bookings.php');
     require_once(__DIR__ . '/users/wallet.php');
     require_once(__DIR__ . '/users/teams.php');
     require_once(__DIR__ . '/users/vehicles.php');
