@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Route;
  * @param int $depth How deep to recurse into subdirectories (2 in this case)
  * @param int $hidden Whether to include hidden files (0 in this case)
  */
-require_recursively(__DIR__ , filename:'auth');
+// require_recursively(__DIR__ , filename:'auth');
+require_once(__DIR__ . '/auth.php');
+
 
 /**
  * Admin Route Group
@@ -57,7 +59,21 @@ Route::prefix(app_admin_url())->name('admin.')->middleware(Kernel::adminAuthMidd
      *          - routes/admins/settings/general.php
      *          But will not go deeper than 5 levels of subdirectories.
      */
-    require_recursively(__DIR__ , exclude:'auth');
+    //require_recursively(__DIR__ , exclude:'auth');
 
+    //
+    require_once(__DIR__ . '/dashboard.php');
+    require_once(__DIR__ . '/notifications.php');
+    require_once(__DIR__ . '/pages.php');
+    require_once(__DIR__ . '/profile.php');
+    require_once(__DIR__ . '/settings.blade.php');
+
+    // resources
+    require_once(__DIR__ . '/resources/admins.php');
+    require_once(__DIR__ . '/resources/orders.php');
+    require_once(__DIR__ . '/resources/trips.php');
+    require_once(__DIR__ . '/resources/users.php');
+    require_once(__DIR__ . '/resources/roles.php');
+    require_once(__DIR__ . '/resources/permissions.php');
+    require_once(__DIR__ . '/resources/vehicles.php');
 });
-

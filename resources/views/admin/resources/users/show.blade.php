@@ -172,7 +172,7 @@
                             </p>
                         </div>
 
-                        <x-data-list 
+                        <x-data-block 
                             title="Personal Details"
                             :items="[
                                 'Name' => $user->name,
@@ -181,7 +181,7 @@
                             ]"
                         />
 
-                        <x-data-list 
+                        <x-data-block 
                             title="Contact Details"
                             :items="[
                                 'Email' => $user->email,
@@ -190,7 +190,7 @@
                             ]"
                         />
 
-                        <x-data-list 
+                        <x-data-block 
                             title="Addresses"
                             :items="[
                                 'Home' => $user->humanized_home_address,

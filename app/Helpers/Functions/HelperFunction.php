@@ -193,15 +193,18 @@ function getWordFromString($string, $position)
  * 
  * @return void This function does not return a value. It modifies the $output and $count parameters by reference.
  */
+use Illuminate\Support\LazyCollection;
+
 function aggregateUserData(&$output, &$count, $input, int $offset = 0, int $limit = 4)
 {
-    // Check if the input is a collection, if not convert it to a collection
     if ($input instanceof \Illuminate\Support\Collection) {
-        $totalItems = $input->count();
-        $data = $input->slice($offset, $limit);
+        $lazyInput = LazyCollection::make($input);
+        $totalItems = $lazyInput->count();
+        $data = $lazyInput->skip($offset)->take($limit);
     } elseif (is_array($input)) {
-        $totalItems = count($input);
-        $data = array_slice($input, $offset, $limit);
+        $lazyInput = LazyCollection::make($input);
+        $totalItems = $lazyInput->count();
+        $data = $lazyInput->skip($offset)->take($limit);
     } elseif (is_string($input)) {
         $totalItems = strlen($input);
         $data = substr($input, $offset, $limit);
@@ -209,14 +212,10 @@ function aggregateUserData(&$output, &$count, $input, int $offset = 0, int $limi
         throw new InvalidArgumentException("Unsupported input type.");
     }
 
-    // Calculate the number of remaining items after slicing
-    $remaining = $totalItems - (is_array($data) ? count($data) : (is_string($data) ? strlen($data) : $data->count()));
+    $remaining = $totalItems - $offset - (is_array($data) ? count($data) : (is_string($data) ? strlen($data) : $data->count()));
 
-    // Assign the sliced data to the output parameter
-    $output = $data;
-
-    // Assign the remaining count to the count parameter
-    $count = $remaining;
+    $output = $data->all();
+    $count = max(0, $remaining);
 }
 
 

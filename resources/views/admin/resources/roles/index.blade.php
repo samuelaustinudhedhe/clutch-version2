@@ -112,13 +112,15 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 max-w-sm">{{ $role->description }}</td>
+                                {{-- TODO: this section is resource intensive optimize for better performance --}}
+                                @php
+                                    // Eager load users and permissions in the controller
+                                    $users = getUsersByRole($role->slug);
+                                    aggregateUserData(output:$users, count:$count, input:$users);
+                                @endphp
+                                
                                 <td class="px-4 py-2 whitespace-nowrap">
                                     <div class="flex -space-x-4 w-28">
-                                        @php
-                                            $users = getUsersByRole($role->slug);
-                                            aggregateUserData(output:$users, count:$count, input:$users);
-
-                                        @endphp
                                         @foreach ($users as $user)
                                             <a href="{{ $user->id }}" target="_blank"
                                                 class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full">
@@ -126,7 +128,7 @@
                                                     class="w-10 h-10 flex-shrink-0 border-2 border-white rounded-full dark:border-gray-800">
                                             </a>
                                         @endforeach
-
+                                
                                         @if ($count !== 0)
                                             <a href="{{ route('admin.permissions.show', $role->id) }}"
                                                 class="flex-shrink-0 flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-900 dark:bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800">
@@ -134,9 +136,7 @@
                                             </a>
                                         @endif
                                     </div>
-
                                 </td>
-
                                 <td class="px-4 py-3 flex items-center justify-end">
                                     <button id="{{ $role->slug . '-' . $role->id }}-dropdown-button"
                                         data-dropdown-toggle="{{ $role->slug . '-' . $role->id }}-dropdown"

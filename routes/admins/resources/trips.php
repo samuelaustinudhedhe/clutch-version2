@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\View\Livewire\Admin\Resources\Trips\Index;
 use App\View\Livewire\Admin\Resources\Trips\Show;
-use App\View\Livewire\Admin\Resources\Trips\Orders; // orders Corrected to 'Orders'
+use App\View\Livewire\Admin\Resources\Trips\Orders;
 
 /**
  * Define routes for user trip management.
