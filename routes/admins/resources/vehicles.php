@@ -16,65 +16,107 @@ use App\View\Livewire\Admin\Resources\Vehicles\Index as VehiclesIndex;
 use App\View\Livewire\Admin\Resources\Vehicles\Show as VehiclesShow;
 
 /**
- * Group of admin vehicles management routes
+ * Define the admin routes for vehicle management.
  *
- * Middleware:
- * @uses Kernel::role() Middleware to ensure the user has either 'SuperAdmin' or 'Administrator' role
- * @uses Kernel::permission() Middleware to check for 'manage_vehicles' permission
+ * This group of routes is responsible for handling vehicle management functionalities
+ * such as listing vehicles, creating new vehicles, editing existing vehicles, and viewing vehicle details.
+ * The routes are protected by middleware to ensure only authorized users can access them.
  */
-Route::prefix('vehicles')->name('vehicles.')->middleware(
-    [
-        Kernel::role(['SuperAdmin', 'Administrator'], 'admin'),
-        Kernel::permission(['manage_vehicles'], 'admin')
-    ]
-)->group(function () {
-    /**
-     * List all vehicles
-     *
-     * GET /admin/vehicles
-     *
-     * @uses VehiclesIndex Livewire component to display the list of vehicles
-     */
-    Route::get('/', VehiclesIndex::class)->name('index');
+Route::prefix(app_admin_url())->name('admin.')->middleware(Kernel::adminAuthMiddleware())->group(function () {
 
     /**
-     * Show create vehicle form
+     * Group of admin vehicles management routes
      *
-     * GET /admin/vehicles/create
+     * This group of routes is specifically for managing vehicles.
+     * It includes routes for listing, creating, editing, and showing vehicle details.
+     * The routes are protected by role and permission middleware.
      *
-     * @uses VehiclesCreate Livewire component to display the create vehicle form
+     * Middleware:
+     * @uses Kernel::role() Middleware to ensure the user has either 'SuperAdmin' or 'Administrator' role
+     * @uses Kernel::permission() Middleware to check for 'manage_vehicles' permission
      */
-    Route::get('create', VehiclesCreate::class)->name('create');
+    Route::prefix('vehicles')->name('vehicles.')->middleware(
+        [
+            Kernel::role(['SuperAdmin', 'Administrator'], 'admin'),
+            Kernel::permission(['manage_vehicles'], 'admin')
+        ]
+    )->group(function () {
 
-    /**
-     * Show vehicle creation wizard
-     *
-     * GET /admin/vehicles/wizard
-     *
-     * @uses VehiclesWizard Livewire component to display the vehicle creation wizard
-     */
-    Route::get('wizard', VehiclesWizard::class)->name('wizard');
+        /**
+         * List all vehicles
+         *
+         * This route displays a list of all vehicles.
+         * It uses a Livewire component to render the vehicle list dynamically.
+         *
+         * GET /admin/vehicles
+         *
+         * @uses VehiclesIndex Livewire component to display the list of vehicles
+         * @return \Illuminate\View\View
+         * @example Access the vehicles index via GET /admin/vehicles
+         */
+        Route::get('/', VehiclesIndex::class)->name('index');
 
-    /**
-     * Show edit vehicle form
-     *
-     * GET /admin/vehicles/edit/{vehicle}
-     *
-     * @uses VehiclesShow Livewire component to display the edit vehicle form
-     * @param int $vehicle The ID of the vehicle to edit
-     * @note This route uses the Show component, which might be incorrect. Consider creating an Edit component.
-     */
-    Route::get('edit/{vehicle}', VehiclesShow::class)->name('edit');
+        /**
+         * Show create vehicle form
+         *
+         * This route displays a form for creating a new vehicle.
+         * It uses a Livewire component to render the form dynamically.
+         *
+         * GET /admin/vehicles/create
+         *
+         * @uses VehiclesCreate Livewire component to display the create vehicle form
+         * @return \Illuminate\View\View
+         * @example Access the create vehicle form via GET /admin/vehicles/create
+         */
+        Route::get('create', VehiclesCreate::class)->name('create');
 
-    /**
-     * Show vehicle details
-     *
-     * GET /admin/vehicles/show/{vehicle}
-     *
-     * @uses VehiclesShow Livewire component to display the vehicle details
-     * @param int $vehicle The ID of the vehicle to show
-     */
-    Route::get('show/{vehicle}', VehiclesShow::class)->name('show');
+        /**
+         * Show vehicle creation wizard
+         *
+         * This route displays a multi-step wizard for creating a new vehicle.
+         * It uses a Livewire component to guide the user through the creation process.
+         *
+         * GET /admin/vehicles/wizard
+         *
+         * @uses VehiclesWizard Livewire component to display the vehicle creation wizard
+         * @return \Illuminate\View\View
+         * @example Access the vehicle creation wizard via GET /admin/vehicles/wizard
+         */
+        Route::get('wizard', VehiclesWizard::class)->name('wizard');
+
+        /**
+         * Show edit vehicle form
+         *
+         * This route displays a form for editing an existing vehicle.
+         * It requires the ID of the vehicle to be edited as a parameter.
+         * Note: This route currently uses the Show component, which might not be correct.
+         * Consider creating a dedicated Edit component for editing vehicles.
+         *
+         * GET /admin/vehicles/edit/{vehicle}
+         *
+         * @uses VehiclesShow Livewire component to display the edit vehicle form
+         * @param int $vehicle The ID of the vehicle to edit
+         * @return \Illuminate\View\View
+         * @example Access the edit vehicle form via GET /admin/vehicles/edit/{vehicle}
+         */
+        Route::get('edit/{vehicle}', VehiclesShow::class)->name('edit');
+
+        /**
+         * Show vehicle details
+         *
+         * This route displays the details of a specific vehicle.
+         * It requires the ID of the vehicle to be shown as a parameter.
+         * It uses a Livewire component to render the vehicle details dynamically.
+         *
+         * GET /admin/vehicles/show/{vehicle}
+         *
+         * @uses VehiclesShow Livewire component to display the vehicle details
+         * @param int $vehicle The ID of the vehicle to show
+         * @return \Illuminate\View\View
+         * @example Access the vehicle details via GET /admin/vehicles/show/{vehicle}
+         */
+        Route::get('show/{vehicle}', VehiclesShow::class)->name('show');
+    });
 });
 
 /**

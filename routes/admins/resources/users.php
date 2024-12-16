@@ -3,7 +3,7 @@
 /**
  * Admin Resource: Users Management Routes
  *
- * This file defines the routes for managing admin users, including listing, creating, editing, and showing user details.
+ * This file defines the routes for managing users, including listing, creating, editing, and showing user details.
  * These routes are prefixed with 'users' and named with 'users.' prefix.
  * They are protected by middleware that checks for 'SuperAdmin' or 'Administrator' roles and 'manage_users' permission.
  */
@@ -15,57 +15,93 @@ use App\View\Livewire\Admin\Resources\Users\Index;
 use App\View\Livewire\Admin\Resources\Users\Show;
 
 /**
- * Group of admin users management routes
+ * Define the admin routes for user management.
  *
- * Middleware:
- * @uses Kernel::role() Middleware to ensure the user has either 'SuperAdmin' or 'Administrator' role
- * @uses Kernel::permission() Middleware to check for 'manage_users' permission
+ * This group of routes is responsible for handling user management functionalities
+ * such as listing users, creating new users, editing existing users, and viewing user details.
+ * The routes are protected by middleware to ensure only authorized users can access them.
  */
-Route::prefix('users')->name('users.')->middleware(
-    [
-        Kernel::role(['SuperAdmin', 'Administrator'], 'admin'),
-        Kernel::permission(['manage_users'], 'admin')
-    ]
-)->group(function () {
+Route::prefix(app_admin_url())->name('admin.')->middleware(Kernel::adminAuthMiddleware())->group(function () {
 
     /**
-     * List all users
+     * Group of admin users management routes
      *
-     * GET /admin/users
+     * This group of routes is specifically for managing admin users.
+     * It includes routes for listing, creating, editing, and showing user details.
+     * The routes are protected by role and permission middleware.
      *
-     * @uses Index Livewire component to display the list of users
+     * Middleware:
+     * @uses Kernel::role() Middleware to ensure the user has either 'SuperAdmin' or 'Administrator' role
+     * @uses Kernel::permission() Middleware to check for 'manage_users' permission
      */
-    Route::get('/', Index::class)->name('index');
+    Route::prefix('users')->name('users.')->middleware(
+        [
+            Kernel::role(['SuperAdmin', 'Administrator'], 'admin'),
+            Kernel::permission(['manage_users'], 'admin')
+        ]
+    )->group(function () {
 
-    /**
-     * Show create user form
-     *
-     * GET /admin/users/create
-     *
-     * @uses Create Livewire component to display the create user form
-     */
-    Route::get('create', Create::class)->name('create');
+        /**
+         * List all users
+         *
+         * This route displays a list of all admin users.
+         * It uses a Livewire component to render the user list dynamically.
+         *
+         * GET /admin/users
+         *
+         * @uses Index Livewire component to display the list of users
+         * @return \Illuminate\View\View
+         * @example Access the users index via GET /admin/users
+         */
+        Route::get('/', Index::class)->name('index');
 
-    /**
-     * Show edit user form
-     *
-     * GET /admin/users/edit/{user}
-     *
-     * @uses Index Livewire component to display the edit user form
-     * @param int $user The ID of the user to edit
-     * @note This route uses the Index component, which might be incorrect. Consider creating an Edit component.
-     */
-    Route::get('edit/{user}', Index::class)->name('edit');
+        /**
+         * Show create user form
+         *
+         * This route displays a form for creating a new admin user.
+         * It uses a Livewire component to render the form dynamically.
+         *
+         * GET /admin/users/create
+         *
+         * @uses Create Livewire component to display the create user form
+         * @return \Illuminate\View\View
+         * @example Access the create user form via GET /admin/users/create
+         */
+        Route::get('create', Create::class)->name('create');
 
-    /**
-     * Show user details
-     *
-     * GET /admin/users/show/{user}
-     *
-     * @uses Show Livewire component to display the user details
-     * @param int $user The ID of the user to show
-     */
-    Route::get('show/{user}', Show::class)->name('show');
+        /**
+         * Show edit user form
+         *
+         * This route displays a form for editing an existing admin user.
+         * It requires the ID of the user to be edited as a parameter.
+         * Note: This route currently uses the Index component, which might not be correct.
+         * Consider creating a dedicated Edit component for editing users.
+         *
+         * GET /admin/users/edit/{user}
+         *
+         * @uses Index Livewire component to display the edit user form
+         * @param int $user The ID of the user to edit
+         * @return \Illuminate\View\View
+         * @example Access the edit user form via GET /admin/users/edit/{user}
+         */
+        Route::get('edit/{user}', Index::class)->name('edit');
+
+        /**
+         * Show user details
+         *
+         * This route displays the details of a specific admin user.
+         * It requires the ID of the user to be shown as a parameter.
+         * It uses a Livewire component to render the user details dynamically.
+         *
+         * GET /admin/users/show/{user}
+         *
+         * @uses Show Livewire component to display the user details
+         * @param int $user The ID of the user to show
+         * @return \Illuminate\View\View
+         * @example Access the user details via GET /admin/users/show/{user}
+         */
+        Route::get('show/{user}', Show::class)->name('show');
+    });
 });
 
 /**
@@ -93,10 +129,8 @@ Route::prefix('users')->name('users.')->middleware(
  *    </form>
  *
  * @note There are a few potential issues in this route file:
- * 1. There are two routes for the index page ('/' path), one with an empty name.
- *    Consider removing the route with the empty name to avoid conflicts.
- * 2. The edit route uses the Index component, which might not be correct.
+ * 1. The edit route uses the Index component, which might not be correct.
  *    Consider creating a dedicated Edit component for editing users.
- * 3. There's no route for deleting users. If user deletion is a required feature,
+ * 2. There's no route for deleting users. If user deletion is a required feature,
  *    consider adding a delete route with appropriate HTTP method (DELETE or POST).
  */
