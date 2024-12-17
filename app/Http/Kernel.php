@@ -95,6 +95,7 @@ class Kernel
      */
     public static $use = [
         // \Illuminate\Http\Middleware\TrustHosts::class,
+        \App\Http\Middleware\TrustProxies::class,
     ];
 
     /**
